@@ -4,110 +4,195 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MaisonNova — Boutique</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="color-scheme" content="light dark">
+<script>try{var t=localStorage.getItem("mn_theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f7f7f5;--card:#fff;--ink:#16161a;--muted:#6b6b76;--line:#e6e6e2;--accent:#1f4d3a;--accent2:#e9b44c;--danger:#c0392b;--ok:#2e7d4f;--r:14px}
+:root{
+ --bg:#f6f5f2;--bg2:#ecebe6;--card:#ffffff;--card2:#faf9f7;--ink:#141417;--muted:#6c6c78;--line:#e7e5df;
+ --accent:#1d5c45;--accent-ink:#fff;--accent-soft:#e4f1eb;--gold:#e3a73a;--danger:#c4402f;--ok:#22804f;
+ --okbg:#e2f4ea;--waitbg:#fff2d3;--waitfg:#8a6100;--shipbg:#e2ecfb;--shipfg:#1f58ab;--offbg:#f8e3e0;
+ --notebg:#fff7e3;--noteline:#f0dca2;--notefg:#7a5800;
+ --head:rgba(255,255,255,.78);--shadow:0 1px 2px rgba(20,20,23,.04),0 8px 24px rgba(20,20,23,.06);
+ --shadow-lg:0 20px 50px rgba(20,20,23,.12);--r:18px;color-scheme:light
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+ --bg:#0e0f11;--bg2:#16181b;--card:#17191c;--card2:#1d2024;--ink:#f1f1f3;--muted:#9a9ba5;--line:#2a2d32;
+ --accent:#4fbf8f;--accent-ink:#06150f;--accent-soft:#163327;--gold:#f0b952;--danger:#ef6a57;--ok:#5fd39a;
+ --okbg:#16352a;--waitbg:#3a2f12;--waitfg:#f3cf73;--shipbg:#172a45;--shipfg:#8cb6f5;--offbg:#3d1d19;
+ --notebg:#2c2614;--noteline:#4d4120;--notefg:#f1d58a;
+ --head:rgba(14,15,17,.75);--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);--shadow-lg:0 20px 50px rgba(0,0,0,.5);color-scheme:dark}}
+:root[data-theme="dark"]{
+ --bg:#0e0f11;--bg2:#16181b;--card:#17191c;--card2:#1d2024;--ink:#f1f1f3;--muted:#9a9ba5;--line:#2a2d32;
+ --accent:#4fbf8f;--accent-ink:#06150f;--accent-soft:#163327;--gold:#f0b952;--danger:#ef6a57;--ok:#5fd39a;
+ --okbg:#16352a;--waitbg:#3a2f12;--waitfg:#f3cf73;--shipbg:#172a45;--shipfg:#8cb6f5;--offbg:#3d1d19;
+ --notebg:#2c2614;--noteline:#4d4120;--notefg:#f1d58a;
+ --head:rgba(14,15,17,.75);--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);--shadow-lg:0 20px 50px rgba(0,0,0,.5);color-scheme:dark}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;transition:background .3s,color .3s;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.logo{font-family:"Playfair Display",Georgia,serif;letter-spacing:-.01em}
 a{color:inherit;text-decoration:none;cursor:pointer}
-button{font:inherit;cursor:pointer;border:0}
-input,select,textarea{font:inherit;width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--accent)}
-label{font-size:13px;font-weight:600;color:var(--muted);display:block;margin:12px 0 5px}
-.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
-header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
-.nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:12px}
-.logo{font-weight:800;font-size:20px;letter-spacing:2px}
-.logo span{color:var(--accent2)}
-.links{display:flex;gap:6px;flex-wrap:wrap}
-.links a{padding:8px 12px;border-radius:999px;font-weight:500;font-size:14px}
-.links a:hover,.links a.on{background:var(--bg)}
-.badge{background:var(--accent);color:#fff;border-radius:999px;padding:1px 7px;font-size:12px;margin-left:4px}
-.btn{background:var(--accent);color:#fff;padding:11px 18px;border-radius:10px;font-weight:600;display:inline-flex;align-items:center;gap:8px;justify-content:center}
-.btn:hover{opacity:.9}
-.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
-.btn.sm{padding:7px 12px;font-size:13px}
-.btn.red{background:var(--danger)}
+button{font:inherit;cursor:pointer;border:0;color:inherit}
+input,select,textarea{font:inherit;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--ink);outline:none;transition:.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+input:disabled{opacity:.6}
+label{font-size:13px;font-weight:600;color:var(--muted);display:block;margin:14px 0 6px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px}
+.topbar{background:var(--ink);color:var(--bg);text-align:center;font-size:13px;padding:8px 16px;font-weight:500}
+header{background:var(--head);backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+.nav{display:flex;align-items:center;justify-content:space-between;height:72px;gap:12px}
+.logo{font-weight:800;font-size:24px;letter-spacing:1px}
+.logo span{color:var(--gold);font-style:italic}
+.links{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.links a{padding:9px 14px;border-radius:999px;font-weight:500;font-size:14px;transition:.2s}
+.links a:hover{background:var(--bg2)}
+.links a.on{background:var(--ink);color:var(--bg)}
+.badge{background:var(--gold);color:#141417;border-radius:999px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:5px}
+.themebtn{width:40px;height:40px;border-radius:50%;background:var(--bg2);display:inline-flex;align-items:center;justify-content:center;font-size:17px;border:1px solid var(--line);transition:.3s;margin-left:6px}
+.themebtn:hover{transform:rotate(20deg)}
+.btn{background:var(--accent);color:var(--accent-ink);padding:12px 20px;border-radius:12px;font-weight:600;display:inline-flex;align-items:center;gap:8px;justify-content:center;transition:transform .15s,box-shadow .2s}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn:active{transform:none}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:7px 13px;font-size:13px;border-radius:10px}
+.btn.red{background:var(--danger);color:#fff}
 .btn.full{width:100%}
-.page{display:none;padding:32px 0 64px}
+.page{display:none;padding:36px 0 72px;animation:fade .35s ease}
 .page.on{display:block}
-.hero{background:linear-gradient(120deg,#1f4d3a,#2f6b52);color:#fff;border-radius:22px;padding:56px 40px;margin-bottom:32px;position:relative;overflow:hidden}
-.hero h1{font-size:clamp(28px,5vw,48px);line-height:1.1;max-width:560px}
-.hero p{opacity:.85;margin:14px 0 24px;max-width:480px}
-.hero .btn{background:var(--accent2);color:#16161a}
-.hero::after{content:"";position:absolute;right:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.07)}
-.trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:32px}
-.trust div{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;font-size:14px}
-.trust b{display:block}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
-.toolbar input{max-width:280px}
-.chip{padding:8px 14px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:14px}
-.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
-.prod{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;transition:.2s}
-.prod:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.06)}
-.img{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:64px;color:#fff;font-weight:800}
-.prod .body{padding:16px;display:flex;flex-direction:column;gap:6px;flex:1}
-.prod h3{font-size:16px}
-.cat{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-.price{font-weight:700;font-size:18px}
-.old{text-decoration:line-through;color:var(--muted);font-size:14px;font-weight:400;margin-left:6px}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hero{position:relative;overflow:hidden;border-radius:28px;padding:72px 48px;margin-bottom:28px;color:#fff;
+ background:radial-gradient(circle at 85% 20%,rgba(227,167,58,.55),transparent 40%),radial-gradient(circle at 10% 90%,rgba(79,191,143,.45),transparent 45%),linear-gradient(135deg,#0f3b2c,#1d5c45 55%,#123629);box-shadow:var(--shadow-lg)}
+.hero .kicker{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;margin-bottom:18px}
+.hero h1{font-size:clamp(34px,6vw,62px);line-height:1.05;max-width:640px}
+.hero h1 em{color:#f4c46a}
+.hero p{opacity:.88;margin:18px 0 28px;max-width:500px;font-size:17px}
+.hero .btn{background:#fff;color:#0f3b2c}
+.hero .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+.hero .acts{display:flex;gap:10px;flex-wrap:wrap}
+.hero .orb{position:absolute;right:7%;top:50%;transform:translateY(-50%) rotate(8deg);width:250px;height:250px;border-radius:40px;background:linear-gradient(135deg,rgba(255,255,255,.25),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;font-size:90px;box-shadow:0 30px 60px rgba(0,0,0,.25);animation:float 6s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-56%) rotate(4deg)}}
+@media(max-width:900px){.hero .orb{display:none}}
+.trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:44px}
+.trust div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;font-size:14px;color:var(--muted);display:flex;gap:12px;align-items:flex-start}
+.trust i{font-style:normal;font-size:20px;width:44px;height:44px;border-radius:12px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.trust b{display:block;color:var(--ink)}
+.sechead{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;align-items:center}
+.toolbar input{max-width:300px;border-radius:999px;padding-left:18px}
+.chip{padding:8px 16px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:500;transition:.2s}
+.chip:hover{border-color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px}
+.prod{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s}
+.prod:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.imgw{position:relative;overflow:hidden}
+.img{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:72px;transition:transform .5s}
+.prod:hover .img{transform:scale(1.06)}
+.disc{position:absolute;top:12px;left:12px;background:var(--danger);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px}
+.fav{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.92);color:#141417;display:flex;align-items:center;justify-content:center;font-size:16px}
+.prod .body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:5px;flex:1}
+.prod h3{font-size:18px}
+.stars{color:var(--gold);font-size:13px}
+.stars span{color:var(--muted);margin-left:4px}
+.cat{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;font-weight:600}
+.price{font-weight:700;font-size:19px;margin-top:2px}
+.old{text-decoration:line-through;color:var(--muted);font-size:14px;font-weight:400;margin-left:8px}
 .prod .btn{margin-top:auto}
-.box{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.prod .body .btn{margin-top:12px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:var(--shadow)}
 .two{display:grid;grid-template-columns:1.6fr 1fr;gap:24px;align-items:start}
+.sticky{position:sticky;top:96px}
 .row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
 .row:last-child{border-bottom:0}
-.thumb{width:64px;height:64px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:24px;flex-shrink:0}
-.qty{display:flex;align-items:center;border:1px solid var(--line);border-radius:8px}
-.qty button{background:none;width:30px;height:30px}
-.sum{display:flex;justify-content:space-between;padding:6px 0;font-size:15px}
-.sum.total{font-weight:800;font-size:19px;border-top:1px solid var(--line);margin-top:8px;padding-top:12px}
+.thumb{width:68px;height:68px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0}
+.qty{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;background:var(--card2)}
+.qty button{background:none;width:32px;height:32px}
+.qty span{min-width:22px;text-align:center}
+.sum{display:flex;justify-content:space-between;padding:7px 0;font-size:15px;color:var(--muted)}
+.sum span:last-child{color:var(--ink)}
+.sum.total{font-weight:800;font-size:20px;border-top:1px solid var(--line);margin-top:10px;padding-top:14px;color:var(--ink)}
 .pay{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
-.payopt{border:2px solid var(--line);border-radius:12px;padding:14px;text-align:center;font-weight:600;background:#fff;font-size:14px}
-.payopt.on{border-color:var(--accent);background:#f0f6f3}
-.apple{background:#000;color:#fff}
-.gpay{background:#fff;color:#3c4043;border:1px solid #dadce0}
-.rev{background:#0666eb;color:#fff}
-.note{background:#fff8e6;border:1px solid #f3dfa5;color:#7a5a00;padding:12px 14px;border-radius:10px;font-size:13px;margin:12px 0}
+.payopt{border:2px solid var(--line);border-radius:14px;padding:15px;text-align:center;font-weight:600;font-size:14px;transition:.2s;cursor:pointer}
+.payopt:hover{transform:translateY(-1px)}
+.payopt.on{outline:3px solid var(--accent);outline-offset:2px}
+.payopt.card{background:var(--card2)}
+.apple{background:#000;color:#fff;border-color:#000}
+.gpay{background:#fff;color:#3c4043;border-color:#dadce0}
+.rev{background:#0666eb;color:#fff;border-color:#0666eb}
+.free{display:inline-block;background:var(--okbg);color:var(--ok);font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:middle}
+.payopt.bank,.payopt.revtag,.payopt.sumup{background:var(--card2)}
+.qrwrap{position:relative;width:230px;height:230px;margin:14px auto;background:#fff;padding:10px;border-radius:12px}
+.qrwrap svg{width:100%;height:100%;display:block}
+.qrwrap .cross{position:absolute;left:50%;top:50%;width:30px;height:30px;transform:translate(-50%,-50%);background:#000;border:3px solid #fff;box-sizing:content-box}
+.qrwrap .cross::before,.qrwrap .cross::after{content:"";position:absolute;background:#fff;left:50%;top:50%;transform:translate(-50%,-50%)}
+.qrwrap .cross::before{width:18px;height:6px}.qrwrap .cross::after{width:6px;height:18px}
+.kv{display:grid;grid-template-columns:auto 1fr auto;gap:8px 12px;align-items:center;font-size:14px;margin-top:10px}
+.kv span:nth-child(3n+1){color:var(--muted)}
+.kv b{word-break:break-all}
+.secure{display:flex;align-items:center;gap:8px;justify-content:center;color:var(--muted);font-size:13px;margin-top:12px}
+.note{background:var(--notebg);border:1px solid var(--noteline);color:var(--notefg);padding:12px 14px;border-radius:12px;font-size:13px;margin:14px 0}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
-.auth{max-width:440px;margin:0 auto}
-.tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
-.tabs a{padding:9px 14px;border-radius:10px;font-weight:600;font-size:14px;background:#fff;border:1px solid var(--line)}
-.tabs a.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}
-.stat{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px}
-.stat small{color:var(--muted);font-weight:600}
-.stat b{display:block;font-size:26px;margin-top:4px}
+.auth{max-width:460px;margin:0 auto}
+.auth h2{text-align:center}
+.tabs{display:flex;gap:4px;margin-bottom:22px;flex-wrap:wrap;background:var(--bg2);padding:5px;border-radius:14px;width:fit-content;max-width:100%}
+.tabs a{padding:9px 15px;border-radius:10px;font-weight:600;font-size:14px;color:var(--muted);transition:.2s}
+.tabs a.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.auth .tabs{width:100%}.auth .tabs a{flex:1;text-align:center}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:24px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;position:relative;overflow:hidden}
+.stat::after{content:"";position:absolute;right:-30px;top:-30px;width:90px;height:90px;border-radius:50%;background:var(--accent-soft)}
+.stat small{color:var(--muted);font-weight:600;position:relative;z-index:1}
+.stat b{display:block;font-size:28px;margin-top:4px;position:relative;z-index:1;font-family:"Playfair Display",serif}
 table{width:100%;border-collapse:collapse;font-size:14px}
-th{text-align:left;color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px;padding:10px;border-bottom:1px solid var(--line)}
-td{padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{text-align:left;color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.6px;padding:10px;border-bottom:1px solid var(--line)}
+td{padding:13px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:hover td{background:var(--card2)}
 .scroll{overflow-x:auto}
-.tag{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:600;background:var(--bg)}
-.tag.ok{background:#e3f3ea;color:var(--ok)}
-.tag.wait{background:#fff3d6;color:#8a6200}
-.tag.ship{background:#e3edfb;color:#1d56a8}
-.tag.off{background:#f3e3e1;color:var(--danger)}
-.srcgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
-.src{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:8px}
-.src.connected{border-color:var(--accent);box-shadow:0 0 0 2px #e3f3ea}
-.src h4{font-size:16px;display:flex;justify-content:space-between;align-items:center}
+.tag{font-family:Inter,system-ui,sans-serif;white-space:nowrap;display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;background:var(--bg2);color:var(--muted)}
+.tag.ok{background:var(--okbg);color:var(--ok)}
+.tag.wait{background:var(--waitbg);color:var(--waitfg)}
+.tag.ship{background:var(--shipbg);color:var(--shipfg)}
+.tag.off{background:var(--offbg);color:var(--danger)}
+.srcgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.src{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:10px;transition:.2s}
+.src:hover{box-shadow:var(--shadow)}
+.src.connected{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.src h4{font-size:17px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .src p{font-size:13px;color:var(--muted)}
 .meta{display:flex;gap:6px;flex-wrap:wrap}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
 .modal.on{display:flex}
-.modal .box{max-width:520px;width:100%;max-height:90vh;overflow:auto}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;z-index:200;display:none}
-footer{background:#16161a;color:#aaa;padding:40px 0;font-size:14px}
-footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px}
-footer b{color:#fff}
+.modal .box.wide{max-width:980px}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:14px}
+.citem{border:1px solid var(--line);border-radius:14px;background:var(--card2);overflow:hidden;display:flex;flex-direction:column;transition:.2s;cursor:pointer}
+.citem.sel{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.citem.done{opacity:.45;cursor:default}
+.citem .cimg{height:110px;display:flex;align-items:center;justify-content:center;font-size:46px;position:relative}
+.citem .cimg input{position:absolute;top:10px;left:10px;width:20px;height:20px;accent-color:var(--accent)}
+.citem .cb{padding:12px;font-size:13px;display:flex;flex-direction:column;gap:4px}
+.citem .cb b{font-size:14px}
+.citem .cb input{padding:7px 10px;font-size:13px}
+.cbar{position:sticky;bottom:-26px;background:var(--card);border-top:1px solid var(--line);margin:16px -26px -26px;padding:14px 26px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.modal .box{max-width:540px;width:100%;max-height:90vh;overflow:auto;animation:fade .25s}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:13px 22px;border-radius:999px;font-size:14px;font-weight:500;z-index:200;display:none;box-shadow:var(--shadow-lg)}
+.news{margin-top:56px;background:var(--card);border:1px solid var(--line);border-radius:28px;padding:40px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.news form{display:flex;gap:8px;flex:1;max-width:440px;min-width:240px}
+.news input{border-radius:999px}
+footer{background:var(--bg2);color:var(--muted);padding:48px 0;font-size:14px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px}
+footer b{color:var(--ink);font-family:"Playfair Display",serif;font-size:18px}
 .mt{margin-top:16px}
-h2{font-size:26px;margin-bottom:18px}
+h2{font-size:32px;margin-bottom:6px}
+.sub2{color:var(--muted);margin-bottom:22px}
 .muted{color:var(--muted);font-size:14px}
-@media(max-width:800px){.two{grid-template-columns:1fr}.hero{padding:36px 22px}.nav{height:auto;padding:12px 0;flex-direction:column}.g2{grid-template-columns:1fr}}
+@media(max-width:800px){.two{grid-template-columns:1fr}.sticky{position:static}.hero{padding:44px 24px}.nav{height:auto;padding:12px 0;flex-direction:column}.g2{grid-template-columns:1fr}.news{padding:26px}}
 </style>
+
 </head>
 <body>
 
+<div class="topbar">✨ Livraison offerte dès CHF 80.– · Retours gratuits sous 30 jours</div>
 <header>
   <div class="wrap nav">
     <a class="logo" onclick="go('shop')">MAISON<span>NOVA</span></a>
@@ -116,6 +201,7 @@ h2{font-size:26px;margin-bottom:18px}
       <a data-p="cart" onclick="go('cart')">Panier<span class="badge" id="cartCount">0</span></a>
       <a data-p="account" onclick="go('account')" id="accLink">Connexion</a>
       <a data-p="admin" onclick="go('admin')">Admin</a>
+      <button class="themebtn" id="themeBtn" onclick="cycleTheme()" title="Thème" aria-label="Changer de thème">🖥️</button>
     </nav>
   </div>
 </header>
@@ -125,29 +211,40 @@ h2{font-size:26px;margin-bottom:18px}
 <!-- BOUTIQUE -->
 <section class="page" id="shop">
   <div class="hero">
-    <h1>Des produits tendance, livrés chez vous.</h1>
-    <p>Sélection soignée, paiement sécurisé par carte, Apple Pay, Google Pay et Revolut Pay.</p>
-    <a class="btn" onclick="document.getElementById('grid').scrollIntoView({behavior:'smooth'})">Découvrir la collection</a>
+    <span class="kicker">Nouvelle collection · Automne 2026</span>
+    <h1>Des objets <em>bien pensés</em>, livrés chez vous.</h1>
+    <p>Une sélection soignée de produits tendance, avec paiement sécurisé par carte, Apple Pay, Google Pay et Revolut Pay.</p>
+    <div class="acts">
+      <a class="btn" onclick="document.getElementById('collection').scrollIntoView({behavior:'smooth'})">Découvrir la collection →</a>
+      <a class="btn ghost" onclick="curCat='Tech';renderShop();document.getElementById('collection').scrollIntoView({behavior:'smooth'})">Voir la tech</a>
+    </div>
+    <div class="orb">🛍️</div>
   </div>
   <div class="trust">
-    <div><b>🚚 Livraison suivie</b>Numéro de suivi pour chaque commande</div>
-    <div><b>🔒 Paiement sécurisé</b>Carte, Apple Pay, Google Pay, Revolut</div>
-    <div><b>↩️ Retours 30 jours</b>Satisfait ou remboursé</div>
-    <div><b>💬 Support 7j/7</b>Réponse sous 24 h</div>
+    <div><i>🚚</i><span><b>Livraison suivie</b>Numéro de suivi pour chaque commande</span></div>
+    <div><i>🔒</i><span><b>Paiement sécurisé</b>Carte, Apple Pay, Google Pay, Revolut</span></div>
+    <div><i>↩️</i><span><b>Retours 30 jours</b>Satisfait ou remboursé</span></div>
+    <div><i>💬</i><span><b>Support 7j/7</b>Réponse sous 24 h</span></div>
   </div>
+  <div class="sechead" id="collection"><div><h2>La collection</h2><p class="muted">Nos best-sellers du moment</p></div></div>
   <div class="toolbar">
     <input id="search" placeholder="Rechercher un produit…" oninput="renderShop()">
     <div id="cats" style="display:flex;gap:8px;flex-wrap:wrap"></div>
   </div>
   <div class="grid" id="grid"></div>
+  <div class="news">
+    <div><h2>-10 % sur votre 1ʳᵉ commande</h2><p class="muted">Inscrivez-vous à la newsletter pour recevoir les nouveautés.</p></div>
+    <form onsubmit="event.preventDefault();this.reset();toast('Merci ! Code : BIENVENUE10')"><input type="email" required placeholder="votre@email.ch"><button class="btn">S'inscrire</button></form>
+  </div>
 </section>
 
 <!-- PANIER -->
 <section class="page" id="cart">
-  <h2>Votre panier</h2>
+  <h2>Votre panier</h2><p class="sub2">Vérifiez vos articles avant de passer commande.</p>
   <div class="two">
     <div class="box" id="cartItems"></div>
-    <div class="box">
+    <div class="box sticky">
+      <h3 style="margin-bottom:8px">Résumé</h3>
       <div class="sum"><span>Sous-total</span><span id="sub">0.00</span></div>
       <div class="sum"><span>Livraison</span><span id="ship">0.00</span></div>
       <div class="sum total"><span>Total</span><span id="tot">0.00</span></div>
@@ -159,7 +256,7 @@ h2{font-size:26px;margin-bottom:18px}
 
 <!-- CAISSE -->
 <section class="page" id="checkout">
-  <h2>Paiement</h2>
+  <h2>Paiement</h2><p class="sub2">Finalisez votre commande en toute sécurité.</p>
   <div class="two">
     <div class="box">
       <h3>Adresse de livraison</h3>
@@ -178,25 +275,19 @@ h2{font-size:26px;margin-bottom:18px}
 
       <h3 class="mt" style="margin-top:28px">Mode de paiement</h3>
       <div class="pay">
-        <div class="payopt on" data-m="card" onclick="pickPay('card')">💳 Carte bancaire</div>
-        <div class="payopt apple" data-m="apple" onclick="pickPay('apple')"> Pay</div>
-        <div class="payopt gpay" data-m="google" onclick="pickPay('google')"><b style="color:#4285f4">G</b> Pay</div>
-        <div class="payopt rev" data-m="revolut" onclick="pickPay('revolut')">Revolut Pay</div>
+        <div class="payopt bank" data-m="bank" onclick="pickPay('bank')">🏦 Virement / QR-facture<span class="free">Gratuit</span></div>
+        <div class="payopt revtag" data-m="revtag" onclick="pickPay('revtag')">⚡ Virement Revolut<span class="free">Gratuit</span></div>
+        <div class="payopt sumup" data-m="sumup" onclick="pickPay('sumup')" style="grid-column:1/-1">💳 Visa · Mastercard · Apple Pay · Google Pay<div class="muted" style="font-weight:500;font-size:12px;margin-top:2px">Paiement sécurisé par SumUp</div></div>
       </div>
-      <div id="cardFields">
-        <label>Numéro de carte</label><input id="ccNum" placeholder="4242 4242 4242 4242" maxlength="19" oninput="fmtCard(this)">
-        <div class="g2">
-          <div><label>Expiration</label><input id="ccExp" placeholder="MM/AA" maxlength="5"></div>
-          <div><label>CVC</label><input id="ccCvc" placeholder="123" maxlength="4"></div>
-        </div>
-      </div>
-      <div class="note">Mode démonstration : aucun paiement réel n'est débité. Pour encaisser, ce formulaire doit être relié à Stripe (carte, Apple Pay, Google Pay) et à Revolut Business (Revolut Pay) via un serveur.</div>
+      <div id="freeInfo" class="note" style="display:none"></div>
+      <div id="paidInfo" class="note">Vous serez redirigé vers la page de paiement sécurisée SumUp pour payer par carte, Apple Pay ou Google Pay.</div>
     </div>
-    <div class="box">
+    <div class="box sticky">
       <h3>Récapitulatif</h3>
       <div id="coItems"></div>
       <div class="sum total"><span>Total</span><span id="coTot">0.00</span></div>
-      <button class="btn full mt" onclick="placeOrder()">Payer maintenant</button>
+      <button class="btn full mt" onclick="placeOrder()">🔒 Payer maintenant</button>
+      <div class="secure">Paiement sécurisé · Visa · Mastercard · Apple Pay · Google Pay · QR-facture · Revolut</div>
     </div>
   </div>
 </section>
@@ -204,6 +295,7 @@ h2{font-size:26px;margin-bottom:18px}
 <!-- COMPTE -->
 <section class="page" id="account">
   <div id="authBox" class="auth box">
+    <h2>Bienvenue</h2><p class="muted" style="text-align:center;margin-bottom:20px">Connectez-vous ou créez votre compte client.</p>
     <div class="tabs"><a class="on" id="tLogin" onclick="authTab('login')">Connexion</a><a id="tReg" onclick="authTab('reg')">Créer un compte</a></div>
     <div id="regName" style="display:none"><label>Nom complet</label><input id="aName"></div>
     <label>E-mail</label><input id="aEmail" type="email">
@@ -235,7 +327,7 @@ h2{font-size:26px;margin-bottom:18px}
     <button class="btn full mt" onclick="go('account')">Aller à la connexion</button>
   </div>
   <div id="adminPanel" style="display:none">
-    <h2>Tableau de bord</h2>
+    <h2>Tableau de bord</h2><p class="sub2">Gérez votre boutique, vos fournisseurs et vos paiements.</p>
     <div class="tabs" id="aTabs">
       <a class="on" data-t="dash" onclick="aTab('dash')">Vue d'ensemble</a>
       <a data-t="prods" onclick="aTab('prods')">Produits</a>
@@ -254,7 +346,7 @@ h2{font-size:26px;margin-bottom:18px}
   <div class="wrap">
     <div><b>MAISONNOVA</b><br>Boutique en ligne · Suisse</div>
     <div>CGV · Confidentialité · Livraison & retours · Contact</div>
-    <div>Paiements : Visa · Mastercard · Apple Pay · Google Pay · Revolut Pay</div>
+    <div>Paiements : Visa · Mastercard · Apple Pay · Google Pay · QR-facture · Revolut</div>
   </div>
 </footer>
 
@@ -262,7 +354,1275 @@ h2{font-size:26px;margin-bottom:18px}
 <div class="toast" id="toast"></div>
 
 <script>
-const COLORS=['#1f4d3a','#b5543c','#3b5ba5','#7a4ea0','#c28a2c','#2b7a78','#a63d6b','#45526c'];
+/* QRCode for JavaScript — (c) 2009 Kazuhiko Arase, MIT license (via qrcode-terminal) */
+var QRLib=(function(){var defs={"QR8bitByte":function(module,exports,require){
+var QRMode = require('./QRMode');
+
+function QR8bitByte(data) {
+	this.mode = QRMode.MODE_8BIT_BYTE;
+	this.data = data;
+}
+
+QR8bitByte.prototype = {
+
+	getLength : function() {
+		return this.data.length;
+	},
+	
+	write : function(buffer) {
+		for (var i = 0; i < this.data.length; i++) {
+			// not JIS ...
+			buffer.put(this.data.charCodeAt(i), 8);
+		}
+	}
+};
+
+module.exports = QR8bitByte;
+
+},
+"QRBitBuffer":function(module,exports,require){
+function QRBitBuffer() {
+	this.buffer = [];
+	this.length = 0;
+}
+
+QRBitBuffer.prototype = {
+
+	get : function(index) {
+		var bufIndex = Math.floor(index / 8);
+		return ( (this.buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+	},
+	
+	put : function(num, length) {
+		for (var i = 0; i < length; i++) {
+			this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+		}
+	},
+	
+	getLengthInBits : function() {
+		return this.length;
+	},
+	
+	putBit : function(bit) {
+	
+		var bufIndex = Math.floor(this.length / 8);
+		if (this.buffer.length <= bufIndex) {
+			this.buffer.push(0);
+		}
+	
+		if (bit) {
+			this.buffer[bufIndex] |= (0x80 >>> (this.length % 8) );
+		}
+	
+		this.length++;
+	}
+};
+
+module.exports = QRBitBuffer;
+
+},
+"QRErrorCorrectLevel":function(module,exports,require){
+module.exports = {
+	L : 1,
+	M : 0,
+	Q : 3,
+	H : 2
+};
+
+
+},
+"QRMaskPattern":function(module,exports,require){
+module.exports = {
+	PATTERN000 : 0,
+	PATTERN001 : 1,
+	PATTERN010 : 2,
+	PATTERN011 : 3,
+	PATTERN100 : 4,
+	PATTERN101 : 5,
+	PATTERN110 : 6,
+	PATTERN111 : 7
+};
+
+},
+"QRMath":function(module,exports,require){
+var QRMath = {
+
+	glog : function(n) {
+	
+		if (n < 1) {
+			throw new Error("glog(" + n + ")");
+		}
+		
+		return QRMath.LOG_TABLE[n];
+	},
+	
+	gexp : function(n) {
+	
+		while (n < 0) {
+			n += 255;
+		}
+	
+		while (n >= 256) {
+			n -= 255;
+		}
+	
+		return QRMath.EXP_TABLE[n];
+	},
+	
+	EXP_TABLE : new Array(256),
+	
+	LOG_TABLE : new Array(256)
+
+};
+	
+for (var i = 0; i < 8; i++) {
+	QRMath.EXP_TABLE[i] = 1 << i;
+}
+for (var i = 8; i < 256; i++) {
+	QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4]
+		^ QRMath.EXP_TABLE[i - 5]
+		^ QRMath.EXP_TABLE[i - 6]
+		^ QRMath.EXP_TABLE[i - 8];
+}
+for (var i = 0; i < 255; i++) {
+	QRMath.LOG_TABLE[QRMath.EXP_TABLE[i] ] = i;
+}
+
+module.exports = QRMath;
+
+},
+"QRMode":function(module,exports,require){
+module.exports = {
+    MODE_NUMBER :       1 << 0,
+    MODE_ALPHA_NUM :    1 << 1,
+    MODE_8BIT_BYTE :    1 << 2,
+    MODE_KANJI :        1 << 3
+};
+
+},
+"QRPolynomial":function(module,exports,require){
+var QRMath = require('./QRMath');
+
+function QRPolynomial(num, shift) {
+	if (num.length === undefined) {
+		throw new Error(num.length + "/" + shift);
+	}
+
+	var offset = 0;
+
+	while (offset < num.length && num[offset] === 0) {
+		offset++;
+	}
+
+	this.num = new Array(num.length - offset + shift);
+	for (var i = 0; i < num.length - offset; i++) {
+		this.num[i] = num[i + offset];
+	}
+}
+
+QRPolynomial.prototype = {
+
+	get : function(index) {
+		return this.num[index];
+	},
+	
+	getLength : function() {
+		return this.num.length;
+	},
+	
+	multiply : function(e) {
+	
+		var num = new Array(this.getLength() + e.getLength() - 1);
+	
+		for (var i = 0; i < this.getLength(); i++) {
+			for (var j = 0; j < e.getLength(); j++) {
+				num[i + j] ^= QRMath.gexp(QRMath.glog(this.get(i) ) + QRMath.glog(e.get(j) ) );
+			}
+		}
+	
+		return new QRPolynomial(num, 0);
+	},
+	
+	mod : function(e) {
+	
+		if (this.getLength() - e.getLength() < 0) {
+			return this;
+		}
+	
+		var ratio = QRMath.glog(this.get(0) ) - QRMath.glog(e.get(0) );
+	
+		var num = new Array(this.getLength() );
+		
+		for (var i = 0; i < this.getLength(); i++) {
+			num[i] = this.get(i);
+		}
+		
+		for (var x = 0; x < e.getLength(); x++) {
+			num[x] ^= QRMath.gexp(QRMath.glog(e.get(x) ) + ratio);
+		}
+	
+		// recursive call
+		return new QRPolynomial(num, 0).mod(e);
+	}
+};
+
+module.exports = QRPolynomial;
+
+},
+"QRRSBlock":function(module,exports,require){
+var QRErrorCorrectLevel = require('./QRErrorCorrectLevel');
+
+function QRRSBlock(totalCount, dataCount) {
+	this.totalCount = totalCount;
+	this.dataCount  = dataCount;
+}
+
+QRRSBlock.RS_BLOCK_TABLE = [
+
+	// L
+	// M
+	// Q
+	// H
+
+	// 1
+	[1, 26, 19],
+	[1, 26, 16],
+	[1, 26, 13],
+	[1, 26, 9],
+	
+	// 2
+	[1, 44, 34],
+	[1, 44, 28],
+	[1, 44, 22],
+	[1, 44, 16],
+
+	// 3
+	[1, 70, 55],
+	[1, 70, 44],
+	[2, 35, 17],
+	[2, 35, 13],
+
+	// 4		
+	[1, 100, 80],
+	[2, 50, 32],
+	[2, 50, 24],
+	[4, 25, 9],
+	
+	// 5
+	[1, 134, 108],
+	[2, 67, 43],
+	[2, 33, 15, 2, 34, 16],
+	[2, 33, 11, 2, 34, 12],
+	
+	// 6
+	[2, 86, 68],
+	[4, 43, 27],
+	[4, 43, 19],
+	[4, 43, 15],
+	
+	// 7		
+	[2, 98, 78],
+	[4, 49, 31],
+	[2, 32, 14, 4, 33, 15],
+	[4, 39, 13, 1, 40, 14],
+	
+	// 8
+	[2, 121, 97],
+	[2, 60, 38, 2, 61, 39],
+	[4, 40, 18, 2, 41, 19],
+	[4, 40, 14, 2, 41, 15],
+	
+	// 9
+	[2, 146, 116],
+	[3, 58, 36, 2, 59, 37],
+	[4, 36, 16, 4, 37, 17],
+	[4, 36, 12, 4, 37, 13],
+	
+	// 10		
+	[2, 86, 68, 2, 87, 69],
+	[4, 69, 43, 1, 70, 44],
+	[6, 43, 19, 2, 44, 20],
+	[6, 43, 15, 2, 44, 16],
+
+	// 11
+	[4, 101, 81],
+	[1, 80, 50, 4, 81, 51],
+	[4, 50, 22, 4, 51, 23],
+	[3, 36, 12, 8, 37, 13],
+
+	// 12
+	[2, 116, 92, 2, 117, 93],
+	[6, 58, 36, 2, 59, 37],
+	[4, 46, 20, 6, 47, 21],
+	[7, 42, 14, 4, 43, 15],
+
+	// 13
+	[4, 133, 107],
+	[8, 59, 37, 1, 60, 38],
+	[8, 44, 20, 4, 45, 21],
+	[12, 33, 11, 4, 34, 12],
+
+	// 14
+	[3, 145, 115, 1, 146, 116],
+	[4, 64, 40, 5, 65, 41],
+	[11, 36, 16, 5, 37, 17],
+	[11, 36, 12, 5, 37, 13],
+
+	// 15
+	[5, 109, 87, 1, 110, 88],
+	[5, 65, 41, 5, 66, 42],
+	[5, 54, 24, 7, 55, 25],
+	[11, 36, 12],
+
+	// 16
+	[5, 122, 98, 1, 123, 99],
+	[7, 73, 45, 3, 74, 46],
+	[15, 43, 19, 2, 44, 20],
+	[3, 45, 15, 13, 46, 16],
+
+	// 17
+	[1, 135, 107, 5, 136, 108],
+	[10, 74, 46, 1, 75, 47],
+	[1, 50, 22, 15, 51, 23],
+	[2, 42, 14, 17, 43, 15],
+
+	// 18
+	[5, 150, 120, 1, 151, 121],
+	[9, 69, 43, 4, 70, 44],
+	[17, 50, 22, 1, 51, 23],
+	[2, 42, 14, 19, 43, 15],
+
+	// 19
+	[3, 141, 113, 4, 142, 114],
+	[3, 70, 44, 11, 71, 45],
+	[17, 47, 21, 4, 48, 22],
+	[9, 39, 13, 16, 40, 14],
+
+	// 20
+	[3, 135, 107, 5, 136, 108],
+	[3, 67, 41, 13, 68, 42],
+	[15, 54, 24, 5, 55, 25],
+	[15, 43, 15, 10, 44, 16],
+
+	// 21
+	[4, 144, 116, 4, 145, 117],
+	[17, 68, 42],
+	[17, 50, 22, 6, 51, 23],
+	[19, 46, 16, 6, 47, 17],
+
+	// 22
+	[2, 139, 111, 7, 140, 112],
+	[17, 74, 46],
+	[7, 54, 24, 16, 55, 25],
+	[34, 37, 13],
+
+	// 23
+	[4, 151, 121, 5, 152, 122],
+	[4, 75, 47, 14, 76, 48],
+	[11, 54, 24, 14, 55, 25],
+	[16, 45, 15, 14, 46, 16],
+
+	// 24
+	[6, 147, 117, 4, 148, 118],
+	[6, 73, 45, 14, 74, 46],
+	[11, 54, 24, 16, 55, 25],
+	[30, 46, 16, 2, 47, 17],
+
+	// 25
+	[8, 132, 106, 4, 133, 107],
+	[8, 75, 47, 13, 76, 48],
+	[7, 54, 24, 22, 55, 25],
+	[22, 45, 15, 13, 46, 16],
+
+	// 26
+	[10, 142, 114, 2, 143, 115],
+	[19, 74, 46, 4, 75, 47],
+	[28, 50, 22, 6, 51, 23],
+	[33, 46, 16, 4, 47, 17],
+
+	// 27
+	[8, 152, 122, 4, 153, 123],
+	[22, 73, 45, 3, 74, 46],
+	[8, 53, 23, 26, 54, 24],
+	[12, 45, 15, 28, 46, 16],
+
+	// 28
+	[3, 147, 117, 10, 148, 118],
+	[3, 73, 45, 23, 74, 46],
+	[4, 54, 24, 31, 55, 25],
+	[11, 45, 15, 31, 46, 16],
+
+	// 29
+	[7, 146, 116, 7, 147, 117],
+	[21, 73, 45, 7, 74, 46],
+	[1, 53, 23, 37, 54, 24],
+	[19, 45, 15, 26, 46, 16],
+
+	// 30
+	[5, 145, 115, 10, 146, 116],
+	[19, 75, 47, 10, 76, 48],
+	[15, 54, 24, 25, 55, 25],
+	[23, 45, 15, 25, 46, 16],
+
+	// 31
+	[13, 145, 115, 3, 146, 116],
+	[2, 74, 46, 29, 75, 47],
+	[42, 54, 24, 1, 55, 25],
+	[23, 45, 15, 28, 46, 16],
+
+	// 32
+	[17, 145, 115],
+	[10, 74, 46, 23, 75, 47],
+	[10, 54, 24, 35, 55, 25],
+	[19, 45, 15, 35, 46, 16],
+
+	// 33
+	[17, 145, 115, 1, 146, 116],
+	[14, 74, 46, 21, 75, 47],
+	[29, 54, 24, 19, 55, 25],
+	[11, 45, 15, 46, 46, 16],
+
+	// 34
+	[13, 145, 115, 6, 146, 116],
+	[14, 74, 46, 23, 75, 47],
+	[44, 54, 24, 7, 55, 25],
+	[59, 46, 16, 1, 47, 17],
+
+	// 35
+	[12, 151, 121, 7, 152, 122],
+	[12, 75, 47, 26, 76, 48],
+	[39, 54, 24, 14, 55, 25],
+	[22, 45, 15, 41, 46, 16],
+
+	// 36
+	[6, 151, 121, 14, 152, 122],
+	[6, 75, 47, 34, 76, 48],
+	[46, 54, 24, 10, 55, 25],
+	[2, 45, 15, 64, 46, 16],
+
+	// 37
+	[17, 152, 122, 4, 153, 123],
+	[29, 74, 46, 14, 75, 47],
+	[49, 54, 24, 10, 55, 25],
+	[24, 45, 15, 46, 46, 16],
+
+	// 38
+	[4, 152, 122, 18, 153, 123],
+	[13, 74, 46, 32, 75, 47],
+	[48, 54, 24, 14, 55, 25],
+	[42, 45, 15, 32, 46, 16],
+
+	// 39
+	[20, 147, 117, 4, 148, 118],
+	[40, 75, 47, 7, 76, 48],
+	[43, 54, 24, 22, 55, 25],
+	[10, 45, 15, 67, 46, 16],
+
+	// 40
+	[19, 148, 118, 6, 149, 119],
+	[18, 75, 47, 31, 76, 48],
+	[34, 54, 24, 34, 55, 25],
+	[20, 45, 15, 61, 46, 16]
+];
+
+QRRSBlock.getRSBlocks = function(typeNumber, errorCorrectLevel) {
+	
+	var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
+	
+	if (rsBlock === undefined) {
+		throw new Error("bad rs block @ typeNumber:" + typeNumber + "/errorCorrectLevel:" + errorCorrectLevel);
+	}
+
+	var length = rsBlock.length / 3;
+	
+	var list = [];
+	
+	for (var i = 0; i < length; i++) {
+
+		var count = rsBlock[i * 3 + 0];
+		var totalCount = rsBlock[i * 3 + 1];
+		var dataCount  = rsBlock[i * 3 + 2];
+
+		for (var j = 0; j < count; j++) {
+			list.push(new QRRSBlock(totalCount, dataCount) );	
+		}
+	}
+	
+	return list;
+};
+
+QRRSBlock.getRsBlockTable = function(typeNumber, errorCorrectLevel) {
+
+	switch(errorCorrectLevel) {
+	case QRErrorCorrectLevel.L :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+	case QRErrorCorrectLevel.M :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+	case QRErrorCorrectLevel.Q :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+	case QRErrorCorrectLevel.H :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+	default :
+		return undefined;
+	}
+};
+
+module.exports = QRRSBlock;
+
+},
+"QRUtil":function(module,exports,require){
+var QRMode = require('./QRMode');
+var QRPolynomial = require('./QRPolynomial');
+var QRMath = require('./QRMath');
+var QRMaskPattern = require('./QRMaskPattern');
+
+var QRUtil = {
+
+    PATTERN_POSITION_TABLE : [
+        [],
+        [6, 18],
+        [6, 22],
+        [6, 26],
+        [6, 30],
+        [6, 34],
+        [6, 22, 38],
+        [6, 24, 42],
+        [6, 26, 46],
+        [6, 28, 50],
+        [6, 30, 54],        
+        [6, 32, 58],
+        [6, 34, 62],
+        [6, 26, 46, 66],
+        [6, 26, 48, 70],
+        [6, 26, 50, 74],
+        [6, 30, 54, 78],
+        [6, 30, 56, 82],
+        [6, 30, 58, 86],
+        [6, 34, 62, 90],
+        [6, 28, 50, 72, 94],
+        [6, 26, 50, 74, 98],
+        [6, 30, 54, 78, 102],
+        [6, 28, 54, 80, 106],
+        [6, 32, 58, 84, 110],
+        [6, 30, 58, 86, 114],
+        [6, 34, 62, 90, 118],
+        [6, 26, 50, 74, 98, 122],
+        [6, 30, 54, 78, 102, 126],
+        [6, 26, 52, 78, 104, 130],
+        [6, 30, 56, 82, 108, 134],
+        [6, 34, 60, 86, 112, 138],
+        [6, 30, 58, 86, 114, 142],
+        [6, 34, 62, 90, 118, 146],
+        [6, 30, 54, 78, 102, 126, 150],
+        [6, 24, 50, 76, 102, 128, 154],
+        [6, 28, 54, 80, 106, 132, 158],
+        [6, 32, 58, 84, 110, 136, 162],
+        [6, 26, 54, 82, 110, 138, 166],
+        [6, 30, 58, 86, 114, 142, 170]
+    ],
+
+    G15 : (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0),
+    G18 : (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0),
+    G15_MASK : (1 << 14) | (1 << 12) | (1 << 10)    | (1 << 4) | (1 << 1),
+
+    getBCHTypeInfo : function(data) {
+        var d = data << 10;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) >= 0) {
+            d ^= (QRUtil.G15 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) ) );    
+        }
+        return ( (data << 10) | d) ^ QRUtil.G15_MASK;
+    },
+
+    getBCHTypeNumber : function(data) {
+        var d = data << 12;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) >= 0) {
+            d ^= (QRUtil.G18 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) ) );    
+        }
+        return (data << 12) | d;
+    },
+
+    getBCHDigit : function(data) {
+
+        var digit = 0;
+
+        while (data !== 0) {
+            digit++;
+            data >>>= 1;
+        }
+
+        return digit;
+    },
+
+    getPatternPosition : function(typeNumber) {
+        return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1];
+    },
+
+    getMask : function(maskPattern, i, j) {
+        
+        switch (maskPattern) {
+            
+        case QRMaskPattern.PATTERN000 : return (i + j) % 2 === 0;
+        case QRMaskPattern.PATTERN001 : return i % 2 === 0;
+        case QRMaskPattern.PATTERN010 : return j % 3 === 0;
+        case QRMaskPattern.PATTERN011 : return (i + j) % 3 === 0;
+        case QRMaskPattern.PATTERN100 : return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 === 0;
+        case QRMaskPattern.PATTERN101 : return (i * j) % 2 + (i * j) % 3 === 0;
+        case QRMaskPattern.PATTERN110 : return ( (i * j) % 2 + (i * j) % 3) % 2 === 0;
+        case QRMaskPattern.PATTERN111 : return ( (i * j) % 3 + (i + j) % 2) % 2 === 0;
+
+        default :
+            throw new Error("bad maskPattern:" + maskPattern);
+        }
+    },
+
+    getErrorCorrectPolynomial : function(errorCorrectLength) {
+
+        var a = new QRPolynomial([1], 0);
+
+        for (var i = 0; i < errorCorrectLength; i++) {
+            a = a.multiply(new QRPolynomial([1, QRMath.gexp(i)], 0) );
+        }
+
+        return a;
+    },
+
+    getLengthInBits : function(mode, type) {
+
+        if (1 <= type && type < 10) {
+
+            // 1 - 9
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 10;
+            case QRMode.MODE_ALPHA_NUM  : return 9;
+            case QRMode.MODE_8BIT_BYTE  : return 8;
+            case QRMode.MODE_KANJI      : return 8;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 27) {
+
+            // 10 - 26
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 12;
+            case QRMode.MODE_ALPHA_NUM  : return 11;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 10;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 41) {
+
+            // 27 - 40
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 14;
+            case QRMode.MODE_ALPHA_NUM  : return 13;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 12;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else {
+            throw new Error("type:" + type);
+        }
+    },
+
+    getLostPoint : function(qrCode) {
+        
+        var moduleCount = qrCode.getModuleCount();
+        var lostPoint = 0;
+        var row = 0; 
+        var col = 0;
+
+        
+        // LEVEL1
+        
+        for (row = 0; row < moduleCount; row++) {
+
+            for (col = 0; col < moduleCount; col++) {
+
+                var sameCount = 0;
+                var dark = qrCode.isDark(row, col);
+
+                for (var r = -1; r <= 1; r++) {
+
+                    if (row + r < 0 || moduleCount <= row + r) {
+                        continue;
+                    }
+
+                    for (var c = -1; c <= 1; c++) {
+
+                        if (col + c < 0 || moduleCount <= col + c) {
+                            continue;
+                        }
+
+                        if (r === 0 && c === 0) {
+                            continue;
+                        }
+
+                        if (dark === qrCode.isDark(row + r, col + c) ) {
+                            sameCount++;
+                        }
+                    }
+                }
+
+                if (sameCount > 5) {
+                    lostPoint += (3 + sameCount - 5);
+                }
+            }
+        }
+
+        // LEVEL2
+
+        for (row = 0; row < moduleCount - 1; row++) {
+            for (col = 0; col < moduleCount - 1; col++) {
+                var count = 0;
+                if (qrCode.isDark(row,     col    ) ) count++;
+                if (qrCode.isDark(row + 1, col    ) ) count++;
+                if (qrCode.isDark(row,     col + 1) ) count++;
+                if (qrCode.isDark(row + 1, col + 1) ) count++;
+                if (count === 0 || count === 4) {
+                    lostPoint += 3;
+                }
+            }
+        }
+
+        // LEVEL3
+
+        for (row = 0; row < moduleCount; row++) {
+            for (col = 0; col < moduleCount - 6; col++) {
+                if (qrCode.isDark(row, col) && 
+                        !qrCode.isDark(row, col + 1) && 
+                         qrCode.isDark(row, col + 2) && 
+                         qrCode.isDark(row, col + 3) && 
+                         qrCode.isDark(row, col + 4) && 
+                        !qrCode.isDark(row, col + 5) && 
+                         qrCode.isDark(row, col + 6) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount - 6; row++) {
+                if (qrCode.isDark(row, col) &&
+                        !qrCode.isDark(row + 1, col) &&
+                         qrCode.isDark(row + 2, col) &&
+                         qrCode.isDark(row + 3, col) &&
+                         qrCode.isDark(row + 4, col) &&
+                        !qrCode.isDark(row + 5, col) &&
+                         qrCode.isDark(row + 6, col) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        // LEVEL4
+        
+        var darkCount = 0;
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount; row++) {
+                if (qrCode.isDark(row, col) ) {
+                    darkCount++;
+                }
+            }
+        }
+        
+        var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+        lostPoint += ratio * 10;
+
+        return lostPoint;       
+    }
+
+};
+
+module.exports = QRUtil;
+
+},
+"index":function(module,exports,require){
+//---------------------------------------------------------------------
+// QRCode for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//   http://www.opensource.org/licenses/mit-license.php
+//
+// The word "QR Code" is registered trademark of 
+// DENSO WAVE INCORPORATED
+//   http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+// Modified to work in node for this project (and some refactoring)
+//---------------------------------------------------------------------
+
+var QR8bitByte = require('./QR8bitByte');
+var QRUtil = require('./QRUtil');
+var QRPolynomial = require('./QRPolynomial');
+var QRRSBlock = require('./QRRSBlock');
+var QRBitBuffer = require('./QRBitBuffer');
+
+function QRCode(typeNumber, errorCorrectLevel) {
+	this.typeNumber = typeNumber;
+	this.errorCorrectLevel = errorCorrectLevel;
+	this.modules = null;
+	this.moduleCount = 0;
+	this.dataCache = null;
+	this.dataList = [];
+}
+
+QRCode.prototype = {
+	
+	addData : function(data) {
+		var newData = new QR8bitByte(data);
+		this.dataList.push(newData);
+		this.dataCache = null;
+	},
+	
+	isDark : function(row, col) {
+		if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
+			throw new Error(row + "," + col);
+		}
+		return this.modules[row][col];
+	},
+
+	getModuleCount : function() {
+		return this.moduleCount;
+	},
+	
+	make : function() {
+		// Calculate automatically typeNumber if provided is < 1
+		if (this.typeNumber < 1 ){
+			var typeNumber = 1;
+			for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+				var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
+
+				var buffer = new QRBitBuffer();
+				var totalDataCount = 0;
+				for (var i = 0; i < rsBlocks.length; i++) {
+					totalDataCount += rsBlocks[i].dataCount;
+				}
+
+				for (var x = 0; x < this.dataList.length; x++) {
+					var data = this.dataList[x];
+					buffer.put(data.mode, 4);
+					buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+					data.write(buffer);
+				}
+				if (buffer.getLengthInBits() <= totalDataCount * 8)
+					break;
+			}
+			this.typeNumber = typeNumber;
+		}
+		this.makeImpl(false, this.getBestMaskPattern() );
+	},
+	
+	makeImpl : function(test, maskPattern) {
+		
+		this.moduleCount = this.typeNumber * 4 + 17;
+		this.modules = new Array(this.moduleCount);
+		
+		for (var row = 0; row < this.moduleCount; row++) {
+			
+			this.modules[row] = new Array(this.moduleCount);
+			
+			for (var col = 0; col < this.moduleCount; col++) {
+				this.modules[row][col] = null;//(col + row) % 3;
+			}
+		}
+	
+		this.setupPositionProbePattern(0, 0);
+		this.setupPositionProbePattern(this.moduleCount - 7, 0);
+		this.setupPositionProbePattern(0, this.moduleCount - 7);
+		this.setupPositionAdjustPattern();
+		this.setupTimingPattern();
+		this.setupTypeInfo(test, maskPattern);
+		
+		if (this.typeNumber >= 7) {
+			this.setupTypeNumber(test);
+		}
+	
+		if (this.dataCache === null) {
+			this.dataCache = QRCode.createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
+		}
+	
+		this.mapData(this.dataCache, maskPattern);
+	},
+
+	setupPositionProbePattern : function(row, col)  {
+		
+		for (var r = -1; r <= 7; r++) {
+			
+			if (row + r <= -1 || this.moduleCount <= row + r) continue;
+			
+			for (var c = -1; c <= 7; c++) {
+				
+				if (col + c <= -1 || this.moduleCount <= col + c) continue;
+				
+				if ( (0 <= r && r <= 6 && (c === 0 || c === 6) ) || 
+                     (0 <= c && c <= 6 && (r === 0 || r === 6) ) || 
+                     (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+					this.modules[row + r][col + c] = true;
+				} else {
+					this.modules[row + r][col + c] = false;
+				}
+			}		
+		}		
+	},
+	
+	getBestMaskPattern : function() {
+	
+		var minLostPoint = 0;
+		var pattern = 0;
+	
+		for (var i = 0; i < 8; i++) {
+			
+			this.makeImpl(true, i);
+	
+			var lostPoint = QRUtil.getLostPoint(this);
+	
+			if (i === 0 || minLostPoint >  lostPoint) {
+				minLostPoint = lostPoint;
+				pattern = i;
+			}
+		}
+	
+		return pattern;
+	},
+	
+	createMovieClip : function(target_mc, instance_name, depth) {
+	
+		var qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
+		var cs = 1;
+	
+		this.make();
+
+		for (var row = 0; row < this.modules.length; row++) {
+			
+			var y = row * cs;
+			
+			for (var col = 0; col < this.modules[row].length; col++) {
+	
+				var x = col * cs;
+				var dark = this.modules[row][col];
+			
+				if (dark) {
+					qr_mc.beginFill(0, 100);
+					qr_mc.moveTo(x, y);
+					qr_mc.lineTo(x + cs, y);
+					qr_mc.lineTo(x + cs, y + cs);
+					qr_mc.lineTo(x, y + cs);
+					qr_mc.endFill();
+				}
+			}
+		}
+		
+		return qr_mc;
+	},
+
+	setupTimingPattern : function() {
+		
+		for (var r = 8; r < this.moduleCount - 8; r++) {
+			if (this.modules[r][6] !== null) {
+				continue;
+			}
+			this.modules[r][6] = (r % 2 === 0);
+		}
+	
+		for (var c = 8; c < this.moduleCount - 8; c++) {
+			if (this.modules[6][c] !== null) {
+				continue;
+			}
+			this.modules[6][c] = (c % 2 === 0);
+		}
+	},
+	
+	setupPositionAdjustPattern : function() {
+	
+		var pos = QRUtil.getPatternPosition(this.typeNumber);
+		
+		for (var i = 0; i < pos.length; i++) {
+		
+			for (var j = 0; j < pos.length; j++) {
+			
+				var row = pos[i];
+				var col = pos[j];
+				
+				if (this.modules[row][col] !== null) {
+					continue;
+				}
+				
+				for (var r = -2; r <= 2; r++) {
+				
+					for (var c = -2; c <= 2; c++) {
+					
+						if (Math.abs(r) === 2 || 
+                            Math.abs(c) === 2 ||
+                            (r === 0 && c === 0) ) {
+							this.modules[row + r][col + c] = true;
+						} else {
+							this.modules[row + r][col + c] = false;
+						}
+					}
+				}
+			}
+		}
+	},
+	
+	setupTypeNumber : function(test) {
+	
+		var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+        var mod;
+	
+		for (var i = 0; i < 18; i++) {
+			mod = (!test && ( (bits >> i) & 1) === 1);
+			this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
+		}
+	
+		for (var x = 0; x < 18; x++) {
+			mod = (!test && ( (bits >> x) & 1) === 1);
+			this.modules[x % 3 + this.moduleCount - 8 - 3][Math.floor(x / 3)] = mod;
+		}
+	},
+	
+	setupTypeInfo : function(test, maskPattern) {
+	
+		var data = (this.errorCorrectLevel << 3) | maskPattern;
+		var bits = QRUtil.getBCHTypeInfo(data);
+        var mod;
+	
+		// vertical		
+		for (var v = 0; v < 15; v++) {
+	
+			mod = (!test && ( (bits >> v) & 1) === 1);
+	
+			if (v < 6) {
+				this.modules[v][8] = mod;
+			} else if (v < 8) {
+				this.modules[v + 1][8] = mod;
+			} else {
+				this.modules[this.moduleCount - 15 + v][8] = mod;
+			}
+		}
+	
+		// horizontal
+		for (var h = 0; h < 15; h++) {
+	
+			mod = (!test && ( (bits >> h) & 1) === 1);
+			
+			if (h < 8) {
+				this.modules[8][this.moduleCount - h - 1] = mod;
+			} else if (h < 9) {
+				this.modules[8][15 - h - 1 + 1] = mod;
+			} else {
+				this.modules[8][15 - h - 1] = mod;
+			}
+		}
+	
+		// fixed module
+		this.modules[this.moduleCount - 8][8] = (!test);
+	
+	},
+	
+	mapData : function(data, maskPattern) {
+		
+		var inc = -1;
+		var row = this.moduleCount - 1;
+		var bitIndex = 7;
+		var byteIndex = 0;
+		
+		for (var col = this.moduleCount - 1; col > 0; col -= 2) {
+	
+			if (col === 6) col--;
+	
+			while (true) {
+	
+				for (var c = 0; c < 2; c++) {
+					
+					if (this.modules[row][col - c] === null) {
+						
+						var dark = false;
+	
+						if (byteIndex < data.length) {
+							dark = ( ( (data[byteIndex] >>> bitIndex) & 1) === 1);
+						}
+	
+						var mask = QRUtil.getMask(maskPattern, row, col - c);
+	
+						if (mask) {
+							dark = !dark;
+						}
+						
+						this.modules[row][col - c] = dark;
+						bitIndex--;
+	
+						if (bitIndex === -1) {
+							byteIndex++;
+							bitIndex = 7;
+						}
+					}
+				}
+								
+				row += inc;
+	
+				if (row < 0 || this.moduleCount <= row) {
+					row -= inc;
+					inc = -inc;
+					break;
+				}
+			}
+		}
+		
+	}
+
+};
+
+QRCode.PAD0 = 0xEC;
+QRCode.PAD1 = 0x11;
+
+QRCode.createData = function(typeNumber, errorCorrectLevel, dataList) {
+	
+	var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
+	
+	var buffer = new QRBitBuffer();
+	
+	for (var i = 0; i < dataList.length; i++) {
+		var data = dataList[i];
+		buffer.put(data.mode, 4);
+		buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+		data.write(buffer);
+	}
+
+	// calc num max data.
+	var totalDataCount = 0;
+	for (var x = 0; x < rsBlocks.length; x++) {
+		totalDataCount += rsBlocks[x].dataCount;
+	}
+
+	if (buffer.getLengthInBits() > totalDataCount * 8) {
+		throw new Error("code length overflow. (" + 
+            buffer.getLengthInBits() + 
+            ">" +  
+            totalDataCount * 8 + 
+            ")");
+	}
+
+	// end code
+	if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+		buffer.put(0, 4);
+	}
+
+	// padding
+	while (buffer.getLengthInBits() % 8 !== 0) {
+		buffer.putBit(false);
+	}
+
+	// padding
+	while (true) {
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD0, 8);
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD1, 8);
+	}
+
+	return QRCode.createBytes(buffer, rsBlocks);
+};
+
+QRCode.createBytes = function(buffer, rsBlocks) {
+
+	var offset = 0;
+	
+	var maxDcCount = 0;
+	var maxEcCount = 0;
+	
+	var dcdata = new Array(rsBlocks.length);
+	var ecdata = new Array(rsBlocks.length);
+	
+	for (var r = 0; r < rsBlocks.length; r++) {
+
+		var dcCount = rsBlocks[r].dataCount;
+		var ecCount = rsBlocks[r].totalCount - dcCount;
+
+		maxDcCount = Math.max(maxDcCount, dcCount);
+		maxEcCount = Math.max(maxEcCount, ecCount);
+		
+		dcdata[r] = new Array(dcCount);
+		
+		for (var i = 0; i < dcdata[r].length; i++) {
+			dcdata[r][i] = 0xff & buffer.buffer[i + offset];
+		}
+		offset += dcCount;
+		
+		var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+		var rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+		var modPoly = rawPoly.mod(rsPoly);
+		ecdata[r] = new Array(rsPoly.getLength() - 1);
+		for (var x = 0; x < ecdata[r].length; x++) {
+            var modIndex = x + modPoly.getLength() - ecdata[r].length;
+			ecdata[r][x] = (modIndex >= 0)? modPoly.get(modIndex) : 0;
+		}
+
+	}
+	
+	var totalCodeCount = 0;
+	for (var y = 0; y < rsBlocks.length; y++) {
+		totalCodeCount += rsBlocks[y].totalCount;
+	}
+
+	var data = new Array(totalCodeCount);
+	var index = 0;
+
+	for (var z = 0; z < maxDcCount; z++) {
+		for (var s = 0; s < rsBlocks.length; s++) {
+			if (z < dcdata[s].length) {
+				data[index++] = dcdata[s][z];
+			}
+		}
+	}
+
+	for (var xx = 0; xx < maxEcCount; xx++) {
+		for (var t = 0; t < rsBlocks.length; t++) {
+			if (xx < ecdata[t].length) {
+				data[index++] = ecdata[t][xx];
+			}
+		}
+	}
+
+	return data;
+
+};
+
+module.exports = QRCode;
+
+}},cache={};function req(p){var n=p.replace('./','');if(cache[n])return cache[n].exports;var m={exports:{}};cache[n]=m;defs[n](m,m.exports,req);return m.exports}return{QRCode:req('index'),ECL:req('QRErrorCorrectLevel')}})();
+</script>
+<script>
+const COLORS=['#d9e8df','#f3ddd3','#dbe3f4','#e7ddf2','#f6e7c8','#d5ecea','#f2d9e4','#dfe2e8'];
+const COLORS_D=['#1c3a2e','#3d2620','#1f2a40','#2e2440','#3d321a','#183634','#3a1f2b','#262a31'];
+const ICONS={1:'💡',2:'🎧',3:'🥤',4:'⌚',5:'👕',6:'🌿',7:'🧘',8:'🎒'};
+const CAT_ICONS={Maison:'🏠',Tech:'📱',Sport:'🏃',Mode:'👜',Beauté:'💄',Divers:'📦'};
+const icon=p=>p.ico?p.ico:ICONS[p.id]&&DEFAULT.products.some(d=>d.id===p.id&&d.name===p.name)?ICONS[p.id]:(CAT_ICONS[p.cat]||'📦');
+const isDark=()=>document.documentElement.dataset.theme==='dark'||(!document.documentElement.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);
+const bgFor=id=>{const a=isDark()?COLORS_D:COLORS;return`linear-gradient(135deg,${a[id%a.length]},${a[(id+3)%a.length]})`};
+function themeIcon(){const t=document.documentElement.dataset.theme;$('themeBtn').textContent=t==='dark'?'🌙':t==='light'?'☀️':'🖥️';$('themeBtn').title=t==='dark'?'Thème sombre':t==='light'?'Thème clair':'Thème de l\'appareil'}
+function cycleTheme(){const t=document.documentElement.dataset.theme;const n=!t?'light':t==='light'?'dark':'';if(n)document.documentElement.dataset.theme=n;else delete document.documentElement.dataset.theme;try{n?localStorage.setItem('mn_theme',n):localStorage.removeItem('mn_theme')}catch(e){}themeIcon();refresh();toast(n==='dark'?'Thème sombre':n==='light'?'Thème clair':'Thème de l\'appareil (auto)')}
+function refresh(){const p=document.querySelector('.page.on');if(p)({shop:renderShop,cart:renderCart}[p.id]||(()=>{}))()}
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',refresh);
 const SOURCES=[
  {id:'aliexpress',name:'AliExpress (via DSers)',type:'Généraliste',region:'Chine',delay:'7–20 j',desc:'Catalogue géant, import en 1 clic et commandes groupées via DSers.',url:'https://www.dsers.com'},
  {id:'cj',name:'CJ Dropshipping',type:'Généraliste',region:'Chine / entrepôts US & EU',delay:'5–15 j',desc:'Sourcing sur demande, entrepôts mondiaux, emballage personnalisé.',url:'https://cjdropshipping.com'},
@@ -295,11 +1655,12 @@ const DEFAULT={
  users:[{name:'Administrateur',email:'admin@maisonnova.ch',pass:'admin123',admin:true,addr:''}],
  orders:[],
  connected:{cj:{key:'demo-••••'},aliexpress:{key:'demo-••••'},printful:{key:'demo-••••'}},
- pay:{card:true,apple:true,google:true,revolut:true,stripeKey:'',revolutKey:''},
+ pay:{bank:true,revtag:true,sumup:true,sumupUrl:'',card:false,apple:false,google:false,revolut:false,stripeKey:'',revolutKey:'',holder:'MaisonNova',iban:'CH93 0076 2011 6238 5295 7',street:'Rue du Lac',no:'12',zip:'1000',city:'Lausanne',tag:''},
  cart:[],session:null
 };
 let S;
 try{S=JSON.parse(localStorage.getItem('mn_store'))||structuredClone(DEFAULT)}catch(e){S=structuredClone(DEFAULT)}
+S.pay={...structuredClone(DEFAULT.pay),...S.pay};
 function save(){try{localStorage.setItem('mn_store',JSON.stringify(S))}catch(e){}}
 const $=id=>document.getElementById(id);
 const chf=n=>'CHF '+Number(n).toFixed(2);
@@ -308,7 +1669,7 @@ const col=id=>COLORS[id%COLORS.length];
 const me=()=>S.users.find(u=>u.email===S.session);
 function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',2500)}
 function closeModal(){$('modal').classList.remove('on')}
-function modal(h){$('modalBox').innerHTML=h;$('modal').classList.add('on')}
+function modal(h){if(!h.includes('cgrid'))$('modalBox').className='box';$('modalBox').innerHTML=h;$('modal').classList.add('on')}
 
 function go(p){
  document.querySelectorAll('.page').forEach(e=>e.classList.toggle('on',e.id===p));
@@ -325,8 +1686,8 @@ function renderShop(){
  const q=$('search').value.toLowerCase();
  const list=S.products.filter(p=>(curCat==='Tous'||p.cat===curCat)&&p.name.toLowerCase().includes(q));
  $('grid').innerHTML=list.map(p=>`<div class="prod">
-  <div class="img" style="background:linear-gradient(135deg,${col(p.id)},${col(p.id+3)})">${esc(p.name[0])}</div>
-  <div class="body"><span class="cat">${esc(p.cat)}</span><h3>${esc(p.name)}</h3>
+  <div class="imgw"><div class="img" style="background:${bgFor(p.id)}">${icon(p)}</div>${p.old>p.price?`<span class="disc">-${Math.round((1-p.price/p.old)*100)}%</span>`:''}<button class="fav" onclick="this.textContent=this.textContent==='♡'?'♥':'♡'" aria-label="Favori">♡</button></div>
+  <div class="body"><span class="cat">${esc(p.cat)}</span><h3>${esc(p.name)}</h3><div class="stars">★★★★★<span>(${20+p.id*13%90} avis)</span></div>
   <div class="price">${chf(p.price)}${p.old?`<span class="old">${chf(p.old)}</span>`:''}</div>
   <button class="btn" onclick="addCart(${p.id})">Ajouter au panier</button></div></div>`).join('')||'<p class="muted">Aucun produit trouvé.</p>';
  updCount();
@@ -339,7 +1700,7 @@ function totals(){const sub=S.cart.reduce((a,c)=>{const p=S.products.find(x=>x.i
 function renderCart(){
  S.cart=S.cart.filter(c=>S.products.some(p=>p.id===c.id));
  $('cartItems').innerHTML=S.cart.length?S.cart.map(c=>{const p=S.products.find(x=>x.id===c.id);return`<div class="row">
-  <div class="thumb" style="background:${col(p.id)}">${esc(p.name[0])}</div>
+  <div class="thumb" style="background:${bgFor(p.id)}">${icon(p)}</div>
   <div style="flex:1"><b>${esc(p.name)}</b><div class="muted">${chf(p.price)}</div></div>
   <div class="qty"><button onclick="chg(${p.id},-1)">−</button><span>${c.q}</span><button onclick="chg(${p.id},1)">+</button></div>
   <b style="width:90px;text-align:right">${chf(p.price*c.q)}</b></div>`}).join(''):'<p class="muted">Votre panier est vide.</p>';
@@ -349,26 +1710,77 @@ function chg(id,d){const c=S.cart.find(x=>x.id===id);c.q+=d;if(c.q<=0)S.cart=S.c
 function toCheckout(){if(!S.cart.length)return toast('Votre panier est vide');go('checkout')}
 
 /* CAISSE */
-let payMethod='card';
+let payMethod='sumup';
 function renderCheckout(){
  const u=me();if(u){const n=u.name.split(' ');$('cFirst').value||=n[0]||'';$('cLast').value||=n.slice(1).join(' ');$('cEmail').value||=u.email;$('cAddr').value||=u.addr||''}
  document.querySelectorAll('.payopt').forEach(e=>e.style.display=S.pay[e.dataset.m]?'':'none');
- if(!S.pay[payMethod])payMethod=['card','apple','google','revolut'].find(m=>S.pay[m])||'card';
+ if(!S.pay[payMethod])payMethod=['sumup','bank','revtag'].find(m=>S.pay[m])||'bank';
  pickPay(payMethod);
  $('coItems').innerHTML=S.cart.map(c=>{const p=S.products.find(x=>x.id===c.id);return`<div class="sum"><span>${c.q} × ${esc(p.name)}</span><span>${chf(p.price*c.q)}</span></div>`}).join('')+`<div class="sum"><span>Livraison</span><span>${totals().ship?chf(totals().ship):'Offerte'}</span></div>`;
  $('coTot').textContent=chf(totals().tot);
 }
-function pickPay(m){payMethod=m;document.querySelectorAll('.payopt').forEach(e=>e.classList.toggle('on',e.dataset.m===m));$('cardFields').style.display=m==='card'?'':'none'}
-function fmtCard(i){i.value=i.value.replace(/\D/g,'').slice(0,16).replace(/(.{4})/g,'$1 ').trim()}
+function pickPay(m){payMethod=m;document.querySelectorAll('.payopt').forEach(e=>e.classList.toggle('on',e.dataset.m===m));const free=m==='bank'||m==='revtag';$('freeInfo').style.display=free?'':'none';$('paidInfo').style.display=free?'none':'';$('freeInfo').textContent=m==='bank'?'Après validation, vous recevrez une QR-facture et les coordonnées bancaires. Votre commande est expédiée dès réception du virement.':'Après validation, envoyez le montant au compte Revolut indiqué avec le numéro de commande. Les virements entre comptes Revolut sont instantanés.'}
 function placeOrder(){
  const f=['cFirst','cLast','cEmail','cAddr','cZip','cCity'];
  if(f.some(id=>!$(id).value.trim()))return toast('Merci de remplir l\'adresse de livraison');
- if(payMethod==='card'&&($('ccNum').value.replace(/\s/g,'').length<15||!$('ccExp').value||!$('ccCvc').value))return toast('Coordonnées de carte incomplètes');
- const labels={card:'Carte bancaire',apple:'Apple Pay',google:'Google Pay',revolut:'Revolut Pay'};
+ const labels={bank:'Virement / QR-facture',revtag:'Virement Revolut',sumup:'Carte / Apple Pay / Google Pay',card:'Carte bancaire',apple:'Apple Pay',google:'Google Pay',revolut:'Revolut Pay'};const free=payMethod==='bank'||payMethod==='revtag';
  const o={id:'CMD-'+(1000+S.orders.length+1),date:new Date().toLocaleDateString('fr-CH'),email:$('cEmail').value.trim(),name:$('cFirst').value+' '+$('cLast').value,
-  addr:`${$('cAddr').value}, ${$('cZip').value} ${$('cCity').value}, ${$('cCountry').value}`,items:S.cart.map(c=>({...c})),total:totals().tot,pay:labels[payMethod],status:'Payée'};
+  addr:`${$('cAddr').value}, ${$('cZip').value} ${$('cCity').value}, ${$('cCountry').value}`,items:S.cart.map(c=>({...c})),total:totals().tot,pay:labels[payMethod],method:payMethod,status:'En attente'};
  S.orders.unshift(o);S.cart=[];save();updCount();
- modal(`<h3>Merci pour votre commande ! 🎉</h3><p class="mt">Commande <b>${o.id}</b> · ${chf(o.total)} via ${o.pay}.</p><p class="muted mt">Un e-mail de confirmation serait envoyé à ${esc(o.email)} (une fois relié à un serveur).</p><button class="btn full mt" onclick="closeModal();go('shop')">Continuer mes achats</button>`);
+ if(free)return showPayInfo(o.id,true);
+ return payWithSumUp(o);
+}
+
+/* SUMUP (carte, Apple Pay, Google Pay) */
+function thanks(o,extra=''){modal(`<h3>Merci pour votre commande ! 🎉</h3><p class="mt">Commande <b>${o.id}</b> · ${chf(o.total)} · ${o.pay}.</p>${extra}<button class="btn full mt" onclick="closeModal();go('shop')">Continuer mes achats</button>`)}
+async function payWithSumUp(o){
+ const api=clean(S.pay.sumupUrl).replace(/\/$/,'');
+ if(!api){o.status='Payée';save();return thanks(o,'<div class="note">Mode démo : SumUp n’est pas encore relié (Admin → Paiements). Aucun argent n’a été débité.</div>')}
+ modal('<h3>Redirection vers SumUp…</h3><p class="muted mt">Préparation du paiement sécurisé.</p>');
+ try{
+  const back=location.href.split('?')[0].split('#')[0]+'?sumup='+encodeURIComponent(o.id);
+  const r=await fetch(api+'/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reference:o.id,amount:+o.total.toFixed(2),redirect:back})});
+  const d=await r.json();if(!r.ok||!d.url)throw new Error(d.error||'Erreur SumUp');
+  o.sumupId=d.id;save();location.href=d.url;
+ }catch(e){modal(`<h3>Paiement impossible</h3><p class="muted mt">${esc(e.message)}. Votre commande ${o.id} est enregistrée : vous pouvez réessayer depuis votre compte ou choisir le virement.</p><button class="btn full mt" onclick="closeModal();go('account')">OK</button>`)}
+}
+async function checkSumUpReturn(){
+ const id=new URLSearchParams(location.search).get('sumup');if(!id)return;
+ history.replaceState(null,'',location.pathname);
+ const o=S.orders.find(x=>x.id===id),api=clean(S.pay.sumupUrl).replace(/\/$/,'');
+ if(!o||!o.sumupId||!api)return;
+ modal('<h3>Vérification du paiement…</h3>');
+ try{
+  const d=await (await fetch(api+'/status?id='+encodeURIComponent(o.sumupId))).json();
+  if(d.status==='PAID'&&Math.abs(d.amount-o.total)<0.01){o.status='Payée';save();thanks(o,'<p class="muted mt">Paiement confirmé par SumUp ✓</p>')}
+  else modal(`<h3>Paiement non finalisé</h3><p class="muted mt">Statut SumUp : ${esc(d.status||'inconnu')}. Vous pouvez réessayer depuis votre compte.</p><button class="btn full mt" onclick="closeModal();go('account')">Mon compte</button>`);
+ }catch(e){modal('<h3>Vérification impossible</h3><p class="muted mt">Réessayez plus tard depuis votre compte.</p><button class="btn full mt" onclick="closeModal()">OK</button>')}
+}
+
+/* PAIEMENTS GRATUITS */
+const clean=v=>String(v||'').replace(/\s+/g,' ').trim();
+function swissQR(o){const P=S.pay;return['SPC','0200','1',clean(P.iban).replace(/ /g,''),'S',clean(P.holder).slice(0,70),clean(P.street).slice(0,70),clean(P.no).slice(0,16),clean(P.zip).slice(0,16),clean(P.city).slice(0,35),'CH','','','','','','','',o.total.toFixed(2),'CHF','','','','','','','','NON','',('Commande '+o.id).slice(0,140),'EPD'].join('\n')}
+function qrSvg(text){const q=new QRLib.QRCode(-1,QRLib.ECL.M);q.addData(unescape(encodeURIComponent(text)));q.make();const n=q.getModuleCount();let d='';for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))d+=`M${c},${r}h1v1h-1z`;return`<svg viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges"><path d="${d}" fill="#000"/></svg>`}
+function copyTxt(t){try{navigator.clipboard.writeText(t);toast('Copié ✓')}catch(e){toast(t)}}
+function showPayInfo(id,fresh){
+ const o=S.orders.find(x=>x.id===id),P=S.pay,amt=chf(o.total);
+ const head=fresh?`<h3>Commande ${o.id} enregistrée 🎉</h3><p class="muted mt">Il reste à effectuer le paiement. Elle sera expédiée dès réception.</p>`:`<h3>Paiement de la commande ${o.id}</h3>`;
+ let body;
+ if(o.method==='revtag'){
+  const tag=clean(P.tag).replace(/^@/,'');
+  body=`<div class="kv"><span>Compte Revolut</span><b>${tag?'@'+esc(tag):'— (à configurer dans l’admin)'}</b><span></span>
+  <span>Montant</span><b>${amt}</b><button class="btn ghost sm" onclick="copyTxt('${o.total.toFixed(2)}')">Copier</button>
+  <span>Référence</span><b>${o.id}</b><button class="btn ghost sm" onclick="copyTxt('${o.id}')">Copier</button></div>
+  ${tag?`<a class="btn full mt" href="https://revolut.me/${encodeURIComponent(tag)}" target="_blank" rel="noopener">Ouvrir Revolut</a>`:''}
+  <p class="muted mt">Indiquez bien la référence ${o.id} dans le message du virement.</p>`;
+ }else{
+  body=`<p class="muted mt">Scannez la QR-facture avec l’application de votre banque :</p><div class="qrwrap">${qrSvg(swissQR(o))}<div class="cross"></div></div>
+  <div class="kv"><span>Bénéficiaire</span><b>${esc(P.holder)}, ${esc(P.zip)} ${esc(P.city)}</b><span></span>
+  <span>IBAN</span><b>${esc(P.iban)}</b><button class="btn ghost sm" onclick="copyTxt('${esc(clean(P.iban))}')">Copier</button>
+  <span>Montant</span><b>${amt}</b><button class="btn ghost sm" onclick="copyTxt('${o.total.toFixed(2)}')">Copier</button>
+  <span>Référence</span><b>${o.id}</b><button class="btn ghost sm" onclick="copyTxt('${o.id}')">Copier</button></div>`;
+ }
+ modal(head+body+`<button class="btn ghost full mt" onclick="closeModal();go('${fresh?'shop':'account'}')">${fresh?'Continuer mes achats':'Fermer'}</button>`);
 }
 
 /* COMPTE */
@@ -390,11 +1802,11 @@ function renderAccount(){
  $('hello').textContent='Bonjour '+u.name+(u.admin?' (admin)':'');
  $('pName').value=u.name;$('pEmail').value=u.email;$('pAddr').value=u.addr||'';
  const mine=S.orders.filter(o=>o.email===u.email);
- $('myOrders').innerHTML=mine.length?mine.map(o=>`<div class="row"><div style="flex:1"><b>${o.id}</b><div class="muted">${o.date} · ${o.pay}</div></div>${tag(o.status)}<b>${chf(o.total)}</b></div>`).join(''):'<p class="muted">Aucune commande pour le moment.</p>';
+ $('myOrders').innerHTML=mine.length?mine.map(o=>`<div class="row"><div style="flex:1"><b>${o.id}</b><div class="muted">${o.date} · ${o.pay}</div></div>${o.status==='En attente'?`<button class="btn sm" onclick="${o.method==='sumup'?`payWithSumUp(S.orders.find(x=>x.id==='${o.id}'))`:`showPayInfo('${o.id}')`}">Payer</button>`:''}${tag(o.status)}<b>${chf(o.total)}</b></div>`).join(''):'<p class="muted">Aucune commande pour le moment.</p>';
 }
 function saveProfile(){const u=me();u.name=$('pName').value.trim()||u.name;u.addr=$('pAddr').value;save();toast('Profil enregistré');renderAccount()}
 function logout(){S.session=null;save();updCount();renderAccount();toast('Déconnecté')}
-function tag(s){const c={'Payée':'wait','Expédiée':'ship','Livrée':'ok','Annulée':'off'}[s]||'';return`<span class="tag ${c}">${s}</span>`}
+function tag(s){const c={'En attente':'wait','Payée':'ok','Expédiée':'ship','Livrée':'ok','Annulée':'off'}[s]||'';return`<span class="tag ${c}">${s}</span>`}
 
 /* ADMIN */
 let curTab='dash';
@@ -403,21 +1815,22 @@ function aTab(t){curTab=t;document.querySelectorAll('#aTabs a').forEach(a=>a.cla
 const srcName=id=>(SOURCES.find(s=>s.id===id)||{name:'—'}).name;
 
 function dash(){
- const rev=S.orders.filter(o=>o.status!=='Annulée').reduce((a,o)=>a+o.total,0);
- const cost=S.orders.filter(o=>o.status!=='Annulée').reduce((a,o)=>a+o.items.reduce((b,i)=>{const p=S.products.find(x=>x.id===i.id);return b+(p?p.cost*i.q:0)},0),0);
+ const okO=o=>o.status!=='Annulée'&&o.status!=='En attente';const rev=S.orders.filter(okO).reduce((a,o)=>a+o.total,0);
+ const cost=S.orders.filter(okO).reduce((a,o)=>a+o.items.reduce((b,i)=>{const p=S.products.find(x=>x.id===i.id);return b+(p?p.cost*i.q:0)},0),0);
  return`<div class="stats">
   <div class="stat"><small>Chiffre d'affaires</small><b>${chf(rev)}</b></div>
   <div class="stat"><small>Marge brute estimée</small><b>${chf(rev-cost)}</b></div>
   <div class="stat"><small>Commandes</small><b>${S.orders.length}</b></div>
+  <div class="stat"><small>Paiements à vérifier</small><b>${S.orders.filter(o=>o.status==='En attente').length}</b></div>
   <div class="stat"><small>Clients</small><b>${S.users.filter(u=>!u.admin).length}</b></div>
   <div class="stat"><small>Produits</small><b>${S.products.length}</b></div>
   <div class="stat"><small>Sources connectées</small><b>${Object.keys(S.connected).length} / ${SOURCES.length}</b></div></div>
   <div class="box"><h3>Dernières commandes</h3>${orderTable(S.orders.slice(0,5))}</div>`;
 }
 function prods(){
- return`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px"><h3>Catalogue</h3><button class="btn" onclick="editProd()">+ Ajouter un produit</button></div>
+ return`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px"><h3>Catalogue</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" onclick="pickSource()">⇩ Importer depuis une source</button><button class="btn" onclick="editProd()">+ Ajouter un produit</button></div></div>
  <div class="box scroll"><table><tr><th>Produit</th><th>Catégorie</th><th>Source</th><th>Coût</th><th>Prix</th><th>Marge</th><th>Stock</th><th></th></tr>
- ${S.products.map(p=>`<tr><td><b>${esc(p.name)}</b></td><td>${esc(p.cat)}</td><td>${esc(srcName(p.src))}</td><td>${chf(p.cost)}</td><td>${chf(p.price)}</td>
+ ${S.products.map(p=>`<tr><td><b>${esc(p.name)}</b>${p.imported?' <span class="tag ship">Importé</span>':''}</td><td>${esc(p.cat)}</td><td>${esc(srcName(p.src))}</td><td>${chf(p.cost)}</td><td>${chf(p.price)}</td>
  <td><span class="tag ok">${p.price?Math.round((p.price-p.cost)/p.price*100):0}%</span></td><td>${p.stock}</td>
  <td style="white-space:nowrap"><button class="btn ghost sm" onclick="editProd(${p.id})">Modifier</button> <button class="btn red sm" onclick="delProd(${p.id})">✕</button></td></tr>`).join('')}</table></div>`;
 }
@@ -440,8 +1853,8 @@ function delProd(id){if(confirm('Supprimer ce produit ?')){S.products=S.products
 function orderTable(list){
  if(!list.length)return'<p class="muted mt">Aucune commande pour le moment.</p>';
  return`<div class="scroll"><table><tr><th>N°</th><th>Date</th><th>Client</th><th>Paiement</th><th>Total</th><th>Statut</th></tr>
- ${list.map(o=>`<tr><td><b>${o.id}</b></td><td>${o.date}</td><td>${esc(o.name)}<div class="muted">${esc(o.addr)}</div></td><td>${o.pay}</td><td>${chf(o.total)}</td>
- <td><select onchange="setStatus('${o.id}',this.value)" style="width:auto">${['Payée','Expédiée','Livrée','Annulée'].map(s=>`<option ${s===o.status?'selected':''}>${s}</option>`).join('')}</select></td></tr>`).join('')}</table></div>`;
+ ${list.map(o=>`<tr><td><b>${o.id}</b></td><td>${o.date}</td><td>${esc(o.name)}<div class="muted">${esc(o.addr)}</div></td><td>${o.pay}${o.status==='En attente'?`<div><button class="btn sm" style="margin-top:6px" onclick="setStatus('${o.id}','Payée');aTab(curTab)">✓ Argent reçu</button></div>`:''}</td><td>${chf(o.total)}</td>
+ <td><select onchange="setStatus('${o.id}',this.value)" style="width:auto">${['En attente','Payée','Expédiée','Livrée','Annulée'].map(s=>`<option ${s===o.status?'selected':''}>${s}</option>`).join('')}</select></td></tr>`).join('')}</table></div>`;
 }
 function orders(){return`<div class="box"><h3>Toutes les commandes</h3>${orderTable(S.orders)}</div>`}
 function setStatus(id,s){S.orders.find(o=>o.id===id).status=s;save();toast('Statut mis à jour : '+s)}
@@ -454,7 +1867,7 @@ function sources(){
  <div class="srcgrid">${list.map(s=>{const c=S.connected[s.id];const n=S.products.filter(p=>p.src===s.id).length;return`<div class="src ${c?'connected':''}">
   <h4>${s.name}${c?'<span class="tag ok">Connectée</span>':'<span class="tag">Non connectée</span>'}</h4>
   <p>${s.desc}</p><div class="meta"><span class="tag">${s.type}</span><span class="tag">📍 ${s.region}</span><span class="tag">🚚 ${s.delay}</span><span class="tag">${n} produit(s)</span></div>
-  <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">${c?`<button class="btn ghost sm" onclick="connectSrc('${s.id}')">Paramètres</button><button class="btn red sm" onclick="disconnect('${s.id}')">Déconnecter</button>`:`<button class="btn sm" onclick="connectSrc('${s.id}')">Connecter</button>`}
+  <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">${c?`<button class="btn sm" onclick="openCatalog('${s.id}')">Choisir des articles</button><button class="btn ghost sm" onclick="connectSrc('${s.id}')">Paramètres</button><button class="btn red sm" onclick="disconnect('${s.id}')">Déconnecter</button>`:`<button class="btn sm" onclick="connectSrc('${s.id}')">Connecter</button>`}
   <a class="btn ghost sm" href="${s.url}" target="_blank" rel="noopener">Site ↗</a></div></div>`}).join('')}</div>`;
 }
 function connectSrc(id){
@@ -466,7 +1879,67 @@ function connectSrc(id){
  <div class="note">La clé est stockée localement dans cette démo. En production, elle doit être conservée côté serveur, jamais dans le navigateur.</div>
  <button class="btn full" onclick="saveSrc('${id}')">Enregistrer</button><button class="btn ghost full mt" onclick="closeModal()">Annuler</button>`);
 }
-function saveSrc(id){const k=$('kA').value.trim();if(!k)return toast('Clé API requise');S.connected[id]={key:k,margin:+$('kM').value,auto:$('kAuto').checked};save();closeModal();aTab('sources');toast('Source connectée ✓')}
+
+/* CATALOGUES (simulés en démo) */
+const CAT_BASE={
+ 'Généraliste':[['Mini projecteur portable','Tech','📽️',38],['Lampe coucher de soleil','Maison','🌅',9],['Masseur cervical','Beauté','💆',14],['Bouteille filtrante','Sport','🧴',8],['Organisateur de voiture','Divers','🚗',7],['Brosse nettoyante visage','Beauté','🫧',6],['Support téléphone magnétique','Tech','🧲',4],['Humidificateur flamme','Maison','🔥',15],['Corde à sauter connectée','Sport','🪢',9],['Lunettes anti-lumière bleue','Mode','🕶️',5],['Mini aspirateur sans fil','Maison','🧹',16],['Bandes de résistance (set)','Sport','💪',6]],
+ 'Grossiste':[['Set couteaux de cuisine','Maison','🔪',19],['Cafetière italienne','Maison','☕',11],['Enceinte Bluetooth étanche','Tech','🔊',17],['Coussin ergonomique','Maison','🛋️',13],['Kit manucure électrique','Beauté','💅',10],['Plaid polaire XXL','Maison','🧣',12],['Tondeuse barbe pro','Beauté','🪒',15],['Balance connectée','Sport','⚖️',12]],
+ 'Marketplace B2B':[['Bougie artisanale soja','Maison','🕯️',6],['Carnet cuir recyclé','Divers','📓',8],['Savon solide bio','Beauté','🧼',3],['Tote bag coton bio','Mode','👜',4],['Vase céramique mat','Maison','🏺',12],['Gourde bambou','Sport','🎋',7],['Bijou acier minimaliste','Mode','💍',5],['Thé premium en vrac','Divers','🍵',6]],
+ 'Print on demand':[['T-shirt brodé','Mode','👕',11],['Sweat à capuche','Mode','🧥',21],['Mug céramique','Maison','☕',6],['Casquette brodée','Mode','🧢',9],['Poster mat A3','Maison','🖼️',8],['Coque de téléphone','Tech','📱',7],['Tote bag imprimé','Mode','👜',8],['Coussin personnalisé','Maison','🛋️',12]],
+ 'Mode & marques':[['Sneakers minimalistes','Mode','👟',32],['Montre classique cuir','Mode','⌚',28],['Sac bandoulière cuir','Mode','👜',30],['Écharpe laine mérinos','Mode','🧣',18],['Lunettes de soleil polarisées','Mode','🕶️',14],['Ceinture cuir','Mode','🪢',12]],
+ 'Automatisation':[['Écouteurs ANC','Tech','🎧',22],['Montre sport GPS','Tech','⌚',35],['Lampe LED bureau','Maison','💡',12],['Tapis de yoga liège','Sport','🧘',14],['Chargeur sans fil 3-en-1','Tech','🔌',13],['Diffuseur ultrason','Maison','🌿',10]],
+ 'Électronique':[['Drone mini caméra','Tech','🚁',42],['Clavier mécanique RGB','Tech','⌨️',29],['Souris sans fil','Tech','🖱️',9],['Caméra de surveillance Wi-Fi','Tech','📷',18],['Batterie externe 20000mAh','Tech','🔋',13],['Tournevis électrique','Divers','🪛',16]],
+ 'Fabricants':[['Gourde inox (lot 100)','Sport','🧴',3],['Sac à dos personnalisable','Mode','🎒',9],['Lampe solaire jardin','Maison','☀️',4],['Tapis de souris XXL','Tech','🖱️',3],['Serviette microfibre','Sport','🏖️',2],['Boîte repas inox','Maison','🍱',5]]
+};
+function catalogFor(id){
+ const s=SOURCES.find(x=>x.id===id),base=CAT_BASE[s.type]||CAT_BASE['Généraliste'];
+ let h=[...id].reduce((a,c)=>a+c.charCodeAt(0),0);
+ return base.map((b,i)=>{h=(h*9301+49297)%233280;const r=h/233280;
+  return{ext:id+'-'+i,name:b[0],cat:b[1],ico:b[2],cost:+(b[3]*(0.85+r*0.3)).toFixed(2),stock:Math.round(40+r*900),rating:(4+r*0.9).toFixed(1),delay:s.delay}});
+}
+let catState={};
+function openCatalog(id){
+ const s=SOURCES.find(x=>x.id===id);if(!S.connected[id])return connectSrc(id);
+ catState={id,q:'',cat:'Tous',sel:{},price:{}};
+ drawCatalog();
+}
+function drawCatalog(){
+ const {id,q,cat}=catState,s=SOURCES.find(x=>x.id===id),m=S.connected[id].margin??150;
+ const all=catalogFor(id),cats=['Tous',...new Set(all.map(i=>i.cat))];
+ const list=all.filter(i=>(cat==='Tous'||i.cat===cat)&&i.name.toLowerCase().includes(q.toLowerCase()));
+ const done=new Set(S.products.filter(p=>p.ext).map(p=>p.ext));
+ const sp=i=>catState.price[i.ext]??+(i.cost*(1+m/100)).toFixed(1);
+ const n=Object.values(catState.sel).filter(Boolean).length;
+ $('modalBox').className='box wide';
+ modal(`<div style="display:flex;justify-content:space-between;align-items:start;gap:10px;flex-wrap:wrap"><div><h3>Catalogue ${s.name}</h3><p class="muted">Marge appliquée : ${m} % · Délai ${s.delay}</p></div><button class="btn ghost sm" onclick="closeModal()">✕ Fermer</button></div>
+ <div class="note">Démo : catalogue d'exemple. Avec un serveur, ce sont les vrais produits du fournisseur qui s'afficheront grâce à ta clé API.</div>
+ <div class="toolbar" style="margin-bottom:0"><input id="cq" placeholder="Rechercher dans le catalogue…" value="${esc(q)}" oninput="catState.q=this.value;drawCatalog();const e=$('cq');e.focus();e.setSelectionRange(e.value.length,e.value.length)">
+ ${cats.map(c=>`<button class="chip ${c===cat?'on':''}" onclick="catState.cat='${c}';drawCatalog()">${c}</button>`).join('')}
+ <button class="btn ghost sm" onclick="selAll()">Tout sélectionner</button></div>
+ <div class="cgrid">${list.map(i=>{const d=done.has(i.ext),on=!!catState.sel[i.ext];return`<div class="citem ${on?'sel':''} ${d?'done':''}" ${d?'':`onclick="if(event.target.tagName!=='INPUT')togSel('${i.ext}')"`}>
+  <div class="cimg" style="background:${bgFor(i.name.length)}">${d?'<span class="tag ok" style="position:absolute;top:10px;left:10px">Déjà ajouté</span>':`<input type="checkbox" ${on?'checked':''} onchange="togSel('${i.ext}')">`}${i.ico}</div>
+  <div class="cb"><b>${esc(i.name)}</b><span class="muted">${i.cat} · ★ ${i.rating} · stock ${i.stock}</span>
+  <span>Coût : <b>${chf(i.cost)}</b></span>
+  ${d?'':`<label style="margin:4px 0 2px">Prix de vente</label><input type="number" step="0.1" value="${sp(i)}" onchange="catState.price['${i.ext}']=+this.value">`}</div></div>`}).join('')||'<p class="muted">Aucun article.</p>'}</div>
+ <div class="cbar"><span><b>${n}</b> article(s) sélectionné(s)</span><button class="btn" ${n?'':'disabled style="opacity:.5"'} onclick="importSel()">Ajouter à ma boutique</button></div>`);
+}
+function togSel(ext){catState.sel[ext]=!catState.sel[ext];drawCatalog()}
+function selAll(){const done=new Set(S.products.filter(p=>p.ext).map(p=>p.ext));catalogFor(catState.id).filter(i=>!done.has(i.ext)&&(catState.cat==='Tous'||i.cat===catState.cat)).forEach(i=>catState.sel[i.ext]=true);drawCatalog()}
+function importSel(){
+ const {id}=catState,m=S.connected[id].margin??150;let nid=Math.max(0,...S.products.map(p=>p.id));let n=0;
+ catalogFor(id).filter(i=>catState.sel[i.ext]&&!S.products.some(p=>p.ext===i.ext)).forEach(i=>{
+  const price=catState.price[i.ext]??+(i.cost*(1+m/100)).toFixed(1);
+  S.products.push({id:++nid,name:i.name,cat:i.cat,ico:i.ico,price,old:Math.round(price*1.3)-0.1,cost:i.cost,stock:i.stock,src:id,ext:i.ext,imported:true});n++});
+ save();closeModal();toast(n+' article(s) ajouté(s) à la boutique ✓');curTab='prods';aTab('prods');
+}
+function pickSource(){
+ const ids=Object.keys(S.connected);
+ if(!ids.length){toast('Connectez d\'abord une source');return aTab('sources')}
+ modal(`<h3>Importer depuis une source</h3><p class="muted mt">Choisissez un fournisseur connecté.</p>
+ ${ids.map(id=>`<div class="row"><div style="flex:1"><b>${srcName(id)}</b></div><button class="btn sm" onclick="openCatalog('${id}')">Ouvrir le catalogue</button></div>`).join('')}
+ <button class="btn ghost full mt" onclick="closeModal()">Annuler</button>`);
+}
+function saveSrc(id){const k=$('kA').value.trim();if(!k)return toast('Clé API requise');S.connected[id]={key:k,margin:+$('kM').value,auto:$('kAuto').checked};save();aTab('sources');toast('Source connectée ✓');openCatalog(id)}
 function disconnect(id){if(confirm('Déconnecter cette source ?')){delete S.connected[id];save();aTab('sources')}}
 function clients(){
  const list=S.users.filter(u=>!u.admin);
@@ -474,17 +1947,25 @@ function clients(){
  ${list.map(u=>{const o=S.orders.filter(x=>x.email===u.email);return`<tr><td>${esc(u.name)}</td><td>${esc(u.email)}</td><td>${u.since||'—'}</td><td>${o.length}</td><td>${chf(o.reduce((a,x)=>a+x.total,0))}</td></tr>`}).join('')}</table>`:'<p class="muted mt">Aucun client inscrit.</p>'}</div>`;
 }
 function settings(){
- const m=[['card','Carte bancaire (Visa, Mastercard)'],['apple','Apple Pay'],['google','Google Pay'],['revolut','Revolut Pay']];
- return`<div class="two"><div class="box"><h3>Moyens de paiement actifs</h3>
- ${m.map(([k,l])=>`<div class="row"><div style="flex:1">${l}</div><label style="margin:0"><input type="checkbox" style="width:auto" ${S.pay[k]?'checked':''} onchange="S.pay['${k}']=this.checked;save();toast('Enregistré')"></label></div>`).join('')}</div>
- <div class="box"><h3>Clés publiques</h3>
- <label>Stripe — clé publique (carte, Apple Pay, Google Pay)</label><input id="sk" value="${esc(S.pay.stripeKey)}" placeholder="pk_live_…">
- <label>Revolut Business — clé publique</label><input id="rk" value="${esc(S.pay.revolutKey)}" placeholder="pk_…">
- <button class="btn full mt" onclick="S.pay.stripeKey=$('sk').value;S.pay.revolutKey=$('rk').value;save();toast('Clés enregistrées')">Enregistrer</button>
- <div class="note">Les clés secrètes ne doivent jamais être mises ici : elles vont sur le serveur qui crée les paiements.</div></div></div>`;
+ const f=(k,l,ph='')=>`<label>${l}</label><input value="${esc(S.pay[k])}" placeholder="${ph}" onchange="S.pay['${k}']=this.value;save();toast('Enregistré')">`;
+ const tg=(k,l,fee)=>`<div class="row"><div style="flex:1">${l} ${fee?`<span class="tag">${fee}</span>`:'<span class="free">Gratuit</span>'}</div><input type="checkbox" style="width:auto" ${S.pay[k]?'checked':''} onchange="S.pay['${k}']=this.checked;save();toast('Enregistré')"></div>`;
+ return`<div class="two"><div class="box"><h3>Moyens de paiement</h3>
+ ${tg('bank','🏦 Virement / QR-facture')}${tg('revtag','⚡ Virement Revolut')}
+ ${tg('sumup','💳 Carte · Apple Pay · Google Pay (SumUp)','env. 2,5 %')}
+ <div class="note">Les virements sont gratuits mais pas automatiques : quand l’argent arrive sur ton compte, clique sur « ✓ Argent reçu » dans Commandes, puis expédie.</div></div>
+ <div class="box"><h3>Compte bancaire (QR-facture)</h3>
+ ${f('holder','Titulaire du compte')}${f('iban','IBAN (CH ou LI)','CH.. .... .... .... .... .')}
+ <div class="g2"><div>${f('street','Rue')}</div><div>${f('no','N°')}</div><div>${f('zip','NPA')}</div><div>${f('city','Ville')}</div></div>
+ <h3 style="margin-top:22px">Revolut</h3>${f('tag','Ton @Revtag Revolut','@monpseudo')}
+ <h3 style="margin-top:22px">SumUp</h3>${f('sumupUrl','Adresse de ton serveur SumUp (Cloudflare Worker)','https://sumup-paiement.tonpseudo.workers.dev')}
+ <p class="muted" style="margin-top:6px">${clean(S.pay.sumupUrl)?'✓ Relié : les clients sont redirigés vers SumUp.':'Non relié : les paiements par carte sont simulés (démo).'}</p>
+ <div class="note">Ne colle jamais ta clé secrète SumUp ici : elle va uniquement dans le serveur.</div>
+ </div></div>`;
 }
 
+themeIcon();
 go('shop');
+checkSumUpReturn();
 </script>
 </body>
 </html>
