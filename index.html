@@ -1,30 +1,11 @@
-<html lang="fr" data-theme="dark" style="--accent: #5ec26a; --accent2: #5ec26aaa; --blur: 20px; --glass-a: 0.8; --sat: 200%; --wall: radial-gradient(circle at 12% 6%,#2a2a2acc 0,transparent 42%),radial-gradient(circle at 92% 16%,#3a3a3abb 0,transparent 38%),radial-gradient(circle at 50% 104%,#1a1a1acc 0,transparent 46%); --page-bg: #15171d; --glass-rgb: 30,33,43; --border: rgba(127,127,127,0.23); --ios-chrome-color: #1a1a1a; background-color: rgb(26, 26, 26) !important; --map-edge-color: #f2efe9;"><style>* { -webkit-text-size-adjust: 109.00000000000001% !important; }</style><head><style>
-@font-face {
-  font-family: "Optimistic";
-  font-style: normal;
-  font-weight: 400 600;
-  font-display: swap;
-  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
-}
-@font-face {
-  font-family: "Optimistic Mono";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
-}
-:where(html) {
-  font-family: "Optimistic", system-ui, sans-serif;
-}
-:where(code, pre, kbd, samp) {
-  font-family: "Optimistic Mono", ui-monospace, monospace;
-}
-</style>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
+<meta name="theme-color" id="themeColor" content="#17181c">
 <meta name="color-scheme" content="dark">
 <title>BusDirect</title>
 <style>
@@ -64,7 +45,7 @@ body{
 body.noglass .glass{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(var(--glass-rgb),.96)}
 
 /* Header */
-header{position:fixed;top:calc(var(--safe-t) + 10px);left:10px;right:10px;z-index:20;padding:11px 14px;max-width:720px;margin:0 auto;
+header{position:fixed;top:calc(var(--safe-t) + 10px);left:10px;right:10px;z-index:20;padding:8px 14px;max-width:700px;margin:0 auto;
   display:flex;align-items:center;gap:10px;border-radius:28px} /* barre flottante, comme la barre d'onglets du bas */
 .logo{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;overflow:hidden;
   color:#5ec26a;font-size:20px}
@@ -72,16 +53,15 @@ header{position:fixed;top:calc(var(--safe-t) + 10px);left:10px;right:10px;z-inde
 .appname{font-weight:800;font-size:20px;letter-spacing:-.3px}
 .appname span{color:var(--accent)}
 header .spacer{flex:1}
-.loc{font-size:9px;line-height:1.2;color:var(--muted);max-width:50%;text-align:right;display:flex;flex-direction:column;align-items:flex-end;min-width:0}
+.loc{font-size:10.5px;line-height:1.2;color:var(--muted);max-width:50%;text-align:right;display:flex;flex-direction:column;align-items:flex-end;min-width:0}
 .loc span{display:block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .loc span:first-child{color:var(--muted);font-weight:600}
 
-main{padding:calc(var(--safe-t) + 70px) 14px calc(var(--safe-b) + 100px);max-width:720px;margin:0 auto}
+main{padding:calc(var(--safe-t) + 84px) 14px calc(var(--safe-b) + 100px);max-width:720px;margin:0 auto}
 section.view{display:none;animation:fade .25s ease}
 section.view.active{display:block}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 h2{font-size:28px;font-weight:800;letter-spacing:-.5px;margin:6px 4px 14px}
-#v-horaires h2{margin-top:6px}/* même hauteur que Parcours */
 h3{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:18px 6px 8px}
 .card{border-radius:var(--radius);padding:14px;margin-bottom:12px}
 .muted{color:var(--muted)}
@@ -146,8 +126,6 @@ h3{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted
 #nowBtn.on{background:var(--accent);color:#fff}
 .load-more{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:5px;height:64px;--ins:0}
 .load-more{height:0!important;overflow:hidden;opacity:0;transition:height .18s ease,opacity .18s ease}
-#more.load-more{height:64px!important;opacity:1}
-#more.load-more i{animation:lm 1.8s ease-in-out infinite;opacity:.35}
 .load-more.insisting,.load-more.busy{height:64px!important;opacity:1}
 .load-more span{flex-basis:100%;text-align:center;font-size:11.5px;font-weight:600;color:var(--muted);opacity:calc(.5 + var(--ins)*.5)}
 .load-more i{display:block;width:7px;height:16px;border-radius:2px;background:var(--accent);transform:skewX(-18deg);opacity:.18;transition:opacity .12s}
@@ -166,7 +144,7 @@ h3{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted
 .pull-more.ready .pm-ic{background:var(--accent);color:#fff}
 .pull-more.busy .pm-ic{font-size:0;border:3px solid rgba(127,127,127,.3);border-top-color:var(--accent);background:none;animation:r .8s linear infinite}
 .jr.pop{animation:popIn .6s cubic-bezier(.2,.8,.3,1) both}
-@keyframes popIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes popIn{from{transform:translateY(16px)}to{transform:none}}
 .more-sen{height:40px}
 .more-sen.busy{background:none;display:flex;justify-content:center}
 .more-sen.busy::after{content:'';width:20px;height:20px;border:3px solid rgba(127,127,127,.3);border-top-color:var(--accent);border-radius:50%;animation:r .8s linear infinite;margin-top:8px}
@@ -200,11 +178,11 @@ body.list-inline .list-title .lt-dest{font-size:16px}
 :root{--hdr:84px}
 body.classic{--hdr:72px}
 body.list-page #listTop{position:fixed;top:calc(var(--safe-t) + 10px);   /* même distance que la barre BusDirect */left:0;right:0;max-width:720px;margin:0 auto;z-index:18;padding:8px 14px 4px}
-body.list-page #timeBar{position:fixed;top:calc(var(--safe-t) + 18px + var(--lt-h,56px));left:14px;right:14px;max-width:692px;box-sizing:border-box;margin:0 auto;z-index:18}
+body.list-page #timeBar{position:fixed;top:calc(var(--safe-t) + 18px + var(--lt-h,52px));left:14px;right:14px;max-width:692px;box-sizing:border-box;margin:0 auto;z-index:18}
 body.list-page #listTop{left:14px;right:14px;max-width:692px;box-sizing:border-box;border-radius:28px;padding:8px 12px}   /* même style que les barres flottantes */
 body.list-page.classic #listTop{top:0;left:0;right:0;max-width:none;border-radius:0;border-width:0 0 1px;padding:calc(var(--safe-t) + 8px) 14px 8px}
 body.list-page.classic #timeBar{top:calc(8px + var(--lt-h,52px))}
-body.list-page #v-list{padding-top:calc(var(--lt-h,56px) + 18px + var(--tb-h,42px) + 8px)} /* 8px entre la barre date et le 1er parcours = espace entre deux dalles */
+body.list-page #v-list{padding-top:calc(var(--lt-h,52px) + 76px)}
 /* liste séparée en plein écran : sans la barre BusDirect ni la barre d'onglets */
 body.list-page header,body.list-page nav{display:none}
 body.list-page main{padding-top:var(--safe-t);padding-bottom:calc(var(--safe-b) + 24px)}
@@ -300,7 +278,7 @@ svg.link circle{fill:var(--accent);stroke:#fff;stroke-width:2.5}
 
 /* Footer tabs */
 nav{position:fixed;left:10px;right:10px;bottom:calc(var(--safe-b) + 10px);z-index:30;border-radius:28px;
-  display:flex;justify-content:space-around;padding:6px;max-width:720px;margin:0 auto}
+  display:flex;justify-content:space-around;padding:6px;max-width:700px;margin:0 auto}
 nav button{flex:1;background:none;border:none;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;
   font-size:10.5px;font-weight:600;padding:7px 2px;border-radius:20px;cursor:pointer;transition:.2s}
 nav button svg{width:23px;height:23px}
@@ -556,7 +534,7 @@ body::before{content:none!important;display:none!important}
   background-position:center;background-size:cover;background-repeat:no-repeat;
   transform:translateZ(0);transition:background-color .25s ease;
 }
-header,main,nav,#tabs{position:fixed}/* bandeau + contenu + onglets restent fixes */
+header,main,nav,#tabs,#listTop{position:relative}
 header{z-index:20}nav,#tabs{z-index:30}main{z-index:1}
 main,section.view{background-color:transparent!important;background-image:none!important}
 html.map-edge #appWallpaper{visibility:hidden}
@@ -608,25 +586,25 @@ html.map-edge,html.map-edge body{background-color:var(--map-edge-color,var(--bg)
 html.map-edge #appWallpaper{visibility:hidden}
 
 </style>
-<link rel="apple-touch-icon" id="appIcon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAtKADAAQAAAABAAAAtAAAAABW1ZZ5AAALXUlEQVR4Ae2dW2wU5xXHj9fGF0zquzFgY1MiIDgEUZU2obQoAakhokmVqLwlbSpFEVUf2ooqfWgfIvWhavPQlzY3NUlboaq3XCookSC0JaSASLg0mBLTGBvbGOMr2Gsbe233O9su8XjX6z27a/vM2f+HVrs7+83sOb/z8+zsN98sWUQ06W5oIGCCQMBEFkgCBP5PAEJDBVMEILSpciIZCA0HTBGA0KbKiWQgNBwwRQBCmyonkoHQcMAUAQhtqpxIBkLDAVMEILSpciIZCA0HTBGA0KbKiWQgNBwwRQBCmyonkoHQcMAUAQhtqpxIBkLDAVMEILSpciIZCA0HTBGA0KbKiWQgNBwwRQBCmyonkoHQcMAUAQhtqpxIBkLDAVMEILSpciIZCA0HTBGA0KbKiWQgNBwwRQBCmyonkoHQcMAUAQhtqpxIBkLDAVMEILSpciIZCA0HTBGA0KbKiWQgNBwwRQBCmyonkoHQcMAUAQhtqpxIBkLDAVMEILSpciIZCA0HTBGA0KbKiWQgNBwwRQBCmyonkoHQcMAUAQhtqpxIBkLDAVMEILSpciIZCA0HTBGA0KbKiWQgNBwwRQBCmyonkoHQcMAUAQhtqpxIJkcrgoLSxbTmkXqt4WV0XI1vNdBw75BKBqqF3vjkZpXQMj2o1ncvqxUahxyZbqex/CG0sYJmejoQOtMNMJY/hDZW0ExPB0JnugHG8ofQxgqa6emoHbbL9MJw/g+ueIBqCld4ULx55SB1jXR7luHJJwQg9Ccs1D1aX7yONpZ6Ty6903EUQsepFA454sDBS/4jAKH9VzNEHIcAhI4DBy/5jwCE9l/NEHEcAvhSGAfOQr/0est+OnT1754wrg1f9zzHEy8BCO3loepZ8+AVVfH4IRgccvihSogxYQIQOmFU6OgHAhDaD1VCjAkTgNAJo0JHPxDIckFOagw0Oy+HKuqX0uKyQipeVUrVW+uouK5UY6hzFtPjq3fTmqLVnu2/ePHX1DZ01bNsrp/0N/dS27Fm6r/cS0M9Qepq6KTxW6G5ftuktq92lIOBXTvdfjup0y+doJI7y2nTU5+n6vtqby+3/KAiv5xWFlZ7UszNXuR5PpdP2o630JmXT1Lff/wzGUqt0LEKxWCPPHOAqrfU0dYf7qDcJbmxumFZigRGB0fp2I8PU9s/m1Pc0vyv7iuhI3gY9ME9f6Ydz+2iwqV30I827qVFgdlT6R3tp7bg1fDt0s0m6rnVG9mk53627U26o7SBsSD1u+11jfTQ+91nqX2ow7MNvz4Jdg7Q4b376UZLny9TmN0CpWkx8CM/+Cvt/OWjtHJJNeUGZv8orqUa2lS6IZzR6MQo/apxH53oej8qw0S3F1nx0dpd1DLYSr+//CY19F+MLPbdfWh4LMzUrzIzcF+PcvR93EMnnvtHUuLkBnJpz7oniWVMR6tdUkPf3/BteqzuK5Tl/vmxMUtm6ufm2z10BHrT4UaiCTdQk+Sf5s7q7fSX1rcpNJH6t3YW+eGaB2koNEwH2w5HQkz6/sWPXqOcaYdSg+5QZy5a97+vU5jlXGx8Hrfpe6F50HFifIJoWiZHOt6lPza/FUaZn51Pd7urP7Yv30Z1bk86tfGeel3RnXS+L/6hQsdQJzUNNBNlZVFVQSWtWrKSAlmx/4q+VvcwXej/KHwYMvW9pI+Dofn7ua1zr51SOoArozZNA9nKWnpP8h56WuM9Lu8pufH90c7jdCXYTs9uemZaT3KS184q9Id9F2hf059ur5uXnUv3lNTT02u/7r6Qeo/fs7Oy6aHqHfT8xVdv99f8gEc1Ok61ag4x4dhi72ISXt1fHfmExMj4SFTQycxquzU+Sqe6z4Sl5VGP6e0zZfcQS++HxjJPhNynnIGWUUJvqdhMfPgxtQVDQWq88fHURaLHH/Sco6PXjketw4cy64vWRi3XuOBm+w2NYSUVk4lDjliZV+SXuSum7w6/VJ5fShtK1kcJxnvrn53/BfEQXiqNj623VW2J2kRpXknUMo0Lhrvn5ovmQuRqVuhN7iOfb7HawNhgePz5bx3H0nJCpCXYFuttqDi3KObyRBd+r/5bUT9j8OzZn7ovpy2JbiLj+mXUIUekurfcHplHKCoLKtIyZnx9uDuyac994aLFnudanxSUF2oNTRxXRgpdnldK25d9ib6z/ml6au0TMw6/JUqz0h3exGr8SeCH9qkVqX2SaMrR7CHHsc4T4RMmDDsnKye8N+bT3tOPdb9Q+Tk3/jpJLzX+Jum6VBcuj7nujdGbMZdrW7hscw0FcgImRjpM7KGzAtGnmnnsuXO4K3zjiUNnev5Fr1zaF/MM3r2Vn3WjH3lJezb99+ciG5pp8lPkdS33PGuRpbbQ/C+0czmQnXga5/oaourGJ0LuKk5uiI3PPN6/bGvUNnkE5UK/Oy2fQhtyZwp5Lz/1Nj45nsIWZ1514zfc/2cTvV+YeQWlr/j+kOPTO9Y4oxOvREVe7OPdO3LkX4x4aPC79XvcTL/oEyinez6ksYmxlMr+gpvLMV+t/K5KYpZNh1L7I5yveGd6H18LXbK6jO7du22m3DzLy9wXwXq3F9696que5ZEn10a6Ig9j3vNsui+vuD/8WlXBUlrr5n8sX1wVc5SE96Jvt78TczuaFzLLvqYeX8+4863QRbUl9MBPHqKcAu88iogwX6y6z41D/2/uM89YK8ktjrwUdd/pfo3o0ixnC1lgviXS3mg5kPLEpETeJ919mCUz9fME/8QPPtNNL4Xt8SVYO59/LHy1ykybKXCnuPmaPL7Fk5mH1l5u/K2bjRE9H2OmbcdbzidrDrQditdF9Wt8BRCzZcZ+bL7aQ6f7ItlWN/vu5w0vUPcMl2JJCsp/GL+7/Dq913lSsprKvjzqwXtqXCSbxvLMxc8Y8PziK4Nt1BJsDR8S8MQinjUnbbw3vzk6QH3umkI+S3iy+wM623OeQpMh6abi9udPF/6kmdr4xxpTnXsydXvxHvPV9Xzz088Y8PBAej5r45FJ4rVS95MFu17ZncSadlbROpdj/zf/QL1Kf9rAl8fQdpRFJukmAKHTTRTbW1ACEHpB8ePN000AQqebKLa3oAR8NWy3oKQW4M35WseAu8p8ahsKRV8TOfX1TH8MoRUbwP/HCpqMAA45ZLzQWzkBCK28QAhPRgBCy3iht3ICEFp5gRCejACElvFCb+UEILTyAiE8GQEILeOF3soJQGjlBUJ4MgIQWsYLvZUTgNDKC4TwZAQgtIwXeisnAKGVFwjhyQionZw03DtE5151/+8HmjoCXButTe01hVqBIS7dBHDIobs+iE5IAEILgaG7bgIQWnd9EJ2QAIQWAkN33QQgtO76IDohAQgtBIbuuglAaN31QXRCAhBaCAzddROA0Lrrg+iEBCC0EBi66yYAoXXXB9EJCUBoITB0100AQuuuD6ITEoDQQmDorpsAhNZdH0QnJAChhcDQXTcBCK27PohOSABCC4Ghu24CEFp3fRCdkACEFgJDd90EILTu+iA6IQEILQSG7roJQGjd9UF0QgIQWggM3XUTgNC664PohAQgtBAYuusmAKF11wfRCQlAaCEwdNdNAELrrg+iExKA0EJg6K6bAITWXR9EJyQAoYXA0F03AQituz6ITkgAQguBobtuAhBad30QnZAAhBYCQ3fdBCC07vogOiEBCC0Ehu66CUBo3fVBdEICEFoIDN11E4DQuuuD6IQEILQQGLrrJgChddcH0QkJQGghMHTXTQBC664PohMSgNBCYOiumwCE1l0fRCckAKGFwNBdNwEIrbs+iE5IAEILgaG7bgIQWnd9EJ2QAIQWAkN33QQgtO76IDohAQgtBIbuuglAaN31QXRCAhBaCAzddROA0Lrrg+iEBP4LcYBjYR33bkIAAAAASUVORK5CYII=">
-<link rel="icon" id="favIcon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAtKADAAQAAAABAAAAtAAAAABW1ZZ5AAALXUlEQVR4Ae2dW2wU5xXHj9fGF0zquzFgY1MiIDgEUZU2obQoAakhokmVqLwlbSpFEVUf2ooqfWgfIvWhavPQlzY3NUlboaq3XCookSC0JaSASLg0mBLTGBvbGOMr2Gsbe233O9su8XjX6z27a/vM2f+HVrs7+83sOb/z8+zsN98sWUQ06W5oIGCCQMBEFkgCBP5PAEJDBVMEILSpciIZCA0HTBGA0KbKiWQgNBwwRQBCmyonkoHQcMAUAQhtqpxIBkLDAVMEILSpciIZCA0HTBGA0KbKiWQgNBwwRQBCmyonkoHQcMAUAQhtqpxIBkLDAVMEILSpciIZCA0HTBGA0KbKiWQgNBwwRQBCmyonkoHQcMAUAQhtqpxIBkLDAVMEILSpciIZCA0HTBGA0KbKiWQgNBwwRQBCmyonkoHQcMAUAQhtqpxIBkLDAVMEILSpciIZCA0HTBGA0KbKiWQgNBwwRQBCmyonkoHQcMAUAQhtqpxIBkLDAVMEILSpciIZCA0HTBGA0KbKiWQgNBwwRQBCmyonkoHQcMAUAQhtqpxIBkLDAVMEILSpciIZCA0HTBGA0KbKiWQgNBwwRQBCmyonkoHQcMAUAQhtqpxIJkcrgoLSxbTmkXqt4WV0XI1vNdBw75BKBqqF3vjkZpXQMj2o1ncvqxUahxyZbqex/CG0sYJmejoQOtMNMJY/hDZW0ExPB0JnugHG8ofQxgqa6emoHbbL9MJw/g+ueIBqCld4ULx55SB1jXR7luHJJwQg9Ccs1D1aX7yONpZ6Ty6903EUQsepFA454sDBS/4jAKH9VzNEHIcAhI4DBy/5jwCE9l/NEHEcAvhSGAfOQr/0est+OnT1754wrg1f9zzHEy8BCO3loepZ8+AVVfH4IRgccvihSogxYQIQOmFU6OgHAhDaD1VCjAkTgNAJo0JHPxDIckFOagw0Oy+HKuqX0uKyQipeVUrVW+uouK5UY6hzFtPjq3fTmqLVnu2/ePHX1DZ01bNsrp/0N/dS27Fm6r/cS0M9Qepq6KTxW6G5ftuktq92lIOBXTvdfjup0y+doJI7y2nTU5+n6vtqby+3/KAiv5xWFlZ7UszNXuR5PpdP2o630JmXT1Lff/wzGUqt0LEKxWCPPHOAqrfU0dYf7qDcJbmxumFZigRGB0fp2I8PU9s/m1Pc0vyv7iuhI3gY9ME9f6Ydz+2iwqV30I827qVFgdlT6R3tp7bg1fDt0s0m6rnVG9mk53627U26o7SBsSD1u+11jfTQ+91nqX2ow7MNvz4Jdg7Q4b376UZLny9TmN0CpWkx8CM/+Cvt/OWjtHJJNeUGZv8orqUa2lS6IZzR6MQo/apxH53oej8qw0S3F1nx0dpd1DLYSr+//CY19F+MLPbdfWh4LMzUrzIzcF+PcvR93EMnnvtHUuLkBnJpz7oniWVMR6tdUkPf3/BteqzuK5Tl/vmxMUtm6ufm2z10BHrT4UaiCTdQk+Sf5s7q7fSX1rcpNJH6t3YW+eGaB2koNEwH2w5HQkz6/sWPXqOcaYdSg+5QZy5a97+vU5jlXGx8Hrfpe6F50HFifIJoWiZHOt6lPza/FUaZn51Pd7urP7Yv30Z1bk86tfGeel3RnXS+L/6hQsdQJzUNNBNlZVFVQSWtWrKSAlmx/4q+VvcwXej/KHwYMvW9pI+Dofn7ua1zr51SOoArozZNA9nKWnpP8h56WuM9Lu8pufH90c7jdCXYTs9uemZaT3KS184q9Id9F2hf059ur5uXnUv3lNTT02u/7r6Qeo/fs7Oy6aHqHfT8xVdv99f8gEc1Ok61ag4x4dhi72ISXt1fHfmExMj4SFTQycxquzU+Sqe6z4Sl5VGP6e0zZfcQS++HxjJPhNynnIGWUUJvqdhMfPgxtQVDQWq88fHURaLHH/Sco6PXjketw4cy64vWRi3XuOBm+w2NYSUVk4lDjliZV+SXuSum7w6/VJ5fShtK1kcJxnvrn53/BfEQXiqNj623VW2J2kRpXknUMo0Lhrvn5ovmQuRqVuhN7iOfb7HawNhgePz5bx3H0nJCpCXYFuttqDi3KObyRBd+r/5bUT9j8OzZn7ovpy2JbiLj+mXUIUekurfcHplHKCoLKtIyZnx9uDuyac994aLFnudanxSUF2oNTRxXRgpdnldK25d9ib6z/ml6au0TMw6/JUqz0h3exGr8SeCH9qkVqX2SaMrR7CHHsc4T4RMmDDsnKye8N+bT3tOPdb9Q+Tk3/jpJLzX+Jum6VBcuj7nujdGbMZdrW7hscw0FcgImRjpM7KGzAtGnmnnsuXO4K3zjiUNnev5Fr1zaF/MM3r2Vn3WjH3lJezb99+ciG5pp8lPkdS33PGuRpbbQ/C+0czmQnXga5/oaourGJ0LuKk5uiI3PPN6/bGvUNnkE5UK/Oy2fQhtyZwp5Lz/1Nj45nsIWZ1514zfc/2cTvV+YeQWlr/j+kOPTO9Y4oxOvREVe7OPdO3LkX4x4aPC79XvcTL/oEyinez6ksYmxlMr+gpvLMV+t/K5KYpZNh1L7I5yveGd6H18LXbK6jO7du22m3DzLy9wXwXq3F9696que5ZEn10a6Ig9j3vNsui+vuD/8WlXBUlrr5n8sX1wVc5SE96Jvt78TczuaFzLLvqYeX8+4863QRbUl9MBPHqKcAu88iogwX6y6z41D/2/uM89YK8ktjrwUdd/pfo3o0ixnC1lgviXS3mg5kPLEpETeJ919mCUz9fME/8QPPtNNL4Xt8SVYO59/LHy1ykybKXCnuPmaPL7Fk5mH1l5u/K2bjRE9H2OmbcdbzidrDrQditdF9Wt8BRCzZcZ+bL7aQ6f7ItlWN/vu5w0vUPcMl2JJCsp/GL+7/Dq913lSsprKvjzqwXtqXCSbxvLMxc8Y8PziK4Nt1BJsDR8S8MQinjUnbbw3vzk6QH3umkI+S3iy+wM623OeQpMh6abi9udPF/6kmdr4xxpTnXsydXvxHvPV9Xzz088Y8PBAej5r45FJ4rVS95MFu17ZncSadlbROpdj/zf/QL1Kf9rAl8fQdpRFJukmAKHTTRTbW1ACEHpB8ePN000AQqebKLa3oAR8NWy3oKQW4M35WseAu8p8ahsKRV8TOfX1TH8MoRUbwP/HCpqMAA45ZLzQWzkBCK28QAhPRgBCy3iht3ICEFp5gRCejACElvFCb+UEILTyAiE8GQEILeOF3soJQGjlBUJ4MgIQWsYLvZUTgNDKC4TwZAQgtIwXeisnAKGVFwjhyQionZw03DtE5151/+8HmjoCXButTe01hVqBIS7dBHDIobs+iE5IAEILgaG7bgIQWnd9EJ2QAIQWAkN33QQgtO76IDohAQgtBIbuuglAaN31QXRCAhBaCAzddROA0Lrrg+iEBCC0EBi66yYAoXXXB9EJCUBoITB0100AQuuuD6ITEoDQQmDorpsAhNZdH0QnJAChhcDQXTcBCK27PohOSABCC4Ghu24CEFp3fRCdkACEFgJDd90EILTu+iA6IQEILQSG7roJQGjd9UF0QgIQWggM3XUTgNC664PohAQgtBAYuusmAKF11wfRCQlAaCEwdNdNAELrrg+iExKA0EJg6K6bAITWXR9EJyQAoYXA0F03AQituz6ITkgAQguBobtuAhBad30QnZAAhBYCQ3fdBCC07vogOiEBCC0Ehu66CUBo3fVBdEICEFoIDN11E4DQuuuD6IQEILQQGLrrJgChddcH0QkJQGghMHTXTQBC664PohMSgNBCYOiumwCE1l0fRCckAKGFwNBdNwEIrbs+iE5IAEILgaG7bgIQWnd9EJ2QAIQWAkN33QQgtO76IDohAQgtBIbuuglAaN31QXRCAhBaCAzddROA0Lrrg+iEBP4LcYBjYR33bkIAAAAASUVORK5CYII=">
-<meta name="theme-color" id="themeColor" content="#1a1a1a"></head>
-<body class="has-wallpaper" style="background-color: rgb(26, 26, 26) !important;">
-<div id="appWallpaper" aria-hidden="true" style="background-color: rgb(26, 26, 26);"></div>
+<link rel="apple-touch-icon" id="appIcon" href="">
+<link rel="icon" id="favIcon" href="">
+</head>
+<body>
+<div id="appWallpaper" aria-hidden="true"></div>
 
 <header class="glass">
-  <div class="logo" id="logo" style="background: none;"><svg viewBox="0 0 64 64" width="100%" height="100%"><path d="M6 16h52v10a6 6 0 000 12v10H6V38a6 6 0 000-12z" fill="currentColor"></path><text x="21" y="38" font-family="-apple-system,system-ui,sans-serif" font-weight="900" font-size="15" fill="#fff" text-anchor="middle">BD</text><path d="M40 20v24" stroke="#fff" stroke-width="2.5" stroke-dasharray="3 3"></path></svg></div>
+  <div class="logo" id="logo">🚌</div>
   <div class="appname">Bus<span>Direct</span></div>
   <div class="spacer"></div>
-  <div class="loc" id="locLabel">Position refusée</div>
+  <div class="loc" id="locLabel">Localisation…</div>
 </header>
 
 <main>
   <!-- HORAIRES -->
   <section class="view active" id="v-horaires">
-    <div class="row between"><h2>Horaires</h2><button class="target-btn" id="whereBtn" onclick="locateMyTrip()" aria-label="Dans quel parcours suis-je ?"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="7"></circle><circle cx="12" cy="12" r="2.5" fill="currentColor"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg></button></div>
-    <div class="tiles" id="tiles"><svg class="link" id="tileLink"><line id="linkLine"></line><circle id="linkA" r="6"></circle><circle id="linkB" r="6"></circle></svg></div>
-    <div id="tilesEmpty" class="card glass empty" style="display: block;"><b>🧭</b>Aucune destination enregistrée.<br>Ajoute ta première destination pour voir ici les prochains départs.
+    <div class="row between"><h2>Horaires</h2><button class="target-btn" id="whereBtn" onclick="locateMyTrip()" aria-label="Dans quel parcours suis-je ?"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button></div>
+    <div class="tiles" id="tiles"></div>
+    <div id="tilesEmpty" class="card glass empty" style="display:none"><b>🧭</b>Aucune destination enregistrée.<br>Ajoute ta première destination pour voir ici les prochains départs.
       <button class="btn" style="margin-top:14px" onclick="goAddFirst()">＋ Ajouter une destination</button></div>
   </section>
 
@@ -635,7 +613,7 @@ html.map-edge #appWallpaper{visibility:hidden}
     <div class="list-top glass" id="listTop">
       <button class="back-btn" onclick="closeList()" aria-label="Retour">‹</button>
       <h2 id="jrTitle" class="list-title">Prochains départs</h2>
-      <button type="button" class="home-btn" onclick="goHome()" aria-label="Accueil — revenir aux dalles" title="Revenir aux dalles"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9v12h5v-7h4v7h5V9"></path></svg></button>
+      <button type="button" class="home-btn" onclick="goHome()" aria-label="Accueil — revenir aux dalles" title="Revenir aux dalles"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v12h5v-7h4v7h5V9"/></svg></button>
     </div>
     <div id="jrHead" style="display:none"></div>
     <div id="timeBarPh" class="tb-ph"></div>
@@ -663,20 +641,20 @@ html.map-edge #appWallpaper{visibility:hidden}
     </div>
     <div class="results glass" id="results" style="display:none"></div>
     <h3>Mes destinations</h3>
-    <div class="card glass" id="destList"><div class="empty"><b>⭐</b>Recherche un arrêt, une adresse ou un lieu.</div></div>
+    <div class="card glass" id="destList"></div>
   </section>
 
   <!-- TICKETS -->
   <section class="view" id="v-tickets">
     <h2>Tickets</h2>
     <div class="card glass">
-      <div class="row between"><div><b id="regionName">Position inconnue</b><div class="muted" style="font-size:12px">Ticket SMS selon ta position</div></div>
+      <div class="row between"><div><b id="regionName">Région</b><div class="muted" style="font-size:12px">Ticket SMS selon ta position</div></div>
       <button class="btn ghost sm" onclick="locate(true)">📍</button></div>
     </div>
     <h3>Tickets disponibles</h3>
-    <div class="card glass" id="smsList"><div class="sms"><div class="z"><b>Tout Genève 60 min</b><div class="muted" style="font-size:12px">Envoyer <code>TPG1</code> au <code>788</code><span class="sms-p">≈ CHF 3.00</span></div></div><a class="btn sm" href="sms:788&amp;body=tpg1">SMS</a></div><div class="sms"><div class="z"><b>Tout Genève 60 min, ½ tarif / enfant</b><div class="muted" style="font-size:12px">Envoyer <code>TPG2</code> au <code>788</code><span class="sms-p">≈ CHF 2.00</span></div></div><a class="btn sm" href="sms:788&amp;body=tpg2">SMS</a></div><div class="sms"><div class="z"><b>Tout Genève 60 min, AVS/AI</b><div class="muted" style="font-size:12px">Envoyer <code>TPG3</code> au <code>788</code><span class="sms-p">≈ CHF 2.00</span></div></div><a class="btn sm" href="sms:788&amp;body=tpg3">SMS</a></div></div>
+    <div class="card glass" id="smsList"></div>
     <h3>Autres régions</h3>
-    <div class="card glass" id="smsOther"><details><summary class="sms" style="cursor:pointer"><b class="z">Lausanne (Mobilis / tl)</b>›</summary><div class="sms"><div class="z"><b>Grand Lausanne (zones 11-12)</b><div class="muted" style="font-size:12px">Envoyer <code>GL</code> au <code>456</code><span class="sms-p">≈ CHF 3.90</span></div></div><a class="btn sm" href="sms:456&amp;body=GL">SMS</a></div><div class="sms"><div class="z"><b>Grand Lausanne, tarif réduit</b><div class="muted" style="font-size:12px">Envoyer <code>GLR</code> au <code>456</code><span class="sms-p">≈ CHF 2.40</span></div></div><a class="btn sm" href="sms:456&amp;body=GLR">SMS</a></div><div class="sms"><div class="z"><b>Zones 12 + 15</b><div class="muted" style="font-size:12px">Envoyer <code>1215</code> au <code>456</code><span class="sms-p">≈ CHF 3.90</span></div></div><a class="btn sm" href="sms:456&amp;body=1215">SMS</a></div><div class="sms"><div class="z"><b>Carte journalière 12 + 15</b><div class="muted" style="font-size:12px">Envoyer <code>J1215</code> au <code>456</code><span class="sms-p">≈ CHF 9.80</span></div></div><a class="btn sm" href="sms:456&amp;body=J1215">SMS</a></div></details><details><summary class="sms" style="cursor:pointer"><b class="z">Morges (Mobilis / MBC)</b>›</summary><div class="sms"><div class="z"><b>Zone 30</b><div class="muted" style="font-size:12px">Envoyer <code>30</code> au <code>456</code><span class="sms-p">≈ CHF 3.20</span></div></div><a class="btn sm" href="sms:456&amp;body=30">SMS</a></div><div class="sms"><div class="z"><b>Zones 30 + 31</b><div class="muted" style="font-size:12px">Envoyer <code>3031</code> au <code>456</code><span class="sms-p">≈ CHF 3.90</span></div></div><a class="btn sm" href="sms:456&amp;body=3031">SMS</a></div><div class="sms"><div class="z"><b>Zones 30 + 33</b><div class="muted" style="font-size:12px">Envoyer <code>3033</code> au <code>456</code><span class="sms-p">≈ CHF 3.90</span></div></div><a class="btn sm" href="sms:456&amp;body=3033">SMS</a></div><div class="sms"><div class="z"><b>Carte journalière 30 + 31</b><div class="muted" style="font-size:12px">Envoyer <code>J3031</code> au <code>456</code><span class="sms-p">≈ CHF 9.80</span></div></div><a class="btn sm" href="sms:456&amp;body=J3031">SMS</a></div></details><details><summary class="sms" style="cursor:pointer"><b class="z">Cossonay (Mobilis / MBC)</b>›</summary><div class="sms"><div class="z"><b>Zone 39</b><div class="muted" style="font-size:12px">Envoyer <code>39</code> au <code>456</code><span class="sms-p">≈ CHF 3.20</span></div></div><a class="btn sm" href="sms:456&amp;body=39">SMS</a></div><div class="sms"><div class="z"><b>Zones 39 + 44</b><div class="muted" style="font-size:12px">Envoyer <code>3944</code> au <code>456</code><span class="sms-p">≈ CHF 3.90</span></div></div><a class="btn sm" href="sms:456&amp;body=3944">SMS</a></div></details><details><summary class="sms" style="cursor:pointer"><b class="z">Nyon (Mobilis / TPN, NStCM)</b>›</summary><div class="sms"><div class="z"><b>Zone 20</b><div class="muted" style="font-size:12px">Envoyer <code>20</code> au <code>456</code><span class="sms-p">≈ CHF 3.20</span></div></div><a class="btn sm" href="sms:456&amp;body=20">SMS</a></div><div class="sms"><div class="z"><b>Zones 20 + 23 (Gland)</b><div class="muted" style="font-size:12px">Envoyer <code>2023</code> au <code>456</code><span class="sms-p">≈ CHF 3.90</span></div></div><a class="btn sm" href="sms:456&amp;body=2023">SMS</a></div><div class="sms"><div class="z"><b>Zones 20 + 91 (Trélex)</b><div class="muted" style="font-size:12px">Envoyer <code>2091</code> au <code>456</code><span class="sms-p">≈ CHF 3.90</span></div></div><a class="btn sm" href="sms:456&amp;body=2091">SMS</a></div><div class="sms"><div class="z"><b>Carte journalière zone 20</b><div class="muted" style="font-size:12px">Envoyer <code>J20</code> au <code>456</code><span class="sms-p">≈ CHF 9.20</span></div></div><a class="btn sm" href="sms:456&amp;body=J20">SMS</a></div></details><details><summary class="sms" style="cursor:pointer"><b class="z">Yverdon-les-Bains (Mobilis / Travys)</b>›</summary><div class="sms"><div class="z"><b>Zone 40</b><div class="muted" style="font-size:12px">Envoyer <code>40</code> au <code>456</code><span class="sms-p">≈ CHF 3.20</span></div></div><a class="btn sm" href="sms:456&amp;body=40">SMS</a></div><div class="sms"><div class="z"><b>Zone 40, tarif réduit</b><div class="muted" style="font-size:12px">Envoyer <code>40R</code> au <code>456</code><span class="sms-p">≈ CHF 2.40</span></div></div><a class="btn sm" href="sms:456&amp;body=40R">SMS</a></div><div class="sms"><div class="z"><b>Carte journalière zone 40</b><div class="muted" style="font-size:12px">Envoyer <code>J40</code> au <code>456</code><span class="sms-p">≈ CHF 9.20</span></div></div><a class="btn sm" href="sms:456&amp;body=J40">SMS</a></div></details><details><summary class="sms" style="cursor:pointer"><b class="z">Orbe (Mobilis / Travys)</b>›</summary><div class="sms"><div class="z"><b>Zone 48 (Urbabus)</b><div class="muted" style="font-size:12px">Envoyer <code>48</code> au <code>456</code><span class="sms-p">≈ CHF 3.20</span></div></div><a class="btn sm" href="sms:456&amp;body=48">SMS</a></div><div class="sms"><div class="z"><b>Zones 42 + 48 (Orbe – Chavornay)</b><div class="muted" style="font-size:12px">Envoyer <code>4248</code> au <code>456</code><span class="sms-p">≈ CHF 3.90</span></div></div><a class="btn sm" href="sms:456&amp;body=4248">SMS</a></div><div class="sms"><div class="z"><b>Carte journalière zone 48</b><div class="muted" style="font-size:12px">Envoyer <code>J48</code> au <code>456</code><span class="sms-p">≈ CHF 9.20</span></div></div><a class="btn sm" href="sms:456&amp;body=J48">SMS</a></div></details><details><summary class="sms" style="cursor:pointer"><b class="z">Vallorbe (Mobilis / Travys)</b>›</summary><div class="sms"><div class="z"><b>Zone 110</b><div class="muted" style="font-size:12px">Envoyer <code>110</code> au <code>456</code><span class="sms-p">≈ CHF 3.20</span></div></div><a class="btn sm" href="sms:456&amp;body=110">SMS</a></div><div class="sms"><div class="z"><b>Carte journalière zone 110</b><div class="muted" style="font-size:12px">Envoyer <code>J110</code> au <code>456</code><span class="sms-p">≈ CHF 9.20</span></div></div><a class="btn sm" href="sms:456&amp;body=J110">SMS</a></div></details><details><summary class="sms" style="cursor:pointer"><b class="z">Sainte-Croix (Mobilis / Travys)</b>›</summary><div class="sms"><div class="z"><b>Zones 114 + 120</b><div class="muted" style="font-size:12px">Envoyer <code>114120</code> au <code>456</code><span class="sms-p">≈ CHF 3.90</span></div></div><a class="btn sm" href="sms:456&amp;body=114120">SMS</a></div><div class="sms"><div class="z"><b>Carte journalière 114 + 120</b><div class="muted" style="font-size:12px">Envoyer <code>J114120</code> au <code>456</code><span class="sms-p">≈ CHF 9.80</span></div></div><a class="btn sm" href="sms:456&amp;body=J114120">SMS</a></div></details><details><summary class="sms" style="cursor:pointer"><b class="z">Riviera (Mobilis / VMCV)</b>›</summary><div class="sms"><div class="z"><b>Zone 70</b><div class="muted" style="font-size:12px">Envoyer <code>70</code> au <code>456</code><span class="sms-p">≈ CHF 3.20</span></div></div><a class="btn sm" href="sms:456&amp;body=70">SMS</a></div><div class="sms"><div class="z"><b>Zone 73</b><div class="muted" style="font-size:12px">Envoyer <code>73</code> au <code>456</code><span class="sms-p">≈ CHF 3.20</span></div></div><a class="btn sm" href="sms:456&amp;body=73">SMS</a></div><div class="sms"><div class="z"><b>Zones 70 + 73</b><div class="muted" style="font-size:12px">Envoyer <code>7073</code> au <code>456</code><span class="sms-p">≈ CHF 3.90</span></div></div><a class="btn sm" href="sms:456&amp;body=7073">SMS</a></div><div class="sms"><div class="z"><b>Carte journalière 70 + 73</b><div class="muted" style="font-size:12px">Envoyer <code>J7073</code> au <code>456</code><span class="sms-p">≈ CHF 9.80</span></div></div><a class="btn sm" href="sms:456&amp;body=J7073">SMS</a></div></details></div>
+    <div class="card glass" id="smsOther"></div>
     <p class="muted" style="font-size:12px;margin:6px">Tarifs et mots-clés indicatifs : vérifie auprès de l'opérateur avant l'envoi. Le ticket SMS est facturé sur ta facture mobile (abonnement suisse requis).</p>
   </section>
 
@@ -686,10 +664,10 @@ html.map-edge #appWallpaper{visibility:hidden}
     <h3>Apparence</h3>
     <div class="card glass">
       <div class="set"><span>Style</span>
-        <div class="seg" id="styleSeg"><button data-v="round" class="on">Arrondi</button><button data-v="classic">Classique</button></div></div>
+        <div class="seg" id="styleSeg"><button data-v="round">Arrondi</button><button data-v="classic">Classique</button></div></div>
       <div class="set"><span>Thème</span>
         <div class="seg" id="themeSeg">
-          <button data-v="light">Clair</button><button data-v="dark" class="on">Sombre</button><button data-v="auto">Auto</button>
+          <button data-v="light">Clair</button><button data-v="dark">Sombre</button><button data-v="auto">Auto</button>
         </div></div>
       <div class="set"><span>Couleur d'accent</span>
         <input type="color" id="accent" style="width:44px;height:30px;border:none;background:none"></div>
@@ -699,10 +677,10 @@ html.map-edge #appWallpaper{visibility:hidden}
       <div class="set"><span>Activer l'effet</span><label class="switch"><input type="checkbox" id="glassOn"><span></span></label></div>
       <div class="set"><span>Flou</span><input type="range" id="blur" min="0" max="100"><output class="range-value" id="blurValue" for="blur">20%</output></div>
       <div class="set"><span>Transparence</span><input type="range" id="alpha" min="0" max="100"><output class="range-value" id="alphaValue" for="alpha">80%</output></div>
-      <div class="set"><span>Saturation</span><input type="range" id="sat" min="0" max="100"><output class="range-value" id="satValue" for="sat">100%</output></div>
+      <div class="set"><span>Saturation</span><input type="range" id="sat" min="0" max="100"><output class="range-value" id="satValue" for="sat">0%</output></div>
     </div>
-    <div class="card glass"><b style="font-size:19px">Logo de l'application</b><div class="muted" style="font-size:13px;margin:4px 0 10px">Choisissez le logo affiché en haut de l'écran.</div><div class="picker2 logos" id="logoPicker"><div class="pick2 " data-k="original"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><rect x="10" y="8" width="44" height="40" rx="9" fill="currentColor"></rect><rect x="15" y="13" width="34" height="15" rx="4" fill="#fff" opacity=".9"></rect><rect x="15" y="33" width="34" height="3" rx="1.5" fill="#fff" opacity=".8"></rect><circle cx="20" cy="41" r="3" fill="#fff"></circle><circle cx="44" cy="41" r="3" fill="#fff"></circle><rect x="13" y="47" width="10" height="9" rx="3" fill="#fff"></rect><rect x="41" y="47" width="10" height="9" rx="3" fill="#fff"></rect></svg></div><span>Original</span></div><div class="pick2 " data-k="pastille"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><circle cx="32" cy="32" r="28" fill="currentColor"></circle><rect x="21" y="17" width="22" height="26" rx="6" fill="#fff"></rect><rect x="25" y="21" width="14" height="8" rx="2" fill="currentColor"></rect><circle cx="26.5" cy="36" r="2.2" fill="currentColor"></circle><circle cx="37.5" cy="36" r="2.2" fill="currentColor"></circle><rect x="23" y="43" width="5" height="5" rx="2" fill="#fff"></rect><rect x="36" y="43" width="5" height="5" rx="2" fill="#fff"></rect></svg></div><span>Pastille</span></div><div class="pick2 " data-k="tram"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><rect x="22" y="4" width="20" height="3" rx="1.5" fill="currentColor"></rect><rect x="30.5" y="6" width="3" height="7" fill="currentColor"></rect><rect x="14" y="13" width="36" height="34" rx="9" fill="currentColor"></rect><rect x="19" y="18" width="26" height="11" rx="4" fill="#fff"></rect><circle cx="23" cy="38" r="2.6" fill="#fff"></circle><circle cx="41" cy="38" r="2.6" fill="#fff"></circle><path d="M20 50l-5 6M44 50l5 6" stroke="#111" stroke-width="3" stroke-linecap="round"></path></svg></div><span>Tram</span></div><div class="pick2 " data-k="train"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><rect x="16" y="6" width="32" height="40" rx="10" fill="currentColor"></rect><rect x="21" y="11" width="22" height="11" rx="4" fill="#fff"></rect><circle cx="25" cy="34" r="2.6" fill="#fff"></circle><circle cx="39" cy="34" r="2.6" fill="#fff"></circle><path d="M10 52h44M18 48l-6 8M46 48l6 8" stroke="#111" stroke-width="3" stroke-linecap="round"></path></svg></div><span>Train</span></div><div class="pick2 " data-k="repere"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><path d="M32 60C20 46 10 36 10 24a22 22 0 0144 0c0 12-10 22-22 36z" fill="currentColor"></path><rect x="21" y="13" width="22" height="22" rx="6" fill="#fff"></rect><rect x="25" y="17" width="14" height="7" rx="2" fill="currentColor"></rect><circle cx="27" cy="29.5" r="2" fill="currentColor"></circle><circle cx="37" cy="29.5" r="2" fill="currentColor"></circle></svg></div><span>Repère</span></div><div class="pick2 " data-k="boussole"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><circle cx="32" cy="32" r="28" fill="currentColor"></circle><circle cx="32" cy="32" r="22" fill="none" stroke="#fff" stroke-width="2.5" opacity=".8"></circle><path d="M32 12l7 20H25z" fill="#fff"></path><path d="M32 52l-7-20h14z" fill="#1b3d22"></path><circle cx="32" cy="32" r="3" fill="#111"></circle></svg></div><span>Boussole</span></div><div class="pick2 " data-k="itineraire"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><rect x="6" y="6" width="52" height="52" rx="12" fill="currentColor"></rect><circle cx="18" cy="46" r="5" fill="#fff"></circle><circle cx="27" cy="41" r="2.2" fill="#fff"></circle><circle cx="34" cy="37" r="2.2" fill="#fff"></circle><circle cx="40" cy="31" r="2.2" fill="#fff"></circle><path d="M46 30c-5-6-8-9-8-13a8 8 0 0116 0c0 4-3 7-8 13z" fill="#fff"></path><circle cx="46" cy="17" r="3" fill="currentColor"></circle></svg></div><span>Itinéraire</span></div><div class="pick2 on" data-k="ticket"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><path d="M6 16h52v10a6 6 0 000 12v10H6V38a6 6 0 000-12z" fill="currentColor"></path><text x="21" y="38" font-family="-apple-system,system-ui,sans-serif" font-weight="900" font-size="15" fill="#fff" text-anchor="middle">BD</text><path d="M40 20v24" stroke="#fff" stroke-width="2.5" stroke-dasharray="3 3"></path></svg></div><span>Ticket</span></div><div class="pick2 " data-k="monogramme"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><rect x="6" y="6" width="52" height="52" rx="12" fill="currentColor"></rect><text x="32" y="38" font-family="-apple-system,system-ui,sans-serif" font-weight="900" font-size="22" fill="#fff" text-anchor="middle">BD</text><rect x="20" y="44" width="24" height="3.5" rx="1.75" fill="#fff" opacity=".85"></rect></svg></div><span>Monogramme</span></div><div class="pick2 " data-k="horloge"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><circle cx="32" cy="32" r="28" fill="currentColor"></circle><circle cx="32" cy="32" r="21" fill="#fff"></circle><path d="M32 18v14l9 6" stroke="#111" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path><circle cx="32" cy="32" r="3" fill="#111"></circle></svg></div><span>Horloge</span></div><div class="pick2 " data-k="metro"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><circle cx="32" cy="32" r="28" fill="currentColor"></circle><path d="M18 46V20l14 16 14-16v26" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path></svg></div><span>Métro</span></div><div class="pick2 " data-k="bateau"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><rect x="6" y="6" width="52" height="52" rx="12" fill="currentColor"></rect><rect x="24" y="14" width="16" height="9" rx="2" fill="#fff"></rect><path d="M14 26h36l-6 12H20z" fill="#fff"></path><path d="M12 46c4-3 6-3 10 0s6 3 10 0 6-3 10 0 6 3 10 0" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"></path></svg></div><span>Bateau</span></div><div class="pick2 " data-k="arret"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><rect x="29.5" y="30" width="5" height="30" rx="2.5" fill="#222"></rect><circle cx="32" cy="20" r="16" fill="currentColor"></circle><circle cx="32" cy="20" r="11.5" fill="#fff"></circle><text x="32" y="26.5" font-family="-apple-system,system-ui,sans-serif" font-weight="900" font-size="17" fill="currentColor" text-anchor="middle">H</text></svg></div><span>Arrêt</span></div><div class="pick2 " data-k="volant"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><circle cx="32" cy="32" r="28" fill="currentColor"></circle><circle cx="32" cy="32" r="20" fill="none" stroke="#fff" stroke-width="5"></circle><path d="M13 30h38M32 36v15" stroke="#fff" stroke-width="5" stroke-linecap="round"></path><circle cx="32" cy="33" r="5" fill="#fff"></circle></svg></div><span>Volant</span></div><div class="pick2 " data-k="fleche"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><rect x="6" y="6" width="52" height="52" rx="12" fill="currentColor"></rect><path d="M16 32h30M34 20l12 12-12 12" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"></path></svg></div><span>Flèche</span></div><div class="pick2 " data-k="reseau"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><rect x="6" y="6" width="52" height="52" rx="12" fill="currentColor"></rect><path d="M14 24h12l12 20h12M14 44h12l12-20h12" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path><circle cx="32" cy="34" r="4" fill="#fff"></circle></svg></div><span>Réseau</span></div><div class="pick2 " data-k="endirect"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><circle cx="32" cy="32" r="28" fill="currentColor"></circle><path d="M16 28a23 23 0 0132 0M21 34a15 15 0 0122 0" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"></path><circle cx="32" cy="42" r="4.5" fill="#fff"></circle></svg></div><span>En direct</span></div><div class="pick2 " data-k="mobilite"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><circle cx="32" cy="32" r="28" fill="currentColor"></circle><circle cx="21" cy="38" r="8" fill="none" stroke="#fff" stroke-width="3.5"></circle><circle cx="43" cy="38" r="8" fill="none" stroke="#fff" stroke-width="3.5"></circle><path d="M21 38l7-12h9l6 12M28 26l4 12M33 22h6" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"></path></svg></div><span>Mobilité</span></div><div class="pick2 " data-k="hexagone"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><path d="M32 4l24 14v28L32 60 8 46V18z" fill="currentColor"></path><rect x="21" y="19" width="22" height="24" rx="6" fill="#fff"></rect><rect x="25" y="23" width="14" height="7" rx="2" fill="currentColor"></rect><circle cx="27" cy="36" r="2.2" fill="currentColor"></circle><circle cx="37" cy="36" r="2.2" fill="currentColor"></circle></svg></div><span>Hexagone</span></div><div class="pick2 " data-k="favori"><div class="pv logo-pv"><svg viewBox="0 0 64 64" width="100%" height="100%"><rect x="6" y="6" width="52" height="52" rx="12" fill="currentColor"></rect><path d="M32 14l5.3 11.2 12.2 1.5-9 8.4 2.4 12.1L32 41.3 21.1 47.2l2.4-12.1-9-8.4 12.2-1.5z" fill="#fff"></path></svg></div><span>Favori</span></div><div class="pick2 add" data-k="+logo"><div class="pv">＋</div><span>Ajouter</span></div></div></div>
-    <div class="card glass"><b style="font-size:19px">Fond d'écran</b><div class="muted" style="font-size:13px;margin:4px 0 10px">Fond affiché derrière l'application, avec ou sans effet Liquid Glass.</div><div class="picker2 walls" id="wallPicker"><div class="pick2 " data-k="none"><div class="pv wall-pv" style="background:#0b0b0d"><svg viewBox="0 0 24 24" width="40%" fill="none" stroke="#9a9aa0" stroke-width="2.4"><circle cx="12" cy="12" r="9"></circle><path d="M6 18L18 6"></path></svg></div><span>Aucun</span></div><div class="pick2 " data-k="ocean"><div class="pv wall-pv" style="background:radial-gradient(circle at 12% 6%,#2b4bd6cc 0,transparent 42%),radial-gradient(circle at 92% 16%,#2aa7c9bb 0,transparent 38%),radial-gradient(circle at 50% 104%,#4b4bd0cc 0,transparent 46%),#0b0b0d"></div><span>Océan</span></div><div class="pick2 " data-k="sunset"><div class="pv wall-pv" style="background:radial-gradient(circle at 12% 6%,#d9601ecc 0,transparent 42%),radial-gradient(circle at 92% 16%,#c2385fbb 0,transparent 38%),radial-gradient(circle at 50% 104%,#d4a020cc 0,transparent 46%),#0b0b0d"></div><span>Coucher de soleil</span></div><div class="pick2 " data-k="forest"><div class="pv wall-pv" style="background:radial-gradient(circle at 12% 6%,#2f8a3acc 0,transparent 42%),radial-gradient(circle at 92% 16%,#6aa72abb 0,transparent 38%),radial-gradient(circle at 50% 104%,#2f9a5acc 0,transparent 46%),#0b0b0d"></div><span>Forêt</span></div><div class="pick2 " data-k="lavender"><div class="pv wall-pv" style="background:radial-gradient(circle at 12% 6%,#6a3fd0cc 0,transparent 42%),radial-gradient(circle at 92% 16%,#a43bc4bb 0,transparent 38%),radial-gradient(circle at 50% 104%,#c25fa0cc 0,transparent 46%),#0b0b0d"></div><span>Lavande</span></div><div class="pick2 " data-k="lagoon"><div class="pv wall-pv" style="background:radial-gradient(circle at 12% 6%,#2a8a7acc 0,transparent 42%),radial-gradient(circle at 92% 16%,#2aa0b0bb 0,transparent 38%),radial-gradient(circle at 50% 104%,#3a9a5acc 0,transparent 46%),#0b0b0d"></div><span>Lagon</span></div><div class="pick2 " data-k="raspberry"><div class="pv wall-pv" style="background:radial-gradient(circle at 12% 6%,#b0203acc 0,transparent 42%),radial-gradient(circle at 92% 16%,#c23a5abb 0,transparent 38%),radial-gradient(circle at 50% 104%,#d0702acc 0,transparent 46%),#0b0b0d"></div><span>Framboise</span></div><div class="pick2 " data-k="aurora"><div class="pv wall-pv" style="background:radial-gradient(circle at 12% 6%,#2a9a4acc 0,transparent 42%),radial-gradient(circle at 92% 16%,#2a9ac0bb 0,transparent 38%),radial-gradient(circle at 50% 104%,#7a4ad0cc 0,transparent 46%),#0b0b0d"></div><span>Aurore boréale</span></div><div class="pick2 " data-k="sun"><div class="pv wall-pv" style="background:radial-gradient(circle at 12% 6%,#c0901acc 0,transparent 42%),radial-gradient(circle at 92% 16%,#d08a2abb 0,transparent 38%),radial-gradient(circle at 50% 104%,#8ab02acc 0,transparent 46%),#0b0b0d"></div><span>Soleil</span></div><div class="pick2 " data-k="night"><div class="pv wall-pv" style="background:radial-gradient(circle at 12% 6%,#2a2ad0cc 0,transparent 42%),radial-gradient(circle at 92% 16%,#2a4ad0bb 0,transparent 38%),radial-gradient(circle at 50% 104%,#8a2ad0cc 0,transparent 46%),#0b0b0d"></div><span>Nuit</span></div><div class="pick2 " data-k="slate"><div class="pv wall-pv" style="background:radial-gradient(circle at 12% 6%,#3a4a5acc 0,transparent 42%),radial-gradient(circle at 92% 16%,#5a6a7abb 0,transparent 38%),radial-gradient(circle at 50% 104%,#2a8ac0cc 0,transparent 46%),#0b0b0d"></div><span>Ardoise</span></div><div class="pick2 " data-k="grey"><div class="pv wall-pv" style="background:radial-gradient(circle at 12% 6%,#444444cc 0,transparent 42%),radial-gradient(circle at 92% 16%,#8a8a8abb 0,transparent 38%),radial-gradient(circle at 50% 104%,#b0b0b0cc 0,transparent 46%),#0b0b0d"></div><span>Gris</span></div><div class="pick2 " data-k="midnight"><div class="pv wall-pv" style="background:radial-gradient(circle at 12% 6%,#1a2a6acc 0,transparent 42%),radial-gradient(circle at 92% 16%,#2a3a8abb 0,transparent 38%),radial-gradient(circle at 50% 104%,#4a2a8acc 0,transparent 46%),#0b0b0d"></div><span>Minuit</span></div><div class="pick2 on" data-k="charcoal"><div class="pv wall-pv" style="background:radial-gradient(circle at 12% 6%,#2a2a2acc 0,transparent 42%),radial-gradient(circle at 92% 16%,#3a3a3abb 0,transparent 38%),radial-gradient(circle at 50% 104%,#1a1a1acc 0,transparent 46%),#0b0b0d"></div><span>Charbon</span></div><div class="pick2 " data-k="deepforest"><div class="pv wall-pv" style="background:radial-gradient(circle at 12% 6%,#1a3a2acc 0,transparent 42%),radial-gradient(circle at 92% 16%,#2a4a3abb 0,transparent 38%),radial-gradient(circle at 50% 104%,#0a2a1acc 0,transparent 46%),#0b0b0d"></div><span>Forêt profonde</span></div><div class="pick2 add" data-k="+wall"><div class="pv wall-pv">＋</div><span>Ajouter</span></div></div></div>
+    <div class="card glass"><b style="font-size:19px">Logo de l'application</b><div class="muted" style="font-size:13px;margin:4px 0 10px">Choisissez le logo affiché en haut de l'écran.</div><div class="picker2 logos" id="logoPicker"></div></div>
+    <div class="card glass"><b style="font-size:19px">Fond d'écran</b><div class="muted" style="font-size:13px;margin:4px 0 10px">Fond affiché derrière l'application, avec ou sans effet Liquid Glass.</div><div class="picker2 walls" id="wallPicker"></div></div>
     <h3>Carte</h3>
     <div class="card glass">
       <div class="set"><div><b>🚶 Trottoirs et chemins</b><div class="muted" style="font-size:12px">Affiche les trottoirs, chemins piétons et escaliers sur la carte</div></div>
@@ -710,7 +688,7 @@ html.map-edge #appWallpaper{visibility:hidden}
     </div>
     <h3>Itinéraires</h3>
     <div class="card glass">
-      <div class="set"><div><b>🚏 Arrêt le plus proche uniquement</b><div class="muted" style="font-size:12px" id="nearestTxt">Trajets jusqu'à l'arrêt le plus proche, puis marche jusqu'à l'adresse ou au lieu</div></div>
+      <div class="set"><div><b>🚏 Arrêt le plus proche uniquement</b><div class="muted" style="font-size:12px" id="nearestTxt"></div></div>
         <label class="switch"><input type="checkbox" id="nearestOn" onchange="setNearestOnly(this.checked)"><span></span></label></div>
     </div>
     <h3>Tickets</h3>
@@ -720,26 +698,26 @@ html.map-edge #appWallpaper{visibility:hidden}
     </div>
     <h3>Capteurs</h3>
     <div class="card glass">
-      <div class="set"><div><b>📍 Localisation</b><div class="sstat" id="geoStat"><span class="sdot bad"></span>Refusée — autorise la localisation dans Réglages</div></div>
+      <div class="set"><div><b>📍 Localisation</b><div class="sstat" id="geoStat"></div></div>
         <label class="switch"><input type="checkbox" id="geoOn" onchange="setGeo(this.checked)"><span></span></label></div>
-      <div class="set"><div><b>🧭 Mouvement et orientation</b><div class="sstat" id="motStat"><span class="sdot warn"></span>Touche l'écran pour réactiver</div></div>
+      <div class="set"><div><b>🧭 Mouvement et orientation</b><div class="sstat" id="motStat"></div></div>
         <label class="switch"><input type="checkbox" id="motOn" onchange="setMotion(this.checked)"><span></span></label></div>
     </div>
     <h3>Données</h3>
     <div class="card glass">
-      <div class="set"><span>Horaires &amp; positions</span><span class="muted">Transitous</span></div>
+      <div class="set"><span>Horaires & positions</span><span class="muted">Transitous</span></div>
       
     </div>
-    <input type="file" id="fileIn" accept="image/*" hidden="">
+    <input type="file" id="fileIn" accept="image/*" hidden>
   </section>
 </main>
 
 <nav class="glass" id="tabs">
-  <button data-v="horaires" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Horaires</button>
-  <button data-v="suivis" id="tabSuivis" style="display: none;"><span class="tab-badge" id="suivisBadge" style="display: none;">0</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3h12v18l-6-4-6 4z"></path></svg>Suivis</button>
-  <button data-v="parcours"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="18" r="2.5"></circle><circle cx="18" cy="6" r="2.5"></circle><path d="M8.5 18H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.5"></path></svg>Parcours</button>
-  <button data-v="tickets" id="tabTickets" style="display: none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8a2 2 0 0 0 0 4v0a2 2 0 0 1 0 4v2h18v-2a2 2 0 0 1 0-4 2 2 0 0 0 0-4V6H3z"></path><path d="M14 6v12" stroke-dasharray="2 2"></path></svg>Tickets</button>
-  <button data-v="parametres"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>Paramètres</button>
+  <button data-v="horaires" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Horaires</button>
+  <button data-v="suivis" id="tabSuivis"><span class="tab-badge" id="suivisBadge"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg>Suivis</button>
+  <button data-v="parcours"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.5"/></svg>Parcours</button>
+  <button data-v="tickets" id="tabTickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8a2 2 0 0 0 0 4v0a2 2 0 0 1 0 4v2h18v-2a2 2 0 0 1 0-4 2 2 0 0 0 0-4V6H3z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg>Tickets</button>
+  <button data-v="parametres"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Paramètres</button>
 </nav>
 
 <div id="mapView">
@@ -747,7 +725,7 @@ html.map-edge #appWallpaper{visibility:hidden}
   <div class="map-bar glass">
     <button class="map-btn" onclick="closeMap()">✕</button>
     <div class="t"><span id="mapTitle"></span><small id="mapSub"></small></div>
-    <button type="button" class="home-btn" onclick="goHome()" aria-label="Accueil — revenir aux dalles" title="Revenir aux dalles"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9v12h5v-7h4v7h5V9"></path></svg></button>
+    <button type="button" class="home-btn" onclick="goHome()" aria-label="Accueil — revenir aux dalles" title="Revenir aux dalles"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v12h5v-7h4v7h5V9"/></svg></button>
   </div>
   <div class="map-ctrl glass">
     <button class="map-btn" id="btnFollow" onclick="toggleFollowVeh()" title="Suivre le véhicule">🚌</button>
@@ -889,10 +867,6 @@ function setListPage(on){ S.settings.listPage=on; save(); applyListMode(); toast
 // Évite le « clic fantôme » : après l'appui sur une dalle, le clic arrivait sur le champ date de la nouvelle page
 let clickShieldUntil=0;
 ['click','focusin','mousedown'].forEach(ev=>document.addEventListener(ev,e=>{ if(Date.now()<clickShieldUntil){ e.preventDefault(); e.stopPropagation(); if(ev==='focusin') e.target.blur?.() } },true));
-function syncListHeights(){ // hauteurs RÉELLES mesurées à l'écran : bandeau liste + barre date
-  const h=$('#listTop')?.offsetHeight; if(h) document.documentElement.style.setProperty('--lt-h',h+'px');
-  const tb=$('#timeBar'); if(tb&&tb.style.display!=='none'){ const th=tb.offsetHeight; if(th) document.documentElement.style.setProperty('--tb-h',th+'px') }
-}
 function openList(){
   if(listSep()) document.body.classList.add('list-page');
   clickShieldUntil=Date.now()+500; $('#planTime')?.blur();
@@ -902,7 +876,6 @@ function openList(){
   document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('active',x.dataset.v==='horaires'));
   document.querySelector('main')?.scrollTo({top:0});
   const vl=$('#v-list'); vl.classList.remove('pg-out','pg-back'); void vl.offsetWidth; vl.classList.add('pg-in');   // la liste glisse depuis la droite
-  requestAnimationFrame(syncListHeights); // vraies hauteurs, la page liste est visible
   setTimeout(()=>vl.classList.remove('pg-in'),420);   // après l'animation : plus aucune transformation, les bandeaux restent bien fixes
 }
 function goHome(){
@@ -1233,18 +1206,7 @@ async function pickPair(from,to){
 let lastPlanPos=null;
 GEO.watchPosition(p=>{
   pos={lat:p.coords.latitude,lon:p.coords.longitude};try{applySmsTab();fetchCanton();updateAddr()}catch(e){}
-  // Recalcul des prochains parcours après un déplacement significatif.
-// Seuil de 50 m, adapté à la précision GPS : si le signal est flou, le seuil
-// s'élargit automatiquement pour éviter des recalculs en boucle sur les sauts GPS.
-if(selDest&&!selFrom){
-  const accuracy=Math.max(0,SENS.geo.acc||0);
-  const thresholdKm=Math.max(0.05,accuracy/1000);
-  if(!lastPlanPos||dist(lastPlanPos,pos)>thresholdKm){
-    lastPlanPos=pos;
-    if(loading) pendingPosRefresh=true;
-    else loadJourneys();
-  }
-}
+  if(selDest&&!selFrom&&(!lastPlanPos||dist(lastPlanPos,pos)>0.15)) loadJourneys(); // >150 m parcourus → recalcul
 },()=>{},{enableHighAccuracy:true,maximumAge:15000});
 function renderTiles(){
   $('#tilesEmpty').style.display=S.dests.length?'none':'block';
@@ -1393,7 +1355,7 @@ async function locateMyTrip(){
     const leg=itin.legs.find(l=>l.mode!=='WALK')||itin.legs[0];
     selFrom=null; selDest={uid:'_trip',type:'TRIP',tripId:t.tripId,name:leg.headsign||leg.to?.name||'Terminus',fromLabel:`À bord du ${leg.routeShortName||t.routeShortName||''}`.trim()};
     shown=5; pastFloor=null; pastReserve=[];pastCur=null;nextCur=null;listCur=null; loadedFor='_trip'; lastJourneys=[itin]; renderTiles(); openList(); $('#journeys').innerHTML='';
-    $('#jrHead').style.display='flex'; $('#timeBar').style.display='flex'; syncTimeBar(); setListTitle(); requestAnimationFrame(syncListHeights);
+    $('#jrHead').style.display='flex'; $('#timeBar').style.display='flex'; syncTimeBar(); setListTitle();
     renderJourneyList(); const c=document.querySelector('#journeys > .jr'); if(c) c.classList.add('open');
     toast(`Tu es dans le ${leg.routeShortName||''} → ${leg.headsign||''}`);
   } finally { btn.classList.remove('busy') }
@@ -1402,7 +1364,7 @@ async function refreshMyTrip(){ // actualisation en direct de la course suivie
   const itin=await fetchTripItinerary(selDest.tripId); if(!itin||selDest?.type!=='TRIP') return;
   lastJourneys=[itin]; renderJourneyList();
 }
-let loadedFor=null, loading=false, pendingPosRefresh=false;
+let loadedFor=null, loading=false;
 async function loadJourneys(){
   if(!selDest||loading) return;
   if(selDest.type==='TRIP') return refreshMyTrip();
@@ -1412,26 +1374,24 @@ async function loadJourneys(){
   const pairKey=(selFrom?.uid||'me')+'>'+selDest.uid, first=loadedFor!==pairKey;           // nouvelle destination → spinner ; sinon mise à jour silencieuse
   if(first){box.innerHTML='<div class="spin"></div>';lastJourneys=[]}
   loading=true; $('#jrHead').classList.add('busy');
-  pendingPosRefresh=false;
   try{
     const usedPos=pos&&{...pos};
     // affichage instantané depuis le cache (si récent), puis mise à jour
     const ck='bd_jc_'+pairKey+(planTime?'@'+(+planTime):'');
     if(first&&!planTime){ try{const c=JSON.parse(sessionStorage.getItem(ck)||'null');
-      if(c&&Date.now()-c.t<10*60000){ const fresh=cleanList(c.d); if(fresh.length){ lastJourneys=fresh; loadedFor=pairKey; renderJourneyList(); animNew(); } } }catch{} }
+      if(c&&Date.now()-c.t<10*60000){ const fresh=cleanList(c.d); if(fresh.length){ lastJourneys=fresh; loadedFor=pairKey; renderJourneyList(); } } }catch{} }
     const reqDest=selDest, reqFrom=selFrom;
     const data=await nextDepartures(selDest,selFrom,more=>{ if(selDest!==reqDest||selFrom!==reqFrom) return;
       prefetchColors(more); lastJourneys=first?more:mergeRefresh(lastJourneys,more); renderJourneyList(); try{sessionStorage.setItem(ck,JSON.stringify({t:Date.now(),d:more}))}catch{} });
     try{sessionStorage.setItem(ck,JSON.stringify({t:Date.now(),d:data}))}catch{}
     if(selDest!==reqDest||selFrom!==reqFrom) return;   // dalle désélectionnée / changée pendant le chargement
-    if(pendingPosRefresh){ pendingPosRefresh=false; setTimeout(loadJourneys,0); }
     lastPlanPos=usedPos;
     if(first&&loadedFor!==pairKey) await colorsBeforeRender(data); else prefetchColors(data);
     if(first||!listCur) listCur=data._cur||null;   // la première recherche fournit les curseurs page précédente / suivante
     lastJourneys=first?data:mergeRefresh(lastJourneys,data); loadedFor=pairKey;
     if(!data.length){box.innerHTML='<div class="card glass empty">Aucun départ à proximité.</div>';return}
     setListTitle();
-    renderJourneyList(); if(first) animNew();
+    renderJourneyList();
   }catch(e){ if(first) box.innerHTML='<div class="card glass empty">Impossible de joindre Transitous.</div>'; }
   finally{loading=false; $('#jrHead').classList.remove('busy')}
 }
@@ -1485,7 +1445,7 @@ function renderJourneyList(){
         const sep=document.createElement('div'); sep.className='day-sep'; sep.dataset.for=el.dataset.k;
         sep.textContent=d.toLocaleDateString('fr-CH',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'}); el.before(sep) } }});
   box.querySelectorAll('.day-sep').forEach(sp=>{ const nx=sp.nextElementSibling; if(!want.has(sp.dataset.for)||!nx||nx.dataset.k!==sp.dataset.for) sp.remove() });
-  /* Ne pas marquer les cartes comme animées ici : c'est animNew() qui le fait. */
+  box.querySelectorAll(':scope > .jr').forEach(el=>{ if(!appending) el.dataset.shown=el.dataset.shown||1 });
   // bandeau « Maintenant » au-dessus du premier parcours à venir, seulement si des parcours passés sont affichés
   { let ns=box.querySelector(':scope > .now-sep'); const ref=planTime?+planTime:Date.now();
     const target=(selDest?.type!=='TRIP'&&pastFloor!=null)?[...box.querySelectorAll(':scope > .jr:not(.leave)')].find(el=>{const it=list[+el.dataset.i];return it&&jStart(it)>=ref-60000&&el.previousElementSibling&&[...box.querySelectorAll(':scope > .jr')].indexOf(el)>0}):null;
@@ -1584,7 +1544,7 @@ function pinTimeBar(){
 }
 function animNew(){ // nouveaux trajets : glissent depuis le bas, en cascade
   const cards=[...document.querySelectorAll('#journeys > .jr')].slice(-5);
-  cards.filter(c=>!c.dataset.shown).forEach((c,i)=>{c.dataset.shown=1;c.style.animationDelay=(i*0.07)+'s';c.classList.add('pop')}); // seules les nouvelles cartes s'animent, en cascade
+  cards.filter(c=>!c.dataset.shown).forEach((c,i)=>{c.dataset.shown=1;c.classList.add('pop')}); // seules les nouvelles cartes s'animent
 }
 async function loadMoreJourneys(){
   if(moreBusy||!selDest) return;
@@ -3036,6 +2996,5 @@ addEventListener('pageshow',()=>requestAnimationFrame(syncIOSWallpaperTint));
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncIOSWallpaperTint()});
 new MutationObserver(()=>requestAnimationFrame(syncIOSWallpaperTint)).observe(document.querySelector('main'),{subtree:true,attributes:true,attributeFilter:['class']});
 </script>
-<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script>
-
-</body></html>
+</body>
+</html>
