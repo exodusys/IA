@@ -1,4 +1,4 @@
-<html lang="fr" data-theme="dark" style="--accent: #5ec26a; --accent2: #5ec26aaa; --blur: 20px; --glass-a: 0.8; --sat: 200%; --wall: radial-gradient(circle at 12% 6%,#2a2a2acc 0,transparent 42%),radial-gradient(circle at 92% 16%,#3a3a3abb 0,transparent 38%),radial-gradient(circle at 50% 104%,#1a1a1acc 0,transparent 46%); --page-bg: #15171d; --glass-rgb: 30,33,43; --border: rgba(127,127,127,0.23); --ios-chrome-color: #1a1a1a; background-color: rgb(26, 26, 26) !important; --map-edge-color: #f2efe9;"><style>* { -webkit-text-size-adjust: 109.00000000000001% !important; }</style><head><style>
+<html lang="fr" data-theme="dark" style="--accent: #5ec26a; --accent2: #5ec26aaa; --blur: 20px; --glass-a: 0.8; --sat: 200%; --wall: radial-gradient(circle at 12% 6%,#2a2a2acc 0,transparent 42%),radial-gradient(circle at 92% 16%,#3a3a3abb 0,transparent 38%),radial-gradient(circle at 50% 104%,#1a1a1acc 0,transparent 46%); --page-bg: #15171d; --glass-rgb: 30,33,43; --border: rgba(127,127,127,0.23); --ios-chrome-color: #1a1a1a; --wall-top: #1f1f1f; --wall-bottom: #111111; background-color: rgb(26, 26, 26) !important; --map-edge-color: #f2efe9;"><style>* { -webkit-text-size-adjust: 109.00000000000001% !important; }</style><head><style>
 @font-face {
   font-family: "Optimistic";
   font-style: normal;
@@ -590,7 +590,7 @@ body{height:100%!important;min-height:100%}
   width:100%!important;height:100%!important;min-height:100dvh!important;
   z-index:0!important;
   background-color:var(--ios-chrome-color,var(--page-bg,var(--bg)))!important;
-  background-image:var(--wall,none)!important;
+  background-image:var(--wall,none),linear-gradient(to bottom,var(--wall-top,var(--ios-chrome-color,var(--page-bg,var(--bg)))),var(--wall-bottom,var(--ios-chrome-color,var(--page-bg,var(--bg)))))!important;
   background-size:cover!important;
   background-position:center!important;
   background-repeat:no-repeat!important;
@@ -598,7 +598,7 @@ body{height:100%!important;min-height:100%}
 main,section.view{background:transparent!important;background-image:none!important}
 #jrPage,#stopPage,.sub-page{
   background-color:var(--ios-chrome-color,var(--page-bg,var(--bg)))!important;
-  background-image:var(--wall,none)!important;
+  background-image:var(--wall,none),linear-gradient(to bottom,var(--wall-top,var(--ios-chrome-color,var(--page-bg,var(--bg)))),var(--wall-bottom,var(--ios-chrome-color,var(--page-bg,var(--bg)))))!important;
   background-size:cover!important;
   background-position:center!important;
   background-repeat:no-repeat!important;
@@ -2084,6 +2084,15 @@ function paintWallpaperPalette(colors,dark){
   tint=getComputedStyle(root).getPropertyValue('--page-bg').trim()||getComputedStyle(root).getPropertyValue('--bg').trim()||fallback;
  }
  root.style.setProperty('--ios-chrome-color',tint);
+ // Prolongement haut et bas : le haut reprend la couleur des halos du haut du fond,
+ // le bas celle du halo du bas. Le changement s'applique tout de suite, en même temps
+ // que le reste, quand on choisit un fond dans Paramètres.
+ let topC=null,botC=null;
+ if(colors&&colors.length>=3){ topC=[0,1,2].map(i=>Math.round((colors[0][i]+colors[1][i])/2)); botC=colors[2].slice() }
+ else if(colors&&colors.length){ topC=botC=colors[0].slice() }
+ const adjC=c=>dark?c.map(v=>Math.round(v*0.55+7*0.45)):c;
+ root.style.setProperty('--wall-top',topC?wallpaperHex(adjC(topC)):tint);
+ root.style.setProperty('--wall-bottom',botC?wallpaperHex(adjC(botC)):tint);
  syncIOSWallpaperTint();
 }
 function sampleWallpaperImage(url){
