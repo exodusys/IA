@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Météo Pro</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg1:#0b1a3a;--bg2:#1d3f7a;--card:rgba(255,255,255,.08);--line:rgba(255,255,255,.12);--txt:#fff;--mut:rgba(255,255,255,.62);--acc:#5ec8ff}
@@ -52,7 +54,12 @@ canvas{width:100%;display:block}
 .seg{display:flex;background:rgba(0,0,0,.2);border-radius:12px;padding:3px;margin-bottom:12px}
 .seg button{flex:1;background:none;border:0;color:var(--mut);padding:8px;border-radius:9px;font:600 12px Inter;cursor:pointer}
 .seg button.on{background:rgba(255,255,255,.18);color:#fff}
-.radar{position:relative;height:360px;border-radius:16px;overflow:hidden;background:#0d1b2e}
+.radar #map{position:absolute;inset:0;background:#0d1b2e;font-family:Inter,system-ui,sans-serif}
+.mk{background:none!important;border:0!important}
+.chip{position:absolute;transform:translate(-50%,-50%);padding:3px 8px;border-radius:12px;font:700 12px Inter,sans-serif;white-space:nowrap;border:2px solid rgba(255,255,255,.75);box-shadow:0 2px 8px #0007;cursor:pointer}
+.chip.sel{border-color:#5ec8ff;box-shadow:0 0 0 3px rgba(94,200,255,.55)}
+.leaflet-control-attribution{font-size:9px!important;background:rgba(0,0,0,.45)!important;color:#ccd!important}.leaflet-control-attribution a{color:#9cf!important}
+.radar{position:relative;height:430px;border-radius:16px;overflow:hidden;background:#0d1b2e}
 .radar canvas{position:absolute;inset:0;width:100%;height:100%}
 .play{display:flex;gap:10px;align-items:center;margin-top:12px;font-size:12px;color:var(--mut)}
 .play input{flex:1;accent-color:var(--acc)}
@@ -124,12 +131,12 @@ nav button.on{color:#fff}nav button.on svg{stroke:var(--acc)}
 <!-- RADAR -->
 <section class="view" id="v-map">
   <h1 style="font-size:28px;font-weight:700;margin-bottom:14px">Radar</h1>
-  <div class="seg" id="layerSeg"><button class="on" data-l="rain">Précipitations</button><button data-l="temp">Température</button><button data-l="wind">Vent</button><button data-l="cloud">Nuages</button></div>
-  <div class="radar"><canvas id="radar"></canvas></div>
+  <div class="seg" id="layerSeg"><button data-l="radar">Radar</button><button data-l="temp">Température</button><button data-l="wind">Vent</button><button data-l="cloud">Nuages</button></div>
+  <div class="radar"><div id="map"></div></div>
   <div class="play"><button class="icbtn" id="playBtn">▶</button><input type="range" id="tl" min="0" max="23" value="0"><span id="tlLbl">Maint.</span></div>
   <div class="legend" id="legend"></div>
   <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--mut);margin-top:4px" id="legLbl"></div>
-  <div class="note">Animation illustrative · températures des villes : prévisions MET Norway</div>
+  <div class="note" id="radNote"></div>
 </section>
 
 <!-- VILLES -->
@@ -383,26 +390,76 @@ function drawChart(){
  g.beginPath();vals.forEach((v,i)=>{i?g.lineTo(X(i),Y(v)):g.moveTo(X(i),Y(v))});g.strokeStyle=col[1];g.lineWidth=2.5;g.stroke();
 }
 
-// radar (animation illustrative ; les températures des villes proviennent de MET Norway)
-let frame=0,playing=false,timer;
-const mt=i=>{const q=QK[i];if(!q)return"";const L=current(q);return T(L[Math.min(frame,L.length-1)].t)+"°"};
-function drawRadar(){
- const cv=$("radar"),dpr=devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;if(!w)return;cv.width=w*dpr;cv.height=h*dpr;const g=cv.getContext("2d");g.scale(dpr,dpr);
- g.fillStyle="#0d1b2e";g.fillRect(0,0,w,h);
- const lr=rng(42);g.fillStyle="#16304d";g.beginPath();g.moveTo(0,h*.2);for(let x=0;x<=w;x+=20)g.lineTo(x,h*.15+Math.sin(x/60)*30+lr()*10);g.lineTo(w,h);g.lineTo(0,h);g.fill();
- g.strokeStyle="rgba(255,255,255,.06)";for(let i=0;i<w;i+=40){g.beginPath();g.moveTo(i,0);g.lineTo(i,h);g.stroke()}for(let i=0;i<h;i+=40){g.beginPath();g.moveTo(0,i);g.lineTo(w,i);g.stroke()}
- const L=S.layer,r=rng(7+S.city*13);
- const pal={rain:["rgba(94,200,255,","rgba(61,220,132,","rgba(255,214,10,","rgba(255,69,58,"],temp:["rgba(90,120,255,","rgba(94,200,255,","rgba(255,179,64,","rgba(255,69,58,"],wind:["rgba(160,240,192,","rgba(61,220,132,","rgba(255,214,10,","rgba(191,90,242,"],cloud:["rgba(255,255,255,","rgba(220,220,230,","rgba(180,180,200,","rgba(140,140,160,"]}[L];
- for(let b=0;b<14;b++){const bx=r()*w*1.4-w*.2+frame*6*(L=="cloud"?.6:1),by=r()*h,rad=40+r()*90,int=r();
-  for(let j=3;j>=0;j--){if(int<j*.25&&L!="temp")continue;const gr=g.createRadialGradient(bx%(w+200)-100,by,0,bx%(w+200)-100,by,rad*(1-j*.2));gr.addColorStop(0,pal[j]+(L=="cloud"?.25:.5)+")");gr.addColorStop(1,pal[j]+"0)");g.fillStyle=gr;g.fillRect(0,0,w,h)}}
- if(L=="wind"){g.strokeStyle="rgba(255,255,255,.5)";g.lineWidth=1.2;for(let i=0;i<60;i++){const x=(r()*w+frame*10)%w,y=r()*h,a=.4+Math.sin(y/80)*.5;g.beginPath();g.moveTo(x,y);g.lineTo(x+Math.cos(a)*16,y+Math.sin(a)*16);g.stroke()}}
- g.font="600 12px Inter";CITIES.slice(0,7).forEach((c,i)=>{const x=w*(.15+((i*37)%70)/100),y=h*(.25+((i*53)%60)/100);g.fillStyle=i==S.city?"#5ec8ff":"#fff";g.beginPath();g.arc(x,y,i==S.city?6:4,0,7);g.fill();g.fillText((c.n+" "+mt(i)).trim(),x+9,y+4)});
- $("tlLbl").textContent=frame?"+"+frame+" h":"Maint.";
- const lg={rain:[["#5ec8ff","#3ddc84","#ffd60a","#ff453a"],["Faible","Modérée","Forte","Intense"]],temp:[["#5a78ff","#5ec8ff","#ffb340","#ff453a"],["-10°","0°","15°","30°"]],wind:[["#a0f0c0","#3ddc84","#ffd60a","#bf5af2"],["10","30","60","90 km/h"]],cloud:[["#fff","#dcdce6","#b4b4c8","#8c8ca0"],["Peu","Épars","Couvert","Dense"]]}[L];
+// radar et cartes (fond CARTO/OSM, radar RainViewer, valeurs MET Norway)
+const LAYERS=["radar","temp","wind","cloud"];
+if(!LAYERS.includes(S.layer))S.layer="radar";
+let frame=999,playing=false,timer,MAP=null,MKS=null,RV=null,RVL=[],RVp=null,mapCity=null,rvShown=-1;
+const SC={temp:[[-10,[90,120,255]],[0,[94,200,255]],[15,[255,179,64]],[30,[255,69,58]]],wind:[[10,[160,240,192]],[30,[61,220,132]],[60,[255,214,10]],[90,[191,90,242]]],cloud:[[0,[255,255,255]],[40,[220,220,230]],[100,[120,120,140]]]};
+function scale(k,v){const st=SC[k];if(v<=st[0][0])return st[0][1];for(let i=1;i<st.length;i++)if(v<=st[i][0]){const a=st[i-1],b=st[i],f=(v-a[0])/(b[0]-a[0]);return a[1].map((x,j)=>Math.round(x+(b[1][j]-x)*f))}return st[st.length-1][1]}
+const LEG={radar:[["#9fd8ff","#4aa3ff","#1e56d6","#0b2a8f"],["Faible","Modérée","Forte","Intense"]],temp:[["#5a78ff","#5ec8ff","#ffb340","#ff453a"],["-10°","0°","15°","30°"]],wind:[["#a0f0c0","#3ddc84","#ffd60a","#bf5af2"],["10","30","60","90 km/h"]],cloud:[["#fff","#dcdce6","#b4b4c8","#78788c"],["Dégagé","Épars","Couvert","Dense"]]};
+function initMap(){
+ if(MAP)return true;if(typeof L=="undefined")return false;
+ MAP=L.map("map",{minZoom:3,maxZoom:10,worldCopyJump:true});
+ L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{subdomains:"abcd",maxZoom:19,attribution:"© OpenStreetMap · © CARTO"}).addTo(MAP);
+ MKS=L.layerGroup().addTo(MAP);return true;
+}
+function chip(html,rgb,sel){const dark=(rgb[0]*.299+rgb[1]*.587+rgb[2]*.114)>150;return`<div class="chip${sel?" sel":""}" style="background:rgba(${rgb},.93);color:${dark?"#001":"#fff"}">${html}</div>`}
+function markers(){
+ MKS.clearLayers();
+ CITIES.forEach((c,i)=>{
+  const q=QK[i],sel=i==S.city,nm=sel?esc(c.n)+" · ":"";let h;
+  if(!q)h=chip(nm+"…",[20,30,50],sel);
+  else{
+   const Ls=current(q),e=Ls[Math.min(S.layer=="radar"?0:frame,Ls.length-1)];
+   if(S.layer=="temp")h=chip(nm+T(e.t)+"°",scale("temp",e.t),sel);
+   else if(S.layer=="wind")h=chip(nm+W(Math.round(e.w)),scale("wind",e.w),sel);
+   else if(S.layer=="cloud")h=chip(nm+Math.round(e.cl)+"%",scale("cloud",e.cl),sel);
+   else{const k=cond(sym(Ls[0]),Ls[0]);h=chip(nm+ico(k.c,k.n)+" "+T(Ls[0].t)+"°",[20,30,50],sel)}
+  }
+  L.marker([c.lat,c.lon],{icon:L.divIcon({className:"mk",html:h,iconSize:[0,0]}),zIndexOffset:sel?1000:0}).on("click",()=>{S.city=i;save();refresh(false);markers()}).addTo(MKS);
+ });
+}
+function loadRV(){
+ if(RV&&Date.now()-RV.t<5*6e4)return Promise.resolve(false);
+ if(RVp)return RVp;
+ RVp=getJSON("https://api.rainviewer.com/public/weather-maps.json").then(j=>{
+  const fr=[...(j.radar.past||[]),...(j.radar.nowcast||[])];
+  RVL.forEach(l=>MAP.removeLayer(l));
+  RVL=fr.map(f=>L.tileLayer(j.host+f.path+"/256/{z}/{x}/{y}/2/1_1.png",{opacity:.75,maxNativeZoom:10,maxZoom:10,zIndex:10,attribution:"Radar © RainViewer"}));
+  RV={t:Date.now(),fr};rvShown=-1;return true;
+ }).catch(()=>{RV=null;RVL=[];return false}).finally(()=>{RVp=null});
+ return RVp;
+}
+function showRV(k){
+ RVL.forEach((l,i)=>{if(i==k){if(!MAP.hasLayer(l))l.addTo(MAP);l.setOpacity(.75)}else if(MAP.hasLayer(l))l.setOpacity(0)});
+}
+function setLayer(){frame=S.layer=="radar"?999:0;drawRadar()}
+async function drawRadar(){
+ if(!$("v-map").classList.contains("on"))return;
+ if(!initMap()){$("radNote").textContent="Carte indisponible : la bibliothèque Leaflet n'a pas pu être chargée (connexion ?).";return}
+ MAP.invalidateSize();
+ if(mapCity!==CITIES[S.city]){mapCity=CITIES[S.city];MAP.setView([mapCity.lat,mapCity.lon],6)}
+ let fresh=false;
+ if(S.layer=="radar"){fresh=await loadRV();if(!$("v-map").classList.contains("on")||S.layer!="radar")return}
+ const mx=S.layer=="radar"?(RV?Math.max(0,RV.fr.length-1):0):23;
+ if(fresh)frame=mx;if(frame>mx)frame=mx;
+ $("tl").max=mx;$("tl").value=frame;
+ markers();
+ const C=CITIES[S.city];
+ if(S.layer=="radar"){
+  if(RV&&RV.fr.length){showRV(frame);const last=RV.fr.length-1;$("tlLbl").textContent=frame==last?"Maint.":"-"+Math.round((RV.fr[last].time-RV.fr[frame].time)/60)+" min";
+   $("radNote").textContent="Radar de précipitations réel (RainViewer), 2 dernières heures · températures : MET Norway";}
+  else{$("tlLbl").textContent="";$("radNote").textContent="Radar indisponible pour le moment. Les températures (MET Norway) restent affichées."}
+ }else{
+  RVL.forEach(l=>{if(MAP.hasLayer(l))l.setOpacity(0)});
+  $("tlLbl").textContent=frame?"+"+frame+" h":"Maint.";
+  $("radNote").textContent="Prévisions MET Norway pour vos villes · touchez une ville pour la sélectionner";
+ }
+ const lg=LEG[S.layer];
  $("legend").innerHTML=lg[0].map(c=>`<span style="background:${c}"></span>`).join("");$("legLbl").innerHTML=lg[1].map(t=>`<span>${t}</span>`).join("");
 }
 $("tl").oninput=e=>{frame=+e.target.value;drawRadar()};
-$("playBtn").onclick=()=>{playing=!playing;$("playBtn").textContent=playing?"❚❚":"▶";clearInterval(timer);if(playing)timer=setInterval(()=>{frame=(frame+1)%24;$("tl").value=frame;drawRadar()},450)};
+$("playBtn").onclick=()=>{playing=!playing;$("playBtn").textContent=playing?"❚❚":"▶";clearInterval(timer);if(playing)timer=setInterval(()=>{frame=(frame+1)%(+$("tl").max+1);drawRadar()},S.layer=="radar"?500:450)};
 
 // villes
 function loadCities(){
@@ -479,10 +536,10 @@ function locate(){
 function pickCity(i){S.city=i;save();go("today");refresh(false);toast("📍 "+CITIES[i].n)}
 function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),1600)}
 
-function go(v){document.querySelectorAll(".view").forEach(e=>e.classList.toggle("on",e.id=="v-"+v));document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.v==v));scrollTo(0,0);if(v=="map")setTimeout(drawRadar,30);if(v=="fc")setTimeout(drawChart,30);if(v=="cities"||v=="map")loadCities();try{history.replaceState(null,"","#"+v)}catch(e){}}
+function go(v){document.querySelectorAll(".view").forEach(e=>e.classList.toggle("on",e.id=="v-"+v));document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.v==v));scrollTo(0,0);if(v!="map"&&playing)$("playBtn").click();if(v=="map")setTimeout(drawRadar,30);if(v=="fc")setTimeout(drawChart,30);if(v=="cities"||v=="map")loadCities();try{history.replaceState(null,"","#"+v)}catch(e){}}
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>go(b.dataset.v));
 const segs=(id,key,fn)=>document.querySelectorAll("#"+id+" button").forEach(b=>{b.onclick=()=>{document.querySelectorAll("#"+id+" button").forEach(x=>x.classList.remove("on"));b.classList.add("on");S[key]=b.dataset.k||b.dataset.l||b.dataset.v;save();fn()}});
-segs("chartSeg","chart",drawChart);segs("layerSeg","layer",drawRadar);
+segs("chartSeg","chart",drawChart);segs("layerSeg","layer",setLayer);document.querySelectorAll("#layerSeg button").forEach(b=>b.classList.toggle("on",b.dataset.l==S.layer));
 ["uT","uW","uP","uH"].forEach(id=>{document.querySelectorAll("#"+id+" button").forEach(b=>b.classList.toggle("on",b.dataset.v==S[id]));segs(id,id,()=>{render();drawRadar();drawCities()})});
 document.querySelectorAll(".sw").forEach(s=>{s.classList.toggle("on",!!S[s.dataset.s]);s.onclick=()=>{s.classList.toggle("on");S[s.dataset.s]=s.classList.contains("on");save();render()}});
 addEventListener("resize",()=>{drawChart();drawRadar()});
