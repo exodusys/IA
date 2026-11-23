@@ -54,7 +54,7 @@ canvas{width:100%;display:block}
 .seg{display:flex;background:rgba(0,0,0,.2);border-radius:12px;padding:3px;margin-bottom:12px}
 .seg button{flex:1;background:none;border:0;color:var(--mut);padding:8px;border-radius:9px;font:600 12px Inter;cursor:pointer}
 .seg button.on{background:rgba(255,255,255,.18);color:#fff}
-.radar #map{position:absolute;inset:0;background:#0d1b2e;font-family:Inter,system-ui,sans-serif}
+.radar #map{position:absolute;inset:0;background:#ddd;font-family:Inter,system-ui,sans-serif}
 .mk{background:none!important;border:0!important}
 .chip{position:absolute;transform:translate(-50%,-50%);padding:3px 8px;border-radius:12px;font:700 12px Inter,sans-serif;white-space:nowrap;border:2px solid rgba(255,255,255,.75);box-shadow:0 2px 8px #0007;cursor:pointer}
 .chip.sel{border-color:#5ec8ff;box-shadow:0 0 0 3px rgba(94,200,255,.55)}
@@ -400,7 +400,7 @@ const LEG={radar:[["#9fd8ff","#4aa3ff","#1e56d6","#0b2a8f"],["Faible","Modérée
 function initMap(){
  if(MAP)return true;if(typeof L=="undefined")return false;
  MAP=L.map("map",{minZoom:3,maxZoom:10,worldCopyJump:true});
- L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{subdomains:"abcd",maxZoom:19,attribution:"© OpenStreetMap · © CARTO"}).addTo(MAP);
+ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"}).addTo(MAP);
  MKS=L.layerGroup().addTo(MAP);return true;
 }
 function chip(html,rgb,sel){const dark=(rgb[0]*.299+rgb[1]*.587+rgb[2]*.114)>150;return`<div class="chip${sel?" sel":""}" style="background:rgba(${rgb},.93);color:${dark?"#001":"#fff"}">${html}</div>`}
