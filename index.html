@@ -47,6 +47,7 @@ body.snow{--bg1:#3a4a63;--bg2:#8ea4c2}
 .rng{height:5px;border-radius:3px;background:rgba(255,255,255,.12);position:relative}.rng i{position:absolute;height:100%;border-radius:3px;background:linear-gradient(90deg,#5ec8ff,#ffd60a,#ff9f0a)}
 .detail{display:none;grid-column:1/-1;font-size:12px;color:var(--mut);padding-top:8px;line-height:1.6}.day.open .detail{display:block}
 canvas{width:100%;display:block}
+.x{background:none;border:0;color:var(--mut);font-size:16px;padding:8px;cursor:pointer;border-radius:10px}.x:active{background:rgba(255,255,255,.15)}
 .ld>:not(.top):not(h1):not(#status){opacity:.35;pointer-events:none}
 .seg{display:flex;background:rgba(0,0,0,.2);border-radius:12px;padding:3px;margin-bottom:12px}
 .seg button{flex:1;background:none;border:0;color:var(--mut);padding:8px;border-radius:9px;font:600 12px Inter;cursor:pointer}
@@ -151,9 +152,10 @@ nav button.on{color:#fff}nav button.on svg{stroke:var(--acc)}
   <div class="card">
     <div class="row">Alertes météo<div class="sw on" data-s="alerts"></div></div>
     <div class="row">Fond animé selon la météo<div class="sw on" data-s="dyn"></div></div>
+    <div class="row">Villes enregistrées<button class="tg" style="border:0;color:#fff;padding:8px 12px;font:600 13px Inter;cursor:pointer" onclick="resetCities()">Réinitialiser</button></div>
     <div class="row">Résumé quotidien<div class="sw" data-s="daily"></div></div>
   </div>
-  <div class="card"><div class="ct">ℹ️ À propos</div><div class="sub">Météo Pro v3.0 · Prévisions : MET Norway (api.met.no, Locationforecast 2.0 et Sunrise 3.0), sous licence CC BY 4.0 / NLOD. Heures affichées dans le fuseau de chaque ville. L'indice UV est estimé (ciel clair corrigé de la nébulosité). La qualité de l'air n'est pas fournie par MET Norway hors de Norvège.</div></div>
+  <div class="card"><div class="ct">ℹ️ À propos</div><div class="sub">Météo Pro v3.0 · Prévisions : MET Norway (api.met.no, Locationforecast 2.0 et Sunrise 3.0), sous licence CC BY 4.0 / NLOD. Heures affichées dans le fuseau de chaque ville. L'indice UV est estimé (ciel clair corrigé de la nébulosité). La recherche de villes utilise Open-Meteo Geocoding. La qualité de l'air n'est pas fournie par MET Norway hors de Norvège.</div></div>
 </section>
 </div>
 
@@ -167,7 +169,7 @@ nav button.on{color:#fff}nav button.on svg{stroke:var(--acc)}
 <div class="toast" id="toast"></div>
 
 <script>
-const CITIES=[
+const DEFAULTS=[
  {n:"Zurich",c:"Suisse",lat:47.3769,lon:8.5417,alt:408,tz:"Europe/Zurich"},
  {n:"Genève",c:"Suisse",lat:46.2044,lon:6.1432,alt:375,tz:"Europe/Zurich"},
  {n:"Lausanne",c:"Suisse",lat:46.5197,lon:6.6323,alt:495,tz:"Europe/Zurich"},
@@ -181,13 +183,10 @@ const CITIES=[
  {n:"Tokyo",c:"Japon",lat:35.6762,lon:139.6503,alt:40,tz:"Asia/Tokyo"},
  {n:"New York",c:"États-Unis",lat:40.7128,lon:-74.006,alt:10,tz:"America/New_York"}
 ];
-const GEO=CITIES.length;
-CITIES.push({n:"Ma position",c:"Géolocalisation",lat:0,lon:0,alt:null,tz:Intl.DateTimeFormat().resolvedOptions().timeZone,geo:true});
-function setGeo(g){const C=CITIES[GEO];C.lat=g.lat;C.lon=g.lon;C.c=g.lat.toFixed(2)+"°, "+g.lon.toFixed(2)+"°"}
 const COND={clear:["Ensoleillé","☀️","🌙"],pc:["Partiellement nuageux","⛅","☁️"],cloud:["Nuageux","☁️","☁️"],rain:["Pluie","🌧️","🌧️"],shower:["Averses","🌦️","🌧️"],sleet:["Pluie et neige mêlées","🌨️","🌨️"],storm:["Orages","⛈️","⛈️"],snow:["Neige","🌨️","🌨️"],fog:["Brouillard","🌫️","🌫️"]};
 let S={city:0,uT:"C",uW:"kmh",uP:"hPa",uH:"24",alerts:true,dyn:true,chart:"temp",layer:"rain"};
 try{Object.assign(S,JSON.parse(localStorage.getItem("meteoPro")||"{}"))}catch(e){}
-if(S.geo)setGeo(S.geo);else if(S.city==GEO)S.city=0;
+let CITIES=Array.isArray(S.list)&&S.list.length?S.list:DEFAULTS.map(c=>({...c}));S.list=CITIES;
 if(!CITIES[S.city])S.city=0;
 const save=()=>{try{localStorage.setItem("meteoPro",JSON.stringify(S))}catch(e){}};
 function rng(s){return()=>{s=(s*16807)%2147483647;return(s-1)/2147483646}}
@@ -242,7 +241,7 @@ function sunCalc(C){
 function fetchFull(ci,force){
  const k=ci+"full",e=cache[k];if(!force&&e&&Date.now()-e.t<TTL)return e.p;
  const C=CITIES[ci];
- const p=Promise.all([getJSON(fcURL(C,"complete")).then(parse),getSun(C).catch(()=>null)]).then(([E,sun])=>({ci,E,sun:sun||sunCalc(C)}));
+ const p=Promise.all([getJSON(fcURL(C,"complete")).then(parse),getSun(C).catch(()=>null)]).then(([E,sun])=>({ci,C,E,sun:sun||sunCalc(C)}));
  cache[k]={t:Date.now(),p};p.catch(()=>{if(cache[k]&&cache[k].p===p)delete cache[k]});return p;
 }
 
@@ -323,7 +322,7 @@ function status(msg,retry){
 const ld=on=>["v-today","v-fc"].forEach(id=>$(id).classList.toggle("ld",on));
 
 function render(){
- if(!RAW||RAW.ci!==S.city)return;
+ if(!RAW||RAW.C!==CITIES[S.city])return;
  const C=CITIES[S.city];D=build(RAW.E,RAW.sun,C);D.ci=S.city;
  const{cur,days,hours,sun}=D,now=Date.now(),np=parts(now,C.tz);
  document.body.className=!S.dyn?"":cur.n&&cur.c=="clear"?"night":["rain","shower","storm"].includes(cur.c)?"rain":["snow","sleet"].includes(cur.c)?"snow":cur.n?"night":"sunny";
@@ -407,25 +406,62 @@ $("playBtn").onclick=()=>{playing=!playing;$("playBtn").textContent=playing?"❚
 
 // villes
 function loadCities(){
- CITIES.forEach((c,i)=>c.geo&&!S.geo?0:fetchFc(i,"compact").then(E=>{QK[i]=E;drawCities();if($("v-map").classList.contains("on"))drawRadar()}).catch(()=>{}));
+ CITIES.forEach((c,i)=>fetchFc(i,"compact").then(E=>{if(CITIES[i]!==c)return;QK[i]=E;drawCities();if($("v-map").classList.contains("on"))drawRadar()}).catch(()=>{}));
 }
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let SR=[],SRs="idle",srT;
 function drawCities(){
- const q=($("search").value||"").toLowerCase();
- $("cityList").innerHTML=CITIES.map((c,i)=>({c,i})).filter(o=>!o.c.geo||S.geo).sort((a,b)=>(b.c.geo?1:0)-(a.c.geo?1:0)).filter(o=>o.c.n.toLowerCase().includes(q)||o.c.c.toLowerCase().includes(q)).map(({c,i})=>{
+ const q=($("search").value||"").trim().toLowerCase();
+ let h=CITIES.map((c,i)=>({c,i})).filter(o=>o.c.n.toLowerCase().includes(q)||o.c.c.toLowerCase().includes(q)).map(({c,i})=>{
   const k=QK[i]?quick(QK[i]):null;
-  return`<div class="city ${i==S.city?"cur":""}" onclick="pickCity(${i})"><div><h3>${i==S.city?"📍 ":""}${c.n}</h3><small>${c.c}${k?" · "+COND[k.c][0]:""}</small><br><small>${k?"Max "+T(k.hi)+"° Min "+T(k.lo)+"°":"Chargement…"}</small></div><div class="r"><div style="font-size:26px">${k?ico(k.c,k.n):""}</div><b>${k?T(k.t)+"°":"…"}</b></div></div>`}).join("")||'<div class="note">Aucune ville trouvée</div>';
+  return`<div class="city ${i==S.city?"cur":""}" onclick="pickCity(${i})"><div><h3>${i==S.city?"📍 ":""}${esc(c.n)}</h3><small>${esc(c.c)}${k?" · "+COND[k.c][0]:""}</small><br><small>${k?"Max "+T(k.hi)+"° Min "+T(k.lo)+"°":"Chargement…"}</small></div><div style="display:flex;align-items:center;gap:6px"><div class="r"><div style="font-size:26px">${k?ico(k.c,k.n):""}</div><b>${k?T(k.t)+"°":"…"}</b></div><button class="x" title="Supprimer" onclick="event.stopPropagation();delCity(${i})">✕</button></div></div>`}).join("");
+ if(!h&&q.length<2)h='<div class="note">Aucune ville enregistrée</div>';
+ if(q.length>=2){
+  h+='<div class="ct" style="margin:18px 4px 10px">🌍 Ajouter une ville</div>';
+  if(SRs=="loading")h+='<div class="note">Recherche…</div>';
+  else if(SRs=="err")h+='<div class="note">Recherche impossible, vérifiez votre connexion.</div>';
+  else if(!SR.length)h+='<div class="note">Aucun résultat</div>';
+  else h+=SR.map((r,k)=>{const dup=CITIES.some(c=>Math.abs(c.lat-r.latitude)<.02&&Math.abs(c.lon-r.longitude)<.02);return`<div class="city" onclick="addCity(${k})"><div><h3>${esc(r.name)}</h3><small>${esc([r.admin1,r.country].filter(Boolean).join(", "))}${dup?" · déjà ajoutée":""}</small></div><div class="r"><b style="font-size:28px">${dup?"✓":"＋"}</b></div></div>`}).join("");
+ }
+ $("cityList").innerHTML=h;
 }
-$("search").oninput=drawCities;
+$("search").oninput=()=>{drawCities();clearTimeout(srT);const q=$("search").value.trim();if(q.length<2){SR=[];SRs="idle";return}SRs="loading";drawCities();srT=setTimeout(()=>searchOnline(q),400)};
+// recherche de villes : Open-Meteo Geocoding (MET Norway n'a pas de géocodage)
+async function searchOnline(q){
+ try{
+  const j=await getJSON("https://geocoding-api.open-meteo.com/v1/search?name="+encodeURIComponent(q)+"&count=8&language=fr&format=json");
+  if($("search").value.trim()!==q)return;
+  SR=j.results||[];SRs="ok";
+ }catch(e){if($("search").value.trim()!==q)return;SR=[];SRs="err"}
+ drawCities();
+}
+function reindex(){for(const k in cache)delete cache[k];for(const k in QK)delete QK[k]}
+function addCity(k){
+ const r=SR[k];if(!r)return;
+ if(CITIES.some(c=>Math.abs(c.lat-r.latitude)<.02&&Math.abs(c.lon-r.longitude)<.02)){toast("Déjà dans vos villes");return}
+ CITIES.push({n:r.name,c:r.country||"",lat:+r.latitude.toFixed(4),lon:+r.longitude.toFixed(4),alt:r.elevation!=null?Math.round(r.elevation):null,tz:r.timezone||"UTC"});
+ save();$("search").value="";SR=[];SRs="idle";drawCities();loadCities();toast("＋ "+r.name+" ajoutée");
+}
+function delCity(i){
+ if(CITIES.length<2){toast("Gardez au moins une ville");return}
+ const cur=CITIES[S.city],name=CITIES[i].n;CITIES.splice(i,1);reindex();
+ const ni=CITIES.indexOf(cur);
+ if(ni>=0)S.city=ni;else{S.city=0;RAW=null;D=null}
+ save();drawCities();loadCities();if(ni<0)refresh(false);toast("Ville supprimée : "+name);
+}
+function resetCities(){
+ CITIES=DEFAULTS.map(c=>({...c}));S.list=CITIES;S.city=0;RAW=null;D=null;reindex();save();drawCities();loadCities();refresh(false);toast("Villes réinitialisées");
+}
 
 async function refresh(force){
  const ci=S.city;
- if(!D||D.ci!==ci){ld(true);status("Chargement des données MET Norway…");$("cityName").textContent=CITIES[ci].n+", "+CITIES[ci].c}
+ if(!D||D.C!==CITIES[ci]){ld(true);status("Chargement des données MET Norway…");$("cityName").textContent=CITIES[ci].n+", "+CITIES[ci].c}
  try{
-  const raw=await fetchFull(ci,force);if(ci!==S.city)return;
+  const raw=await fetchFull(ci,force);if(raw.C!==CITIES[S.city])return;
   RAW=raw;render();status("");ld(false);if(force)toast("Données actualisées");
  }catch(e){
-  if(ci!==S.city)return;
-  if(!D||D.ci!==ci)status("Impossible de charger les données MET Norway ("+e.message+"). Vérifiez votre connexion.",true);
+  if(CITIES[ci]!==CITIES[S.city])return;
+  if(!D||D.C!==CITIES[ci])status("Impossible de charger les données MET Norway ("+e.message+"). Vérifiez votre connexion.",true);
   else toast("Actualisation impossible");
  }
 }
@@ -433,9 +469,11 @@ function locate(){
  if(!navigator.geolocation){toast("Géolocalisation indisponible");return}
  toast("Localisation en cours…");
  navigator.geolocation.getCurrentPosition(p=>{
-  const g={lat:+p.coords.latitude.toFixed(4),lon:+p.coords.longitude.toFixed(4)};
-  S.geo=g;setGeo(g);delete cache[GEO+"full"];delete cache[GEO+"compact"];delete QK[GEO];
-  S.city=GEO;save();go("today");refresh(false);toast("📍 Ma position");
+  const g={n:"Ma position",c:"Géolocalisation",lat:+p.coords.latitude.toFixed(4),lon:+p.coords.longitude.toFixed(4),alt:null,tz:Intl.DateTimeFormat().resolvedOptions().timeZone,geo:true};
+  g.c=g.lat.toFixed(2)+"°, "+g.lon.toFixed(2)+"°";
+  const k=CITIES.findIndex(c=>c.geo);if(k>=0)CITIES.splice(k,1);
+  CITIES.unshift(g);reindex();S.city=0;RAW=null;D=null;
+  save();go("today");refresh(false);toast("📍 Ma position");
  },e=>toast(e.code==1?"Autorisation de localisation refusée":"Position introuvable"),{timeout:10000,maximumAge:600000});
 }
 function pickCity(i){S.city=i;save();go("today");refresh(false);toast("📍 "+CITIES[i].n)}
