@@ -11,7 +11,6 @@
 <link rel="preconnect" href="https://i.ytimg.com">
 <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
 <style>
-/* base.css */
 /* ---------------------------------------------------------------------------
    Onde — base layer
    Tokens, reset, typography defaults, focus, scrollbars, utilities
@@ -205,7 +204,6 @@ ul, ol { list-style: none; padding: 0; }
 
 </style>
 <style>
-/* style.css */
 /* ---------------------------------------------------------------------------
    Onde — interface
    1. Shell            6. Player bar
@@ -2282,6 +2280,65 @@ body[data-playing='true'] .player-progress span { transition: width 0.25s linear
   .topbar { padding-inline: var(--space-12); }
 }
 
+/* Ad-free control + clickable rows ---------------------------------------- */
+
+.rail-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 0 var(--space-2) var(--space-4);
+}
+
+.rs-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.rs-title { font-size: var(--text-sm); font-weight: 600; color: var(--text-2); }
+.rs-text small { font-size: 0.625rem; line-height: 1.35; color: var(--text-3); }
+
+.switch {
+  position: relative;
+  flex: none;
+  width: 38px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-3);
+  transition: background 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+.switch .knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text-3);
+  transition: transform 0.18s var(--ease), background 0.18s var(--ease);
+}
+.switch[aria-checked="true"] {
+  background: color-mix(in oklch, var(--accent) 30%, transparent);
+  border-color: color-mix(in oklch, var(--accent) 55%, transparent);
+}
+.switch[aria-checked="true"] .knob { transform: translateX(16px); background: var(--accent); }
+.switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.ad-pill {
+  flex: none;
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(232, 176, 106, 0.32);
+  background: rgba(232, 176, 106, 0.14);
+  color: var(--accent);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.track-main { cursor: pointer; }
+.track-main:hover .track-title { color: var(--accent); }
+.result-main { cursor: pointer; }
+.result-row:hover .result-title { color: var(--accent); }
+
 </style>
 </head>
 <body>
@@ -2369,9 +2426,18 @@ body[data-playing='true'] .player-progress span { transition: width 0.25s linear
     </div>
 
     <div class="rail-foot">
+      <div class="rail-switch">
+        <span class="rs-text">
+          <span class="rs-title">Sans pub</span>
+          <small>Coupe le son des pubs, essaie de les passer</small>
+        </span>
+        <button class="switch" id="toggle-adblock" type="button" role="switch" aria-checked="true" aria-label="Mode sans publicité">
+          <span class="knob" aria-hidden="true"></span>
+        </button>
+      </div>
       <p class="rail-note">
         <svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>
-        Lecture via le lecteur YouTube. Les imports restent dans cette session.
+        Lecture via YouTube. Les imports restent dans cette session.
       </p>
       <div class="source-badges" aria-label="Sources prises en charge">
         <span class="src-badge"><svg class="ic" aria-hidden="true"><use href="#i-yt"/></svg>YouTube</span>
@@ -2426,6 +2492,7 @@ body[data-playing='true'] .player-progress span { transition: width 0.25s linear
       <div class="np-meta">
         <div class="np-line">
           <span class="np-title" id="bar-title">Aucune lecture</span>
+          <span class="ad-pill" id="ad-pill" hidden>Pub</span>
           <span class="eq" id="bar-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
         </div>
         <span class="np-artist" id="bar-artist">Choisis un titre pour commencer</span>
@@ -2602,7 +2669,6 @@ body[data-playing='true'] .player-progress span { transition: width 0.25s linear
 <div class="yt-host" id="yt-host"><div id="yt-player"></div></div>
 
 <script>
-/* data.js */
 /* Onde — bibliothèque de démonstration
    Chaque identifiant vidéo a été vérifié sur YouTube. Couvertures servies par i.ytimg.com. */
 
@@ -2693,7 +2759,6 @@ window.ONDE_SEED = {
 
 </script>
 <script>
-/* player.js */
 /* Onde — lecteur YouTube.
    On pilote directement l'iframe d'embed via l'API postMessage de YouTube :
    pas de script tiers, pas de wrapper fragile, et les commandes restent
@@ -2710,7 +2775,9 @@ window.ONDE_SEED = {
     currentTime: 0,
     state: -1,
     volume: 80,
-    muted: false
+    muted: false,
+    adblock: true,
+    adPlaying: false
   };
 
   let frame = null;
@@ -2731,6 +2798,7 @@ window.ONDE_SEED = {
   };
 
   function embedUrl(videoId) {
+    const host = api.adblock ? 'https://www.youtube-nocookie.com/embed/' : 'https://www.youtube.com/embed/';
     const params = new URLSearchParams({
       enablejsapi: '1',
       autoplay: autoplayNext ? '1' : '0',
@@ -2746,7 +2814,7 @@ window.ONDE_SEED = {
     if (location.protocol === 'http:' || location.protocol === 'https:') {
       params.set('origin', location.origin);
     }
-    return 'https://www.youtube.com/embed/' + encodeURIComponent(videoId || '') + '?' + params.toString();
+    return host + encodeURIComponent(videoId || '') + '?' + params.toString();
   }
 
   function post(payload) {
@@ -2808,6 +2876,25 @@ window.ONDE_SEED = {
       if (typeof info.playerState === 'number' && info.playerState !== api.state) {
         api.state = info.playerState;
         emit('state', info.playerState);
+      }
+
+      // An ad is a different video than the one we asked for. There is no
+      // official ad API inside the embed, so we match on the reported id:
+      // mute the ad and try to jump past it, then restore the sound.
+      const shownId = info.videoData && info.videoData.video_id;
+      if (api.adblock && shownId && api.videoId) {
+        const isAd = shownId !== api.videoId;
+        if (isAd && !api.adPlaying) {
+          api.adPlaying = true;
+          command('mute');
+          emit('ad', true);
+          const skipTo = typeof info.duration === 'number' && info.duration > 0 ? info.duration - 0.25 : 0;
+          if (skipTo) command('seekTo', [skipTo, true]);
+        } else if (!isAd && api.adPlaying) {
+          api.adPlaying = false;
+          if (!api.muted) command('unMute');
+          emit('ad', false);
+        }
       }
     }
   }
@@ -2903,6 +2990,25 @@ window.ONDE_SEED = {
     command(muted ? 'mute' : 'unMute');
   };
 
+  api.setAdblock = function (on) {
+    const next = !!on;
+    if (next === api.adblock) return;
+    api.adblock = next;
+    api.adPlaying = false;
+    if (!api.videoId) return;
+    const resume = api.state === 1;
+    // The host name is baked into the iframe URL: swapping it means building a
+    // new frame, so we tear the old one down first.
+    if (frame) {
+      window.removeEventListener('message', onMessage);
+      frame.remove();
+      frame = null;
+      api.ready = false;
+      api.state = -1;
+    }
+    api.load(api.videoId, resume);
+  };
+
   api.time = function () {
     return api.currentTime || 0;
   };
@@ -2916,7 +3022,6 @@ window.ONDE_SEED = {
 
 </script>
 <script>
-/* importer.js */
 /* Onde — pipeline d'import
    YouTube · Spotify · Deezer · Resso · fichier
    Les métadonnées passent par Piped (API YouTube publique) et le lecteur de pages r.jina.ai. */
@@ -3491,7 +3596,6 @@ window.ONDE_SEED = {
 
 </script>
 <script>
-/* app.js */
 /* Onde — application
    État en mémoire, rendu par vues, lecteur YouTube, imports, file d'attente. */
 
@@ -3527,6 +3631,7 @@ window.ONDE_SEED = {
     searchRemote: null,
     searchBusy: false,
     searchToken: 0,
+    adblock: true,
     import: { source: 'youtube', proposal: null, busy: false }
   };
 
@@ -3722,6 +3827,18 @@ window.ONDE_SEED = {
         ]
       });
     } catch (e) { /* ignore */ }
+  }
+
+  function idsFromContext(ctx) {
+    if (ctx === 'recent') return state.recent.slice();
+    if (ctx === 'search-local') return state.searchLocal.map((x) => x.id);
+    if (ctx && ctx.startsWith('playlist:')) return (playlistById(ctx.split(':')[1]) || {}).trackIds || [];
+    if (ctx && ctx.startsWith('artist:')) return trackList().filter((x) => x.artist.includes(ctx.split(':')[1])).map((x) => x.id);
+    if (ctx && ctx.startsWith('album:')) {
+      const al = albums().find((a) => a.key === ctx.slice(6));
+      return al ? al.ids : [];
+    }
+    return sortedTracks().map((x) => x.id);
   }
 
   function playTrack(id, context) {
@@ -4899,20 +5016,27 @@ window.ONDE_SEED = {
     document.addEventListener('click', (e) => {
       const t = e.target;
 
+      // A whole row is a play target: clicking the artwork, the title or the
+      // empty space starts the track. Buttons and links keep their own jobs.
+      const trackRow = t.closest('.track');
+      if (trackRow && !t.closest('button, a, input, label')) {
+        const playEl = trackRow.querySelector('[data-play]');
+        playTrack(trackRow.dataset.id, idsFromContext(playEl && playEl.dataset.context));
+        return;
+      }
+
+      const resultRow = t.closest('.result-row');
+      if (resultRow && !t.closest('button, a')) {
+        const id = resultRow.dataset.id;
+        const r = (state.searchRemote || []).find((x) => x.videoId === id);
+        if (!state.tracks.has(id) && r) addTrack({ id, title: r.title, artist: r.artist, album: 'Single', duration: r.duration });
+        playTrack(id, [id]);
+        return;
+      }
+
       const playBtn = t.closest('[data-play]');
       if (playBtn) {
-        const id = playBtn.dataset.play;
-        const ctx = playBtn.dataset.context;
-        let list;
-        if (ctx === 'recent') list = state.recent.slice();
-        else if (ctx === 'search-local') list = state.searchLocal.map((x) => x.id);
-        else if (ctx && ctx.startsWith('playlist:')) list = (playlistById(ctx.split(':')[1]) || {}).trackIds || [];
-        else if (ctx && ctx.startsWith('artist:')) list = trackList().filter((x) => x.artist.includes(ctx.split(':')[1])).map((x) => x.id);
-        else if (ctx && ctx.startsWith('album:')) {
-          const al = albums().find((a) => a.key === ctx.slice(6));
-          list = al ? al.ids : [];
-        } else list = sortedTracks().map((x) => x.id);
-        playTrack(id, list);
+        playTrack(playBtn.dataset.play, idsFromContext(playBtn.dataset.context));
         return;
       }
 
@@ -5239,6 +5363,16 @@ window.ONDE_SEED = {
       else if (e.key.toLowerCase() === 'p') { prev(); }
     });
 
+    const adToggle = $('#toggle-adblock');
+    if (adToggle) {
+      adToggle.addEventListener('click', () => {
+        state.adblock = !state.adblock;
+        adToggle.setAttribute('aria-checked', String(state.adblock));
+        OndePlayer.setAdblock(state.adblock);
+        toast(state.adblock ? 'Mode sans pub activé' : 'Mode sans pub désactivé');
+      });
+    }
+
     window.addEventListener('hashchange', () => { render(); renderRail(); });
 
     OndePlayer.on('ready', () => {
@@ -5258,6 +5392,12 @@ window.ONDE_SEED = {
     });
 
     OndePlayer.on('progress', ({ time, duration }) => paintProgress(time, duration));
+
+    OndePlayer.on('ad', (on) => {
+      const pill = $('#ad-pill');
+      if (pill) pill.hidden = !on;
+      document.body.dataset.ad = on ? 'true' : 'false';
+    });
 
     OndePlayer.on('error', (err) => {
       setPlaying(false);
