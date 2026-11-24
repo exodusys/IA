@@ -127,7 +127,7 @@ function gtfsParserModule(){
     const raw=blob.slice(start,start+en.csize).stream();
     if(en.method===0) return raw;
     if(en.method===8){ if(typeof DecompressionStream==='undefined') throw new Error('Navigateur trop ancien (DecompressionStream)');
-      if(!opts_forceZlib){ try{ return raw.pipeThrough(new DecompressionStream('deflate-raw')) }catch(e){} }
+      if(!opts_forceZlib){ try{ const o=raw.pipeThrough(new DecompressionStream('deflate-raw')); o._tolerate=en.usize||1; return o }catch(e){} }
       // repli (navigateurs sans « deflate-raw ») : enveloppe zlib factice ; l'erreur finale de somme de contrôle est ignorée (taille connue)
       const rd=raw.getReader(); let step=0; const wrapped=new ReadableStream({ async pull(c){ if(step===0){ step=1; c.enqueue(new Uint8Array([0x78,0x9c])); return }
         const {value,done}=await rd.read(); if(done){ c.enqueue(new Uint8Array(4)); c.close() } else c.enqueue(value) } });
@@ -139,7 +139,7 @@ function gtfsParserModule(){
   async function eachLine(stream,cb,onBytes){
     const reader=stream.getReader(), dec=new TextDecoder('utf-8'); let buf='', total=0;
     for(;;){
-      let r; try{ r=await reader.read() }catch(e){ if(stream._tolerate&&total>=stream._tolerate) break; throw e }
+      let r; try{ r=await reader.read() }catch(e){ if(stream._tolerate&&total>0&&(stream._tolerate>=0xffffffff||total>=stream._tolerate||/extra bytes|trailing/i.test(String(e&&e.message)))) break; throw e }
       const {value,done}=r; if(done) break; total+=value.length;
       if(onBytes) onBytes(value.length);
       buf+=dec.decode(value,{stream:true}); let i=0,j;
