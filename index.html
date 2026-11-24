@@ -36,7 +36,7 @@ var h=document.head,m1=document.createElement('meta');m1.name='theme-color';m1.c
   will-change:auto!important;
 }
 #v-parametres>.row:first-child h2{margin-bottom:0}#v-parametres>.row:first-child+h3{margin-top:10px}
-</style><link rel="apple-touch-icon" id="appIcon" href=""><link rel="icon" id="favIcon" href=""></head><body><script>try{if(JSON.parse(localStorage.getItem("bd_settings")||"{}").glass===false)document.body.classList.add("noglass")}catch(e){}</script><div id="appWallpaper" aria-hidden="true"></div>
+.gs-in{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:rgba(127,127,127,.12);color:var(--text);font-size:15px;outline:none}#v-departs .jr{margin-bottom:8px}</style><link rel="apple-touch-icon" id="appIcon" href=""><link rel="icon" id="favIcon" href=""></head><body><script>try{if(JSON.parse(localStorage.getItem("bd_settings")||"{}").glass===false)document.body.classList.add("noglass")}catch(e){}</script><div id="appWallpaper" aria-hidden="true"></div>
 
 <header class="glass"><div class="logo" id="logo"></div><div class="appname">Bus<span>Direct</span></div><div class="spacer"></div><div class="loc" id="locLabel" aria-live="polite"></div></header>
 
@@ -72,14 +72,389 @@ var h=document.head,m1=document.createElement('meta');m1.name='theme-color';m1.c
   <section class="view" id="v-tickets"><h2>Tickets</h2><div class="card glass"><div class="row between"><div><b id="regionName">Région</b><div class="muted" style="font-size:12px">Ticket SMS selon ta position</div></div><button class="btn ghost sm" onclick="locate(true)">📍</button></div></div><h3>Tickets disponibles</h3><div class="card glass" id="smsList"></div><h3>Autres régions</h3><div class="card glass" id="smsOther"></div><p class="muted" style="font-size:12px;margin:6px">Tarifs et mots-clés indicatifs : vérifie auprès de l'opérateur avant l'envoi. Le ticket SMS est facturé sur ta facture mobile (abonnement suisse requis).</p></section>
 
   
-  <section class="view" id="v-parametres"><div class="row between"><h2>Paramètres</h2><button class="info-btn" onclick="toggleInfo(true)" aria-label="Informations">i</button></div><h3>Apparence</h3><div class="card glass"><div class="set"><span>Style</span><div class="seg" id="styleSeg"><button data-v="round">Arrondi</button><button data-v="classic">Classique</button></div></div><div class="set"><span>Thème</span><div class="seg" id="themeSeg"><button data-v="light">Clair</button><button data-v="dark">Sombre</button><button data-v="auto">Auto</button></div></div><div class="set"><span>Couleur d'accent</span><input type="color" id="accent" style="width:44px;height:30px;border:none;background:none"></div></div><h3>Liquid Glass</h3><div class="card glass"><div class="set"><span>Activer l'effet</span><label class="switch"><input type="checkbox" id="glassOn"><span></span></label></div><div class="set"><span>Flou</span><input type="range" id="blur" min="0" max="100"><output class="range-value" id="blurValue" for="blur">20%</output></div><div class="set"><span>Transparence</span><input type="range" id="alpha" min="0" max="100"><output class="range-value" id="alphaValue" for="alpha">80%</output></div><div class="set"><span>Saturation</span><input type="range" id="sat" min="0" max="100"><output class="range-value" id="satValue" for="sat">0%</output></div></div><div class="card glass"><b style="font-size:19px">Logo de l'application</b><div class="muted" style="font-size:13px;margin:4px 0 10px">Choisissez le logo affiché en haut de l'écran.</div><div class="picker2 logos" id="logoPicker"></div></div><div class="card glass"><b style="font-size:19px">Fond d'écran</b><div class="muted" style="font-size:13px;margin:4px 0 10px">Fond affiché derrière l'application, avec ou sans effet Liquid Glass.</div><div class="picker2 walls" id="wallPicker"></div></div><h3>Itinéraires</h3><div class="card glass"><div class="set"><div><b>🚏 Arrêt le plus proche</b><div class="muted" style="font-size:12px" id="nearestTxt"></div></div><label class="switch"><input type="checkbox" id="nearestOn" onchange="setNearestOnly(this.checked)"><span></span></label></div></div><h3>Tickets</h3><div class="card glass"><div class="set"><div><b>🎫 Tickets SMS</b><div class="muted" style="font-size:12px">Affiche l'onglet Tickets quand un service SMS existe dans ton canton</div></div><label class="switch"><input type="checkbox" id="smsOn" onchange="setSmsTab(this.checked)"><span></span></label></div></div><h3>Capteurs</h3><div class="card glass"><div class="set"><div><b>📍 Localisation</b><div class="sstat" id="geoStat"></div></div><label class="switch"><input type="checkbox" id="geoOn" onchange="setGeo(this.checked)"><span></span></label></div><div class="set"><div><b>🧭 Mouvement et orientation</b><div class="sstat" id="motStat"></div></div><label class="switch"><input type="checkbox" id="motOn" onchange="setMotion(this.checked)"><span></span></label></div></div><h3>Données</h3><div class="card glass"><div class="set"><div><b>🧹 Vider le cache</b><div class="muted" style="font-size:12px" id="cacheTxt">Couleurs des lignes, quais et voies, trajets des véhicules…</div></div><button class="btn ghost sm" type="button" onclick="clearDataCache()">Vider</button></div></div><h3>Données hors ligne</h3><div class="card glass" id="packsCard"><div class="muted" style="font-size:12px;margin-bottom:6px">Télécharge les horaires (GTFS) par pays et suis le trafic en direct (GTFS-RT). Les fichiers restent sur cet appareil et ne sont pas touchés par « Vider le cache ».</div><div id="packsList"></div><div class="set" style="border-bottom:0;gap:8px"><button class="btn ghost sm" type="button" onclick="packAdd()">＋ Ajouter un pays</button><div class="sstat" id="packsStorage"></div></div><details style="margin-top:6px"><summary class="muted" style="font-size:12px;cursor:pointer">Serveur relais (optionnel)</summary><div class="muted" style="font-size:12px;margin:6px 0">Si un site refuse le téléchargement depuis l'app, indique l'adresse de ton serveur relais : l'app lui enverra <code>?url=…</code>.</div><input type="url" id="packRelay" placeholder="https://mon-serveur.exemple/proxy" style="width:100%;box-sizing:border-box" onchange="packRelaySet(this.value)"></details></div><input type="file" id="fileIn" accept="image/*" hidden></section></main>
+  <section class="view" id="v-departs"><h2>Départs</h2><div id="gsTop" style="display:none"><div class="row"><div class="search glass" style="flex:1"><span>🔎</span><input id="gsQ" placeholder="Nom d'arrêt…" autocomplete="off"></div><button class="target-btn" onclick="gsNearby()" aria-label="Arrêts proches" style="margin:0">📍</button></div><select id="gsSrcSel" class="glass" style="display:none;margin:8px 0;padding:8px;border-radius:12px;border:1px solid var(--border);color:var(--text);background:transparent;font-size:15px"></select></div><div id="gsBody" style="margin-top:10px"></div></section>
+  <section class="view" id="v-parametres"><div class="row between"><h2>Paramètres</h2><button class="info-btn" onclick="toggleInfo(true)" aria-label="Informations">i</button></div><h3>Apparence</h3><div class="card glass"><div class="set"><span>Style</span><div class="seg" id="styleSeg"><button data-v="round">Arrondi</button><button data-v="classic">Classique</button></div></div><div class="set"><span>Thème</span><div class="seg" id="themeSeg"><button data-v="light">Clair</button><button data-v="dark">Sombre</button><button data-v="auto">Auto</button></div></div><div class="set"><span>Couleur d'accent</span><input type="color" id="accent" style="width:44px;height:30px;border:none;background:none"></div></div><h3>Liquid Glass</h3><div class="card glass"><div class="set"><span>Activer l'effet</span><label class="switch"><input type="checkbox" id="glassOn"><span></span></label></div><div class="set"><span>Flou</span><input type="range" id="blur" min="0" max="100"><output class="range-value" id="blurValue" for="blur">20%</output></div><div class="set"><span>Transparence</span><input type="range" id="alpha" min="0" max="100"><output class="range-value" id="alphaValue" for="alpha">80%</output></div><div class="set"><span>Saturation</span><input type="range" id="sat" min="0" max="100"><output class="range-value" id="satValue" for="sat">0%</output></div></div><div class="card glass"><b style="font-size:19px">Logo de l'application</b><div class="muted" style="font-size:13px;margin:4px 0 10px">Choisissez le logo affiché en haut de l'écran.</div><div class="picker2 logos" id="logoPicker"></div></div><div class="card glass"><b style="font-size:19px">Fond d'écran</b><div class="muted" style="font-size:13px;margin:4px 0 10px">Fond affiché derrière l'application, avec ou sans effet Liquid Glass.</div><div class="picker2 walls" id="wallPicker"></div></div><h3>Itinéraires</h3><div class="card glass"><div class="set"><div><b>🚏 Arrêt le plus proche</b><div class="muted" style="font-size:12px" id="nearestTxt"></div></div><label class="switch"><input type="checkbox" id="nearestOn" onchange="setNearestOnly(this.checked)"><span></span></label></div></div><h3>Tickets</h3><div class="card glass"><div class="set"><div><b>🎫 Tickets SMS</b><div class="muted" style="font-size:12px">Affiche l'onglet Tickets quand un service SMS existe dans ton canton</div></div><label class="switch"><input type="checkbox" id="smsOn" onchange="setSmsTab(this.checked)"><span></span></label></div></div><h3>Capteurs</h3><div class="card glass"><div class="set"><div><b>📍 Localisation</b><div class="sstat" id="geoStat"></div></div><label class="switch"><input type="checkbox" id="geoOn" onchange="setGeo(this.checked)"><span></span></label></div><div class="set"><div><b>🧭 Mouvement et orientation</b><div class="sstat" id="motStat"></div></div><label class="switch"><input type="checkbox" id="motOn" onchange="setMotion(this.checked)"><span></span></label></div></div><h3>Données</h3><div class="card glass"><div class="set"><div><b>🧹 Vider le cache</b><div class="muted" style="font-size:12px" id="cacheTxt">Couleurs des lignes, quais et voies, trajets des véhicules…</div></div><button class="btn ghost sm" type="button" onclick="clearDataCache()">Vider</button></div></div><h3>Sources GTFS</h3><div class="card glass"><div class="set"><div><b>Utiliser mes sources à la place de Transitous</b><div class="muted" style="font-size:12px">Itinéraires, départs, retards, carte et recherche d'arrêts viennent des fichiers GTFS / GTFS-RT ci-dessous. Aucun appel à Transitous.</div></div><label class="switch"><input type="checkbox" id="gsOn" onchange="gsToggle(this.checked)"><span></span></label></div><div id="gsList"></div><div class="set" style="display:block"><b>Ajouter une source</b><div style="display:grid;gap:8px;margin-top:8px"><input id="gsName" placeholder="Nom (ex. Suisse, TCL Lyon)" class="gs-in"><input id="gsUrl" placeholder="URL du GTFS (.zip)" class="gs-in" inputmode="url" autocapitalize="off"><input id="gsRt" placeholder="URL GTFS-RT (TripUpdates, optionnel)" class="gs-in" inputmode="url" autocapitalize="off"><input id="gsKey" placeholder="Clé API (optionnel, envoyée en Bearer ou {key})" class="gs-in" autocapitalize="off"><input id="gsRad" placeholder="Rayon autour de ma position en km (vide = tout)" class="gs-in" inputmode="numeric"><div class="row"><button class="btn sm" type="button" onclick="gsAdd()">Ajouter et télécharger</button><button class="btn ghost sm" type="button" onclick="gsPickFile()">Importer un ZIP</button></div></div></div><div class="set" style="display:block"><b>Relais (optionnel)</b><div class="muted" style="font-size:12px">Contourne CORS : adresse de ton relais, avec {url} à l'endroit de l'URL encodée. Utilisé pour le GTFS et le GTFS-RT. Dans l'app iOS/Android (Capacitor), les requêtes natives passent sans relais.</div><input id="gsRelay" placeholder="https://mon-relais.example/?u={url}" class="gs-in" style="margin-top:6px;width:100%;box-sizing:border-box" autocapitalize="off"></div><div class="sstat" id="gsStat" style="margin-top:6px"></div><input type="file" id="gsFile" accept=".zip,application/zip" hidden onchange="gsFileChosen(this)"></div><input type="file" id="fileIn" accept="image/*" hidden></section></main>
 
-<nav class="glass" id="tabs"><button data-v="horaires" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Horaires</button><button data-v="suivis" id="tabSuivis"><span class="tab-badge" id="suivisBadge"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg>Suivis</button><button data-v="parcours"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.5"/></svg>Parcours</button><button data-v="tickets" id="tabTickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8a2 2 0 0 0 0 4v0a2 2 0 0 1 0 4v2h18v-2a2 2 0 0 1 0-4 2 2 0 0 0 0-4V6H3z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg>Tickets</button><button data-v="parametres"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Paramètres</button></nav>
+<nav class="glass" id="tabs"><button data-v="horaires" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Horaires</button><button data-v="suivis" id="tabSuivis"><span class="tab-badge" id="suivisBadge"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg>Suivis</button><button data-v="parcours"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.5"/></svg>Parcours</button><button data-v="tickets" id="tabTickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8a2 2 0 0 0 0 4v0a2 2 0 0 1 0 4v2h18v-2a2 2 0 0 1 0-4 2 2 0 0 0 0-4V6H3z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg>Tickets</button><button data-v="departs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="3"/><path d="M4 11h16M8 21l2-4M16 21l-2-4"/><circle cx="8.5" cy="14" r=".6" fill="currentColor"/><circle cx="15.5" cy="14" r=".6" fill="currentColor"/></svg>Départs</button><button data-v="parametres"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Paramètres</button></nav>
 <script>(function(){try{var t=localStorage.getItem('bd_tab');if(!t||t==='horaires')return;var v=document.getElementById('v-'+t),b=document.querySelector('#tabs button[data-v="'+t+'"]');if(!v||!b||b.offsetParent===null)return;document.querySelectorAll('.view').forEach(function(e){e.classList.toggle('active',e===v)});document.querySelectorAll('#tabs button').forEach(function(e){e.classList.toggle('active',e===b)});var st=document.createElement('style');st.id='bootNoAnim';st.textContent='.view{animation:none!important}';document.head.appendChild(st);addEventListener('load',function(){setTimeout(function(){st.remove()},400)})}catch(e){}})();</script>
 
 
 <div id="mapView"><div id="map"></div><div class="map-bar glass"><button class="map-btn" onclick="closeMap()">✕</button><div class="t"><span id="mapTitle"></span><small id="mapSub"></small></div><div class="map-rcol"><button type="button" class="home-btn" onclick="goHome()" aria-label="Accueil — revenir aux dalles" title="Revenir aux dalles"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v12h5v-7h4v7h5V9"/></svg></button><button type="button" id="mapAl" class="leg-al map-al-btn" aria-label="Infos trafic" style="display:none"></button></div></div><div class="map-ctrl glass"><button class="map-btn" id="btnFollow" onclick="toggleFollowVeh()" title="Suivre le véhicule" style="display:none">🚌</button><button class="map-btn" id="btnTheme" onclick="toggleMapTheme()">🌙</button><button class="map-btn" id="btnBld" onclick="toggleBuildings()" title="Bâtiments 3D">🏢</button><button class="map-btn" id="btn3d" onclick="toggle3D()" style="font-size:13px;font-weight:800">3D</button><button class="map-btn" onclick="mapFit()">⤢</button></div><div class="map-steps glass" id="mapSteps"></div><div class="walk-card glass" id="walkCard"><div class="row between"><div><b id="walkTitle">Marche jusqu'à l'arrêt</b><div class="muted" id="walkInfo" style="font-size:13px"></div></div><button class="btn sm" id="walkBtn" onclick="toggleNav()">▶︎ Lancer</button></div></div></div><div id="infoView" class="info-view"><div class="info-sheet glass"><div class="info-head"><b>Informations</b><button class="map-btn" onclick="toggleInfo(false)">✕</button></div><div class="info-body"><h4>🕒 Horaires</h4><ul><li><b>Appui court sur une dalle</b> : prochains trajets depuis ta position vers cette destination.</li><li><b>Appui long puis glisser</b> d'une dalle vers une autre : trajets entre ces deux destinations. Une ligne relie les deux dalles tant que la paire est sélectionnée.</li><li><b>Date et heure</b> : le champ en haut de la liste permet de choisir un autre horaire. « Maintenant » revient à l'heure actuelle.</li><li><b>Chaque trajet</b> : ligne et direction, arrêt et quai, compte à rebours, heure de départ, durée, marche et changements, heure d'arrivée. Les retards s'affichent en orange, les déviations en cours dans un bandeau.</li><li><b>Toucher un trajet</b> pour voir le détail, l'ouvrir sur la carte ou le suivre.</li><li><b>Liste des parcours</b> : elle s'ouvre sur sa propre page, en plein écran. Pour revenir aux dalles, touche ‹ ou glisse depuis le bord gauche de l'écran vers la droite.</li><li>Quitter une liste arrête son actualisation et remet l'heure sur « Maintenant ».</li><li><b>Plus de trajets</b> : en bas de la liste, continue de faire défiler jusqu'à ce que les quatre barres s'allument.</li></ul><h4>🗺️ Carte</h4><ul><li>Parcours complet dans les couleurs des lignes, marches en pointillés bleus, arrêts avec quai ou voie.</li><li>Position du véhicule (temps réel si disponible, sinon estimée) et son trajet en tirets jusqu'à ton arrêt.</li><li><b>Marche</b> : touche le bandeau de marche pour ouvrir une marche à pied seule, avec escaliers et ascenseurs.</li><li><b>Lancer</b> : marche guidée vers l'arrêt, orientée dans ton sens de marche. Tu peux déplacer ou zoomer, la carte se recentre après 3 s.</li><li>Boutons à droite : clair/sombre, bâtiments 3D, vue 3D/2D, vue d'ensemble.</li></ul><h4>🔖 Suivis</h4><ul><li>« Suivre » enregistre un trajet. L'onglet apparaît avec une pastille indiquant le nombre de suivis. Touche un suivi pour le déplier.</li></ul><h4>🧭 Parcours</h4><ul><li>Recherche un arrêt, une adresse ou un lieu et ajoute-le à tes destinations. Pour une adresse, l'arrêt le plus proche est utilisé.</li></ul><h4>🚏 Itinéraires</h4><ul><li><b>Arrêt le plus proche</b> (activé par défaut) : pour une adresse ou un lieu, les trajets vont jusqu'à l'arrêt le plus proche, puis la marche finale jusqu'à l'adresse est ajoutée au trajet, dans la liste comme sur la carte.</li><li><b>Désactivé</b> : tous les arrêts des environs sont acceptés, avec une marche jusqu'à la destination. Plus de choix de trajets, mais l'arrivée peut se faire à un autre arrêt.</li><li>Réglage dans Paramètres › Itinéraires.</li></ul><h4>🎫 Tickets</h4><ul><li>Tickets SMS de la région où tu te trouves. L'onglet n'apparaît que si un service SMS existe dans le canton où tu te trouves, et peut aussi être masqué dans les paramètres. Vérifie toujours le tarif auprès de l'opérateur.</li><li><b>Villes prises en compte</b> :<div id="smsCities" style="margin-top:4px"></div></li></ul><h4>⚙️ Paramètres</h4><ul><li>Style arrondi ou classique, thème, couleur d'accent, effet Liquid Glass, logo, fond d'écran, carte, itinéraires, tickets, localisation et mouvement/orientation.</li></ul><h4>📡 Sources de données</h4><ul><li><b>Transitous</b> : horaires, temps réel, positions des véhicules, perturbations.</li><li><b>OpenStreetMap</b> : couleurs des lignes, chemins piétons et gares.</li><li><b>OpenFreeMap</b> : fond de carte.</li></ul><h4>🌍 Pays et régions couverts</h4><p class="muted" style="font-size:12px">Couverture fournie par Transitous, qui évolue régulièrement. La qualité (temps réel, quais) varie selon les opérateurs. Liste indicative.</p><div id="countryList"></div><p class="muted" style="font-size:12px;margin-top:12px">Liste complète et à jour : transitous.org/sources</p></div></div></div><div class="toast glass" id="toast"></div>
 
+<script>
+/* ===== Moteur GTFS / GTFS-RT local : import, départs, itinéraires, et émulation de l'API Transitous ===== */
+const GT=(()=>{
+  const OFF=86400, SL_TRANSFER=90, WALK_K=0.975;
+  /* ---------- stockage ---------- */
+  const KV=(()=>{ let dbp=null; const mem=new Map();
+    const open=()=>dbp||(dbp=new Promise((res,rej)=>{ if(typeof indexedDB==='undefined'){res(null);return}
+      const r=indexedDB.open('bd_gtfs',2); r.onupgradeneeded=()=>{ const db=r.result; if(db.objectStoreNames.contains('kv')) db.deleteObjectStore('kv'); db.createObjectStore('kv') }; r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error) }));
+    const tx=async(mode,fn)=>{ const db=await open(); return new Promise((res,rej)=>{ const t=db.transaction('kv',mode),s=t.objectStore('kv'); let out; fn(s,v=>out=v); t.oncomplete=()=>res(out); t.onerror=()=>rej(t.error); t.onabort=()=>rej(t.error) }) };
+    return {
+      async get(k){ const db=await open(); if(!db) return mem.get(k); return tx('readonly',(s,o)=>{const q=s.get(k);q.onsuccess=()=>o(q.result)}) },
+      async set(k,v){ const db=await open(); if(!db){mem.set(k,v);return} return tx('readwrite',s=>{s.put(v,k)}) },
+      async delPrefix(p){ const db=await open(); if(!db){for(const k of [...mem.keys()])if(k.startsWith(p))mem.delete(k);return} return tx('readwrite',s=>{ s.delete(IDBKeyRange.bound(p,p+'￿')) }) } };
+  })();
+  /* ---------- ZIP / CSV ---------- */
+  async function zipEntries(blob){
+    const tail=Math.min(blob.size,65557+22), buf=new DataView(await blob.slice(blob.size-tail).arrayBuffer());
+    let e=-1; for(let i=tail-22;i>=0;i--){ if(buf.getUint32(i,true)===0x06054b50){e=i;break} }
+    if(e<0) throw new Error('Fichier ZIP invalide');
+    const n=buf.getUint16(e+10,true), cdSize=buf.getUint32(e+12,true), cdOff=buf.getUint32(e+16,true);
+    if(cdOff===0xffffffff||n===0xffff) throw new Error('ZIP64 non pris en charge');
+    const cd=new DataView(await blob.slice(cdOff,cdOff+cdSize).arrayBuffer()), td=new TextDecoder(), out={}; let p=0;
+    for(let i=0;i<n;i++){ if(cd.getUint32(p,true)!==0x02014b50) break;
+      const method=cd.getUint16(p+10,true), csize=cd.getUint32(p+20,true), nl=cd.getUint16(p+28,true), el=cd.getUint16(p+30,true), cl=cd.getUint16(p+32,true), off=cd.getUint32(p+42,true);
+      out[td.decode(new Uint8Array(cd.buffer,cd.byteOffset+p+46,nl)).split('/').pop()]={method,csize,off}; p+=46+nl+el+cl }
+    return out;
+  }
+  async function entryStream(blob,en){
+    const h=new DataView(await blob.slice(en.off,en.off+30).arrayBuffer()), st=en.off+30+h.getUint16(26,true)+h.getUint16(28,true);
+    let s=blob.slice(st,st+en.csize).stream();
+    if(en.method===8) s=s.pipeThrough(new DecompressionStream('deflate-raw')); else if(en.method!==0) throw new Error('Compression ZIP non gérée');
+    return s;
+  }
+  function splitCsv(l){ if(l.indexOf('"')<0) return l.split(',');
+    const o=[]; let c='',q=false;
+    for(let i=0;i<l.length;i++){ const ch=l[i];
+      if(q){ if(ch==='"'){ if(l[i+1]==='"'){c+='"';i++} else q=false } else c+=ch } else if(ch==='"') q=true; else if(ch===','){o.push(c);c=''} else c+=ch }
+    o.push(c); return o; }
+  async function eachRow(blob,ents,name,cb){
+    const en=ents[name]; if(!en) return false; const rd=(await entryStream(blob,en)).getReader(), dec=new TextDecoder(); let rest='',H=null;
+    const line=l=>{ if(l.charCodeAt(l.length-1)===13) l=l.slice(0,-1); if(!l) return; const f=splitCsv(l); if(!H){ H={}; f.forEach((k,i)=>H[k.replace(/^﻿/,'').trim()]=i); return } cb(f,H) };
+    for(;;){ const {done,value}=await rd.read(); if(done) break; rest+=dec.decode(value,{stream:true}); let a=0,i; while((i=rest.indexOf('\n',a))>=0){ line(rest.slice(a,i)); a=i+1 } rest=rest.slice(a) }
+    rest+=dec.decode(); if(rest) line(rest); return true; }
+  const tsec=s=>{ if(!s) return null; const p=s.split(':'); return (+p[0])*3600+(+p[1])*60+(+p[2]||0) };
+  const hav=(a,b,c,d)=>{ const R=6371000,r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,t=Math.sin(x/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)**2; return 2*R*Math.asin(Math.sqrt(t)) };
+  const norm=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim();
+  /* ---------- import ---------- */
+  async function importZip(srcId,blob,opt,onProg){
+    const P=t=>onProg&&onProg(t), ents=await zipEntries(blob);
+    for(const f of ['stops.txt','stop_times.txt','trips.txt','routes.txt']) if(!ents[f]) throw new Error('Fichier manquant dans le GTFS : '+f);
+    P('Arrêts…'); const sIdx=new Map(), S={id:[],name:[],lat:[],lon:[],par:[],plat:[]}; let nAll=0;
+    const parents={};
+    await eachRow(blob,ents,'stops.txt',(f,H)=>{
+      const id=f[H.stop_id], lat=+f[H.stop_lat], lon=+f[H.stop_lon]; if(!id||!isFinite(lat)||!isFinite(lon)) return; nAll++;
+      const lt=f[H.location_type]; if(lt==='1'||lt==='2'||lt==='3'||lt==='4') return;
+      if(opt.center&&opt.radiusKm&&hav(opt.center.lat,opt.center.lon,lat,lon)>opt.radiusKm*1000) return;
+      sIdx.set(id,S.id.length); S.id.push(id); S.name.push(f[H.stop_name]||id); S.lat.push(+lat.toFixed(6)); S.lon.push(+lon.toFixed(6)); S.par.push(f[H.parent_station]||''); S.plat.push(H.platform_code!=null?f[H.platform_code]:'') });
+    P('Calendriers…'); const services={};
+    await eachRow(blob,ents,'calendar.txt',(f,H)=>{ services[f[H.service_id]]={s:f[H.start_date],e:f[H.end_date],d:['sunday','monday','tuesday','wednesday','thursday','friday','saturday'].map(k=>f[H[k]]==='1'?1:0),a:[],r:[]} });
+    await eachRow(blob,ents,'calendar_dates.txt',(f,H)=>{ const id=f[H.service_id]; const sv=services[id]||(services[id]={s:'0',e:'99999999',d:[0,0,0,0,0,0,0],a:[],r:[]}); (f[H.exception_type]==='1'?sv.a:sv.r).push(f[H.date]) });
+    P('Horaires (étape longue)…'); const tIdx=new Map(), tIds=[]; const R={t:[],s:[],a:[],d:[],q:[]};
+    await eachRow(blob,ents,'stop_times.txt',(f,H)=>{
+      const si=sIdx.get(f[H.stop_id]); if(si===undefined) return;
+      const tid=f[H.trip_id]; let ti=tIdx.get(tid); if(ti===undefined){ti=tIds.length;tIdx.set(tid,ti);tIds.push(tid)}
+      const dep=tsec(f[H.departure_time]), arr=tsec(f[H.arrival_time]);
+      R.t.push(ti); R.s.push(si); R.a.push(arr!=null?arr:dep); R.d.push(dep!=null?dep:arr); R.q.push(+f[H.stop_sequence]||0);
+      if(R.t.length%250000===0) P('Horaires… '+(R.t.length/1e6).toFixed(2)+' M') });
+    P('Courses…'); const nT=tIds.length, tr={r:new Int32Array(nT).fill(-1),h:new Array(nT).fill(''),v:new Int32Array(nT)};
+    const rIdx=new Map(), rIds=[], vIdx=new Map(), vIds=[]; const intern=(m,l,v)=>{let i=m.get(v);if(i===undefined){i=l.length;m.set(v,i);l.push(v)}return i};
+    await eachRow(blob,ents,'trips.txt',(f,H)=>{ const ti=tIdx.get(f[H.trip_id]); if(ti===undefined) return; tr.r[ti]=intern(rIdx,rIds,f[H.route_id]); tr.h[ti]=f[H.trip_headsign]||''; tr.v[ti]=intern(vIdx,vIds,f[H.service_id]) });
+    P('Lignes…'); const routes=new Array(rIds.length).fill(null).map(()=>['','','',3]);
+    await eachRow(blob,ents,'routes.txt',(f,H)=>{ const i=rIdx.get(f[H.route_id]); if(i!==undefined) routes[i]=[f[H.route_short_name]||f[H.route_long_name]||'',(f[H.route_color]||'').replace('#',''),(f[H.route_text_color]||'').replace('#',''),(isNaN(parseInt(f[H.route_type]))?3:parseInt(f[H.route_type])),f[H.route_long_name]||''] });
+    P('Organisation…'); const n=R.t.length, cnt=new Int32Array(nT+1);
+    for(let i=0;i<n;i++) cnt[R.t[i]+1]++; for(let i=0;i<nT;i++) cnt[i+1]+=cnt[i];
+    const pos=cnt.slice(0,nT), rStop=new Int32Array(n), rArr=new Int32Array(n), rDep=new Int32Array(n), rSeq=new Int32Array(n);
+    for(let i=0;i<n;i++){ const p=pos[R.t[i]]++; rStop[p]=R.s[i]; rArr[p]=R.a[i]; rDep[p]=R.d[i]; rSeq[p]=R.q[i] }
+    for(let t=0;t<nT;t++){ const a=cnt[t], b=cnt[t+1]; let ok=true; for(let i=a+1;i<b;i++) if(rSeq[i]<rSeq[i-1]){ok=false;break}
+      if(!ok){ const ix=[]; for(let i=a;i<b;i++) ix.push(i); const c=[...ix].map(i=>[rSeq[i],rStop[i],rArr[i],rDep[i]]).sort((x,y)=>x[0]-y[0]); c.forEach((x,k)=>{rSeq[a+k]=x[0];rStop[a+k]=x[1];rArr[a+k]=x[2];rDep[a+k]=x[3]}) } }
+    const svUsed={}; vIds.forEach(v=>{ if(services[v]) svUsed[v]=services[v] });
+    P('Enregistrement…'); const meta={id:srcId,at:Date.now(),nStops:S.id.length,total:nAll,nRows:n,nTrips:nT};
+    await KV.delPrefix(srcId+'|');
+    await KV.set(srcId+'|data',{S,routes,tHead:tr.h,tRoute:tr.r,tSvc:tr.v,tIds,rIds,vIds,services:svUsed,tStart:cnt});
+    await KV.set(srcId+'|cols',{rStop,rArr,rDep,rSeq});
+    await KV.set(srcId+'|meta',meta); models.delete(srcId); return meta;
+  }
+  /* ---------- modèle en mémoire ---------- */
+  const models=new Map();
+  async function load(srcId){
+    if(models.has(srcId)) return models.get(srcId);
+    const d=await KV.get(srcId+'|data'), c=await KV.get(srcId+'|cols'); if(!d||!c) return null;
+    const m={id:srcId,...d,...c}; m.nS=d.S.id.length; m.nT=d.tIds.length;
+    m.sIdx=new Map(d.S.id.map((x,i)=>[x,i]));
+    m.nname=d.S.name.map(norm);
+    m.grid=new Map(); const G=0.004; m.G=G; const gk=(la,lo)=>Math.floor(la/G)+','+Math.floor(lo/(G*1.45));
+    for(let i=0;i<m.nS;i++){ const k=gk(d.S.lat[i],d.S.lon[i]); (m.grid.get(k)||m.grid.set(k,[]).get(k)).push(i) }
+    m.near=(lat,lon,rM)=>{ const out=[], dl=Math.ceil(rM/444)+0, ci=Math.floor(lat/G), cj=Math.floor(lon/(G*1.45));
+      for(let a=-dl;a<=dl;a++) for(let b=-dl;b<=dl;b++){ const g=m.grid.get((ci+a)+','+(cj+b)); if(!g) continue; for(const i of g){ const dd=hav(lat,lon,d.S.lat[i],d.S.lon[i]); if(dd<=rM) out.push([i,dd]) } }
+      return out };
+    m.fp=new Map(); m.neigh=i=>{ let r=m.fp.get(i); if(r) return r; r=[]; const la=d.S.lat[i], lo=d.S.lon[i];
+      for(const [j,dd] of m.near(la,lo,350)) if(j!==i) r.push([j,Math.max(30,dd*WALK_K)]);
+      for(const [j,dd] of m.near(la,lo,700)) if(j!==i&&m.nname[j]===m.nname[i]&&!r.some(x=>x[0]===j)) r.push([j,Math.max(30,dd*WALK_K)]);
+      m.fp.set(i,r); return r };
+    m.group=i=>{ const out=[i]; for(const [j,dd] of m.near(d.S.lat[i],d.S.lon[i],700)) if(j!==i&&m.nname[j]===m.nname[i]) out.push(j); return out };
+    m.days=new Map(); models.set(srcId,m); return m;
+  }
+  async function meta(srcId){ return KV.get(srcId+'|meta') }
+  async function remove(srcId){ models.delete(srcId); await KV.delPrefix(srcId+'|') }
+  const ymd=d=>d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
+  const midnight=ms=>{ const d=new Date(ms); d.setHours(0,0,0,0); return d.getTime() };
+  function active(sv,dt){ if(!sv) return false; const k=String(ymd(dt)); if(sv.r.includes(k)) return false; if(sv.a.includes(k)) return true; return k>=sv.s&&k<=sv.e&&sv.d[dt.getDay()]===1 }
+  /* connexions autour d'un jour (hier, aujourd'hui, demain), triées par départ, temps relatifs à minuit du jour central */
+  function dayConns(m,t0){
+    let c=m.days.get(t0); if(c) return c;
+    const bases=[]; for(const off of [-1,0,1]){ const dt=new Date(t0); dt.setDate(dt.getDate()+off); dt.setHours(0,0,0,0); bases.push({dt,b:Math.round((dt.getTime()-t0)/1000)}) }
+    const act=bases.map(x=>{ const a=new Uint8Array(m.nSv||0); return a });
+    const svAct=bases.map(x=>m.vIds.map(v=>active(m.services[v],x.dt)));
+    let n=0; for(let bi=0;bi<3;bi++) for(let t=0;t<m.nT;t++){ if(!svAct[bi][m.tSvc[t]]) continue; const k=m.tStart[t+1]-m.tStart[t]-1; if(k>0) n+=k }
+    const cT=new Int32Array(n),cR=new Int32Array(n),cD=new Int32Array(n),cA=new Int32Array(n); let p=0;
+    for(let bi=0;bi<3;bi++){ const b=bases[bi].b; for(let t=0;t<m.nT;t++){ if(!svAct[bi][m.tSvc[t]]) continue;
+      for(let r=m.tStart[t],e=m.tStart[t+1]-1;r<e;r++){ cT[p]=t; cR[p]=r; cD[p]=b+m.rDep[r]; cA[p]=b+m.rArr[r+1]; p++ } } }
+    const keys=new Float64Array(n); for(let i=0;i<n;i++) keys[i]=(cD[i]+OFF)*8388608+i; keys.sort();
+    const T=new Int32Array(n),R=new Int32Array(n),D=new Int32Array(n),A=new Int32Array(n);
+    for(let i=0;i<n;i++){ const o=keys[i]%8388608; T[i]=cT[o];R[i]=cR[o];D[i]=cD[o];A[i]=cA[o] }
+    c={T,R,D,A,n,t0}; if(m.days.size>2) m.days.clear(); m.days.set(t0,c); return c;
+  }
+  const lowerBound=(D,x)=>{ let lo=0,hi=D.length; while(lo<hi){ const mid=(lo+hi)>>1; if(D[mid]<x) lo=mid+1; else hi=mid } return lo };
+  /* ---------- CSA ---------- */
+  let stamp=1;
+  function csa(m,C,origin,dest,tmin,tmax,minBoard,banned){
+    const nS=m.nS, arr=new Float64Array(nS).fill(Infinity), inC=new Int32Array(nS).fill(-1), inW=new Int32Array(nS).fill(-1);
+    const tb=m._tb||(m._tb=new Int32Array(m.nT)), ts=m._ts||(m._ts=new Int32Array(m.nT)); stamp++;
+    for(const [s,t] of origin){ if(t<arr[s]){ arr[s]=t } }
+    let best=Infinity, bestD=-1;
+    const tryDest=s=>{ const w=dest.get(s); if(w!==undefined&&arr[s]+w<best){ best=arr[s]+w; bestD=s } };
+    for(const [s] of origin) tryDest(s);
+    const walk=s=>{ for(const [j,w] of m.neigh(s)){ const a=arr[s]+w; if(a<arr[j]){ arr[j]=a; inC[j]=-1; inW[j]=s; tryDest(j) } } };
+    for(const [s] of origin) walk(s);
+    for(let ci=lowerBound(C.D,tmin);ci<C.n;ci++){
+      const dep=C.D[ci]; if(dep>best||dep>tmax) break;
+      const t=C.T[ci], r=C.R[ci], from=m.rStop[r], to=m.rStop[r+1];
+      let ok;
+      if(ts[t]===stamp) ok=true; else {
+        if(dep<minBoard||(banned&&banned.has(t))) continue;
+        const ready=arr[from]+(inC[from]>=0?SL_TRANSFER:0); ok=ready<=dep; if(ok){ ts[t]=stamp; tb[t]=ci } }
+      if(!ok) continue;
+      const a=C.A[ci]; if(a<arr[to]){ arr[to]=a; inC[to]=ci; inW[to]=-1; tryDest(to); walk(to) }
+    }
+    if(bestD<0) return null;
+    // reconstruction
+    const path=[]; let s=bestD, guard=0;
+    while(guard++<40){ if(inC[s]>=0){ const ci=inC[s], t=C.T[ci], bci=tb[t]; path.unshift({k:'trip',t,bci,aci:ci,from:m.rStop[C.R[bci]],to:s}); s=m.rStop[C.R[bci]] }
+      else if(inW[s]>=0){ path.unshift({k:'walk',from:inW[s],to:s,w:arr[s]-arr[inW[s]]}); s=inW[s] } else break }
+    return {path,arr:best,dest:bestD,origin:s,t0:C.t0};
+  }
+  /* ---------- temps réel ---------- */
+  function decodeRT(buf){
+    const u=buf instanceof Uint8Array?buf:new Uint8Array(buf), td=new TextDecoder();
+    const rv=p=>{ let r=0,m=1,b; do{ b=u[p.i++]; r+=(b&127)*m; m*=128 }while(b&128); return r };
+    const sv=p=>{ let r=0n,sh=0n,b; do{ b=u[p.i++]; r|=BigInt(b&127)<<sh; sh+=7n }while(b&128); return Number(BigInt.asIntN(64,r)) };
+    function msg(s,e,h){ const p={i:s}; while(p.i<e){ const k=rv(p), f=Math.floor(k/8), w=k%8; if(w===0) h(f,0,sv(p)); else if(w===2){ const l=rv(p), st=p.i; p.i+=l; h(f,2,[st,st+l]) } else if(w===1) p.i+=8; else if(w===5) p.i+=4; else throw new Error('protobuf') } }
+    const str=r=>td.decode(u.subarray(r[0],r[1])), ents=[]; let ts=0;
+    msg(0,u.length,(f,w,v)=>{
+      if(f===1&&w===2) msg(v[0],v[1],(f2,w2,v2)=>{ if(f2===3&&w2===0) ts=v2 });
+      if(f===2&&w===2){ const en={}; msg(v[0],v[1],(f2,w2,v2)=>{ if(f2===3&&w2===2){ const tu={trip:{},stus:[]}; msg(v2[0],v2[1],(f3,w3,v3)=>{
+        if(f3===1&&w3===2) msg(v3[0],v3[1],(f4,w4,v4)=>{ if(f4===1) tu.trip.id=str(v4); else if(f4===3) tu.trip.date=str(v4); else if(f4===4&&w4===0) tu.trip.rel=v4 });
+        else if(f3===5&&w3===0) tu.delay=v3;
+        else if(f3===2&&w3===2){ const s={}; msg(v3[0],v3[1],(f4,w4,v4)=>{ if(f4===1&&w4===0) s.seq=v4; else if(f4===4&&w4===2) s.stop=str(v4); else if(f4===5&&w4===0) s.rel=v4;
+          else if((f4===2||f4===3)&&w4===2){ const ev={}; msg(v4[0],v4[1],(f5,w5,v5)=>{ if(f5===1&&w5===0) ev.delay=v5; else if(f5===2&&w5===0) ev.time=v5 }); s[f4===2?'arr':'dep']=ev } }); tu.stus.push(s) } }); en.tu=tu } });
+        if(en.tu) ents.push(en) } });
+    const byTrip=new Map(); for(const e of ents) if(e.tu.trip.id) byTrip.set(e.tu.trip.id,e.tu);
+    return {ts,byTrip,n:byTrip.size,at:Date.now()};
+  }
+  /* ---------- réseau : natif (Capacitor) → relais → direct ---------- */
+  const relayUrl=(url,relay,key)=>{ const u=url.replace('{key}',encodeURIComponent(key||'')); return relay?(relay.includes('{url}')?relay.replace('{url}',encodeURIComponent(u)):relay+encodeURIComponent(u)):u };
+  const nativeHttp=()=>{ try{ const C=globalThis.Capacitor; return C&&C.isNativePlatform&&C.isNativePlatform()&&C.Plugins&&C.Plugins.CapacitorHttp||null }catch(e){return null} };
+  const b64ToBytes=b=>{ const s=atob(b), u=new Uint8Array(s.length); for(let i=0;i<s.length;i++) u[i]=s.charCodeAt(i); return u };
+  async function getBytes(url,{key,relay,onProg}={}){
+    const headers={}; if(key&&!/\{key\}/.test(url)) headers.Authorization='Bearer '+key;
+    const nh=nativeHttp();
+    if(nh){ const r=await nh.get({url:url.replace('{key}',encodeURIComponent(key||'')),headers,responseType:'blob',readTimeout:600000,connectTimeout:30000}); if(r.status>=400) throw new Error('HTTP '+r.status);
+      return typeof r.data==='string'?b64ToBytes(r.data):new Uint8Array(r.data) }
+    const r=await fetch(relayUrl(url,relay,key),{headers,cache:'no-store'}); if(!r.ok) throw new Error('HTTP '+r.status);
+    if(!onProg||!r.body) return new Uint8Array(await r.arrayBuffer());
+    const tot=+r.headers.get('content-length')||0, rd=r.body.getReader(), ch=[]; let got=0;
+    for(;;){ const {done,value}=await rd.read(); if(done) break; ch.push(value); got+=value.length; onProg(got,tot) }
+    return new Blob(ch);
+  }
+  const rtCache=new Map();
+  async function getRT(src,relay,maxAge=20000){
+    if(!src||!src.rtUrl) return null; const c=rtCache.get(src.id);
+    if(c&&Date.now()-c.at<maxAge) return c.rt;
+    if(c&&c.p) return c.rt||c.p;
+    const p=(async()=>{ try{ const b=await getBytes(src.rtUrl,{key:src.rtKey,relay}); const rt=decodeRT(b instanceof Blob?new Uint8Array(await b.arrayBuffer()):b); rtCache.set(src.id,{rt,at:Date.now()}); return rt }catch(e){ rtCache.set(src.id,{rt:c&&c.rt||null,at:Date.now(),err:e.message}); return c&&c.rt||null } })();
+    rtCache.set(src.id,{rt:c&&c.rt,at:c?c.at:0,p}); return p;
+  }
+  /* retards d'une course : tableau par ligne de stop_times (propagé), annulation */
+  function tripRT(m,rt,ti){
+    if(!rt) return null; const u=rt.byTrip.get(m.tIds[ti]); if(!u) return null;
+    const a=m.tStart[ti], b=m.tStart[ti+1], out={cancelled:u.trip.rel===3,d:new Array(b-a).fill(null),x:new Array(b-a).fill(false)};
+    let cur=u.stus.length?null:(u.delay!=null?u.delay:null);
+    const ids=m.S.id; const byStop=new Map(), bySeq=new Map(); for(const s of u.stus){ if(s.stop) byStop.set(s.stop,s); if(s.seq!=null) bySeq.set(s.seq,s) }
+    for(let r=a;r<b;r++){ const s=byStop.get(ids[m.rStop[r]])||(byStop.size?null:bySeq.get(m.rSeq[r]))||bySeq.get(m.rSeq[r]);
+      if(s){ if(s.rel===1) out.x[r-a]=true; const e=s.dep||s.arr; if(e){ if(e.delay!=null) cur=e.delay; else if(e.time) cur=Math.round(e.time-(m._dayAbs||0)/1000-m.rDep[r]) } }
+      out.d[r-a]=cur }
+    return out;
+  }
+  /* ---------- helpers de sortie ---------- */
+  function encPoly(pts,prec=6){ const f=Math.pow(10,prec); let la=0,lo=0,o=''; const e=v=>{ v=v<0?~(v<<1):v<<1; let s=''; while(v>=32){ s+=String.fromCharCode((32|(v&31))+63); v>>=5 } return s+String.fromCharCode(v+63) };
+    for(const [x,y] of pts){ const a=Math.round(y*f), b=Math.round(x*f); o+=e(a-la)+e(b-lo); la=a; lo=b } return o }
+  const modeOf=t=>{ if(t>=100&&t<200){ return t===101?'HIGHSPEED_RAIL':t===102?'LONG_DISTANCE':t===103?'REGIONAL_RAIL':t===105?'NIGHT_RAIL':t===106?'REGIONAL_RAIL':t===109?'SUBURBAN':'RAIL' }
+    if(t>=200&&t<300) return 'COACH'; if(t>=400&&t<500) return 'SUBWAY'; if(t>=700&&t<800) return 'BUS'; if(t>=800&&t<900) return 'BUS'; if(t>=900&&t<1000) return 'TRAM'; if(t>=1000&&t<1100) return 'FERRY'; if(t>=1200&&t<1300) return 'FERRY'; if(t>=1300&&t<1400) return 'GONDOLA'; if(t>=1400&&t<1500) return 'FUNICULAR';
+    return ({0:'TRAM',1:'SUBWAY',2:'RAIL',3:'BUS',4:'FERRY',5:'CABLE_CAR',6:'GONDOLA',7:'FUNICULAR',11:'BUS',12:'RAIL'})[t]||'BUS' };
+  const iso=ms=>new Date(ms).toISOString();
+  const tripIdOf=(srcId,ti,dayMs)=>srcId+':'+ti+':'+ymd(new Date(dayMs+43200000));
+  const stopIdOf=(m,i)=>m.id+'_'+m.S.id[i];
+  const parseStopId=id=>{ const k=String(id).indexOf('_'); return k<0?null:[id.slice(0,k),id.slice(k+1)] };
+
+  function placeObj(m,i,sched,act,extra){ const S=m.S;
+    return Object.assign({name:S.name[i],lat:S.lat[i],lon:S.lon[i],stopId:stopIdOf(m,i),vertexType:'TRANSIT',track:S.plat[i]||undefined,scheduledTrack:S.plat[i]||undefined,
+      departure:iso(act.dep!=null?act.dep:sched.dep),scheduledDeparture:iso(sched.dep),arrival:iso(act.arr!=null?act.arr:sched.arr),scheduledArrival:iso(sched.arr),pickupType:'NORMAL',dropoffType:'NORMAL'},extra||{}) }
+  /* course complète (stop par stop) pour un jour donné, avec temps réel */
+  function buildTripLeg(m,ti,dayMs,rt,fromRow,toRow){
+    const a=m.tStart[ti], b=m.tStart[ti+1]; fromRow=fromRow==null?a:fromRow; toRow=toRow==null?b-1:toRow;
+    m._dayAbs=dayMs; const rr=tripRT(m,rt,ti); const route=m.routes[m.tRoute[ti]]||['','','',3];
+    const st=[]; let anyRT=false;
+    for(let r=fromRow;r<=toRow;r++){ const sa=dayMs+m.rArr[r]*1000, sd=dayMs+m.rDep[r]*1000, dl=rr&&rr.d[r-a]!=null?rr.d[r-a]:null; if(dl!=null) anyRT=true;
+      st.push(placeObj(m,m.rStop[r],{arr:sa,dep:sd},{arr:dl!=null?sa+dl*1000:null,dep:dl!=null?sd+dl*1000:null},{cancelled:!!(rr&&(rr.cancelled||rr.x[r-a]))||undefined,_seq:m.rSeq[r]})) }
+    const from=Object.assign({},st[0]), to=Object.assign({},st[st.length-1]); const inter=st.slice(1,-1);
+    const sch0=Date.parse(from.scheduledDeparture), sch1=Date.parse(to.scheduledArrival);
+    const geom=st.map(s=>[s.lon,s.lat]);
+    return {mode:modeOf(route[3]),from,to,duration:Math.round((Date.parse(to.arrival)-Date.parse(from.departure))/1000),startTime:from.departure,endTime:to.arrival,scheduledStartTime:iso(sch0),scheduledEndTime:iso(sch1),realTime:anyRT,
+      routeShortName:route[0],displayName:route[0],routeLongName:route[4]||undefined,routeColor:route[1]||undefined,routeTextColor:route[2]||undefined,headsign:m.tHead[ti],tripId:tripIdOf(m.id,ti,dayMs),
+      intermediateStops:inter,legGeometry:{points:encPoly(geom),precision:6,length:geom.length},cancelled:rr&&rr.cancelled||undefined,source:m.id,interlineWithPreviousLeg:false,alerts:[]};
+  }
+  const place0=(lat,lon,name)=>({name,lat,lon,vertexType:'NORMAL'});
+  function walkLeg(fromP,toP,t0ms,distM,sec){ const geom=[[fromP.lon,fromP.lat],[toP.lon,toP.lat]];
+    return {mode:'WALK',from:Object.assign({},fromP,{departure:iso(t0ms),scheduledDeparture:iso(t0ms),arrival:iso(t0ms),scheduledArrival:iso(t0ms)}),to:Object.assign({},toP,{departure:iso(t0ms+sec*1000),scheduledDeparture:iso(t0ms+sec*1000),arrival:iso(t0ms+sec*1000),scheduledArrival:iso(t0ms+sec*1000)}),
+      duration:Math.round(sec),distance:Math.round(distM),startTime:iso(t0ms),endTime:iso(t0ms+sec*1000),scheduledStartTime:iso(t0ms),scheduledEndTime:iso(t0ms+sec*1000),realTime:false,legGeometry:{points:encPoly(geom),precision:6,length:2},steps:[],rental:undefined} }
+
+  /* ---------- sélection de la source ---------- */
+  async function models_for(srcs,pt){ // source dont un arrêt est le plus proche de pt
+    let best=null,bd=Infinity; for(const s of srcs){ const m=await load(s.id); if(!m) continue; const r=m.near(pt.lat,pt.lon,8000); const d=r.length?Math.min(...r.map(x=>x[1])):Infinity; if(d<bd){bd=d;best=m} }
+    return best }
+  /* ---------- API Transitous émulée ---------- */
+  async function handle(path,q,ctx){
+    const srcs=ctx.sources(); const relay=ctx.relay();
+    const ep=path.replace(/^\/(v\d+)\//,'');
+    const pt=s=>{ const x=String(s||'').split(',').map(Number); return x.length===2&&isFinite(x[0])&&isFinite(x[1])?{lat:x[0],lon:x[1]}:null };
+    const findStop=async id=>{ const p=parseStopId(id); if(!p) return null; const m=await load(p[0]); if(!m) return null; const i=m.sIdx.get(p[1]); return i==null?null:{m,i} };
+    if(ep==='geocode'){
+      const n=norm(q.text||''), out=[]; const c=q.place?pt(q.place):null;
+      for(const s of srcs){ const m=await load(s.id); if(!m) continue; const seen=new Set();
+        for(let i=0;i<m.nS;i++){ if(!m.nname[i].includes(n)) continue; const k=m.nname[i]; if(seen.has(k)) continue; seen.add(k); out.push({type:'STOP',id:stopIdOf(m,i),name:m.S.name[i],lat:m.S.lat[i],lon:m.S.lon[i],areas:[],_s:(m.nname[i].startsWith(n)?0:1e6)+(c?hav(c.lat,c.lon,m.S.lat[i],m.S.lon[i]):0)}) } }
+      out.sort((a,b)=>a._s-b._s); return out.slice(0,10).map(x=>{delete x._s;return x});
+    }
+    if(ep==='map/stops'){ const a=pt(q.min), b=pt(q.max); if(!a||!b) return []; const out=[];
+      for(const s of srcs){ const m=await load(s.id); if(!m) continue; const la0=Math.min(a.lat,b.lat),la1=Math.max(a.lat,b.lat),lo0=Math.min(a.lon,b.lon),lo1=Math.max(a.lon,b.lon);
+        for(const [i] of m.near((la0+la1)/2,(lo0+lo1)/2,Math.min(5000,hav(la0,lo0,la1,lo1)/2+50))) { const S=m.S; if(S.lat[i]>=la0&&S.lat[i]<=la1&&S.lon[i]>=lo0&&S.lon[i]<=lo1) out.push({stopId:stopIdOf(m,i),name:S.name[i],lat:S.lat[i],lon:S.lon[i]}) } }
+      return out.slice(0,400) }
+    if(ep==='reverse-geocode'){ const c=pt(q.place); if(!c) return []; const out=[];
+      for(const s of srcs){ const m=await load(s.id); if(!m) continue; for(const [i,d] of m.near(c.lat,c.lon,600)) out.push({type:'STOP',id:stopIdOf(m,i),name:m.S.name[i],lat:m.S.lat[i],lon:m.S.lon[i],distance:Math.round(d),areas:[]}) }
+      return out.sort((a,b)=>a.distance-b.distance).slice(0,10) }
+    if(ep==='stoptimes'){
+      const n=+q.n||20, at=q.time?Date.parse(q.time):Date.now(), arrive=q.arriveBy==='true'; let m,idx=[];
+      if(q.stopId){ const f=await findStop(q.stopId); if(!f) return {stopTimes:[]}; m=f.m; idx=m.group(f.i) }
+      else { const c=pt(q.center); if(!c) return {stopTimes:[]}; m=await models_for(srcs,c); if(!m) return {stopTimes:[]}; idx=m.near(c.lat,c.lon,+q.radius||100).map(x=>x[0]) }
+      const src=srcs.find(s=>s.id===m.id), rt=await getRT(src,relay), set=new Set(idx), out=[];
+      const t0=midnight(at); const C=dayConns(m,t0), lo=at-(arrive?5*3600000:60000), hi=at+(arrive?60000:5*3600000);
+      // départs = lignes de stop_times : on parcourt les connexions
+      for(let ci=lowerBound(C.D,Math.round((lo-t0)/1000)-3600);ci<C.n;ci++){
+        const dep=t0+C.D[ci]*1000; if(dep>hi+3*3600000) break; const r=C.R[ci], fs=m.rStop[r]; if(!set.has(fs)) continue;
+        const ti=C.T[ci], dayMs=t0+(C.D[ci]-m.rDep[r])*1000; const rr=(m._dayAbs=dayMs,tripRT(m,rt,ti)); const dl=rr&&rr.d[r-m.tStart[ti]]!=null?rr.d[r-m.tStart[ti]]:null;
+        const act=dep+(dl||0)*1000; if(act<lo||act>hi) continue; const route=m.routes[m.tRoute[ti]]||['','','',3];
+        out.push({place:placeObj(m,fs,{arr:t0+C.A[ci]*1000-0,dep},{dep:dl!=null?act:null,arr:dl!=null?act:null}),mode:modeOf(route[3]),realTime:dl!=null,headsign:m.tHead[ti],routeShortName:route[0],displayName:route[0],routeColor:route[1]||undefined,routeTextColor:route[2]||undefined,tripId:tripIdOf(m.id,ti,dayMs),cancelled:rr&&(rr.cancelled||rr.x[r-m.tStart[ti]])||undefined,_a:act}) }
+      out.sort((a,b)=>a._a-b._a); const res=arrive?out.slice(-n):out.slice(0,n); res.forEach(x=>delete x._a); return {stopTimes:res,place:undefined} }
+    if(ep==='trip'){ const p=String(q.tripId||'').split(':'); if(p.length!==3) throw 404; const m=await load(p[0]); const ti=+p[1]; if(!m||!(ti>=0&&ti<m.nT)) throw 404;
+      const d=p[2], dayMs=new Date(+d.slice(0,4),+d.slice(4,6)-1,+d.slice(6,8)).getTime(), src=srcs.find(s=>s.id===m.id), rt=await getRT(src,relay);
+      const leg=buildTripLeg(m,ti,dayMs,rt); return {duration:leg.duration,startTime:leg.startTime,endTime:leg.endTime,transfers:0,legs:[leg]} }
+    if(ep==='map/trips'){ const a=pt(q.min), b=pt(q.max); if(!a||!b) return []; const t1=Date.parse(q.startTime), t2=Date.parse(q.endTime), out=[];
+      const la0=Math.min(a.lat,b.lat),la1=Math.max(a.lat,b.lat),lo0=Math.min(a.lon,b.lon),lo1=Math.max(a.lon,b.lon);
+      for(const s of srcs){ const m=await load(s.id); if(!m) continue; const t0=midnight(t1), C=dayConns(m,t0), rt=await getRT(s,relay);
+        for(let ci=lowerBound(C.D,Math.round((t1-t0)/1000)-7200);ci<C.n;ci++){ const dep=t0+C.D[ci]*1000; if(dep>t2+3600000) break;
+          const arrv=t0+C.A[ci]*1000, r=C.R[ci], ti=C.T[ci], a0=m.tStart[ti]; m._dayAbs=t0+(C.D[ci]-m.rDep[r])*1000; const rr=tripRT(m,rt,ti); const dl=rr&&rr.d[r-a0]!=null?rr.d[r-a0]:0, dl2=rr&&rr.d[r+1-a0]!=null?rr.d[r+1-a0]:dl;
+          const D=dep+dl*1000, A=arrv+dl2*1000; if(A<t1||D>t2) continue; const f=m.rStop[r], g=m.rStop[r+1], S=m.S;
+          const inb=(la,lo)=>la>=la0&&la<=la1&&lo>=lo0&&lo<=lo1; if(!inb(S.lat[f],S.lon[f])&&!inb(S.lat[g],S.lon[g])) continue;
+          const route=m.routes[m.tRoute[ti]]||['','','',3], dayMs=m._dayAbs;
+          out.push({trips:[{tripId:tripIdOf(m.id,ti,dayMs),routeShortName:route[0],displayName:route[0],routeColor:route[1]||undefined,routeTextColor:route[2]||undefined,mode:modeOf(route[3]),headsign:m.tHead[ti]}],mode:modeOf(route[3]),distance:Math.round(hav(S.lat[f],S.lon[f],S.lat[g],S.lon[g])),from:{name:S.name[f],lat:S.lat[f],lon:S.lon[f]},to:{name:S.name[g],lat:S.lat[g],lon:S.lon[g]},departure:iso(D),arrival:iso(A),scheduledDeparture:iso(dep),scheduledArrival:iso(arrv),realTime:!!rr,polyline:encPoly([[S.lon[f],S.lat[f]],[S.lon[g],S.lat[g]]])}) } }
+      return out.slice(0,3000) }
+    if(ep==='plan') return plan(q,ctx,srcs,relay,findStop,pt);
+    throw 404;
+  }
+  async function plan(q,ctx,srcs,relay,findStop,pt){
+    const resolve=async s=>{ const c=pt(s); if(c) return {coord:c}; const f=await findStop(s); if(!f) throw 404; return {stop:f,coord:{lat:f.m.S.lat[f.i],lon:f.m.S.lon[f.i]}} };
+    const A=await resolve(q.fromPlace), B=await resolve(q.toPlace);
+    const m=A.stop?A.stop.m:B.stop?B.stop.m:await models_for(srcs,A.coord); if(!m) throw 404;
+    const at=q.time?Date.parse(q.time):Date.now(); const src=srcs.find(s=>s.id===m.id), rt=await getRT(src,relay,60000);
+    const wsec=d=>Math.max(20,d*WALK_K);
+    const side=(P,maxSec)=>{ const mp=new Map(); if(P.stop){ for(const j of m.group(P.stop.i)) mp.set(j,0) } else { const arr=m.near(P.coord.lat,P.coord.lon,Math.min(2500,maxSec/WALK_K)).map(([i,d])=>[i,wsec(d)]).filter(x=>x[1]<=maxSec).sort((a,b)=>a[1]-b[1]).slice(0,25); arr.forEach(([i,w])=>mp.set(i,w)) } return mp };
+    const maxPre=+q.maxPreTransitTime>=0&&q.maxPreTransitTime!=null?+q.maxPreTransitTime:900, maxPost=q.maxPostTransitTime!=null?+q.maxPostTransitTime:900;
+    const org=side(A,maxPre), dst=side(B,B.stop?0:maxPost===0?0:maxPost);
+    const dWalk=hav(A.coord.lat,A.coord.lon,B.coord.lat,B.coord.lon), res={itineraries:[],direct:[]};
+    const walkIt=()=>{ const sec=wsec(dWalk), t=at; const lg=walkLeg(A.stop?placeObj(m,A.stop.i,{arr:t,dep:t},{}):place0(A.coord.lat,A.coord.lon,'START'),B.stop?placeObj(m,B.stop.i,{arr:t,dep:t},{}):place0(B.coord.lat,B.coord.lon,'END'),t,dWalk*1.3,sec); return {duration:Math.round(sec),startTime:lg.startTime,endTime:lg.endTime,transfers:0,legs:[lg]} };
+    if(q.directModes&&/WALK/.test(q.directModes)&&dWalk<=(+q.maxDirectTime||3600)/WALK_K*1.0){ res.direct=[walkIt()]; res.itineraries=[]; if(+q.numItineraries===1&&!q.searchWindow) return res }
+    let ctxCur=q.pageCursor||'', mode='n', start=at;
+    if(ctxCur){ mode=ctxCur[0]; start=+ctxCur.slice(1) }
+    const win=(+q.searchWindow||5400)*1000, want=+q.numItineraries||6;
+    const t0=midnight(start), C=dayConns(m,t0), lo=mode==='p'?start-win:start, hi=mode==='p'?start:start+win;
+    const rel=ms=>Math.round((ms-t0)/1000);
+    let tmin=rel(lo), minBoard=-1e9; const found=[]; let guard=0;
+    while(guard++<want*2&&found.length<want){
+      const o=[...org].map(([s,w])=>[s,Math.max(tmin+w,minBoard)]); const r=csa(m,C,o,dst,tmin,rel(hi)+3*3600,minBoard,null); if(!r) break;
+      const firstTrip=r.path.find(p=>p.k==='trip'); if(!firstTrip){ break }
+      const bdep=C.D[firstTrip.bci]; if(bdep>rel(hi)) break;
+      found.push(r); minBoard=bdep+1; tmin=rel(lo);
+    }
+    const its=[];
+    for(const r of found){
+      const tc=r.t0, segs=[];
+      for(const p of r.path){ if(p.k==='trip'){ const row0=C.R[p.bci], row1=C.R[p.aci]+1, base=C.D[p.bci]-m.rDep[row0]; segs.push({k:'trip',leg:buildTripLeg(m,p.t,tc+base*1000,rt,row0,row1)}) } else segs.push(p) }
+      if(segs.some(x=>x.k==='trip'&&x.leg.cancelled)) continue;
+      const out=[]; let prevEnd=null;
+      for(let k=0;k<segs.length;k++){ const x=segs[k];
+        if(x.k==='trip'){ out.push(x.leg); prevEnd=Date.parse(x.leg.endTime) }
+        else { const nx=segs.slice(k+1).find(z=>z.k==='trip'); const t=prevEnd!=null?prevEnd:Date.parse(nx.leg.startTime)-x.w*1000;
+          const d=hav(m.S.lat[x.from],m.S.lon[x.from],m.S.lat[x.to],m.S.lon[x.to]);
+          const lg=walkLeg(placeObj(m,x.from,{arr:t,dep:t},{}),placeObj(m,x.to,{arr:t+x.w*1000,dep:t+x.w*1000},{}),t,d*1.3,x.w); out.push(lg); prevEnd=Date.parse(lg.endTime) } }
+      if(!A.stop){ const st0=r.origin, d0=hav(A.coord.lat,A.coord.lon,m.S.lat[st0],m.S.lon[st0]), sec=Math.max(20,org.get(st0)||wsec(d0)), tEnd=Date.parse(out[0].startTime);
+        out.unshift(walkLeg(place0(A.coord.lat,A.coord.lon,'START'),placeObj(m,st0,{arr:tEnd,dep:tEnd},{}),tEnd-sec*1000,d0*1.3,sec)) }
+      if(!B.stop){ const last=out[out.length-1], d1=hav(last.to.lat,last.to.lon,B.coord.lat,B.coord.lon), sec=Math.max(20,dst.get(r.dest)||wsec(d1));
+        out.push(walkLeg(Object.assign({},last.to),place0(B.coord.lat,B.coord.lon,'END'),Date.parse(last.endTime),d1*1.3,sec)) }
+      const stt=out[0].startTime, ent=out[out.length-1].endTime;
+      its.push({duration:Math.round((Date.parse(ent)-Date.parse(stt))/1000),startTime:stt,endTime:ent,transfers:Math.max(0,out.filter(l=>l.mode!=='WALK').length-1),legs:out});
+    }
+    // dominance + tri
+    its.sort((a,b)=>Date.parse(a.startTime)-Date.parse(b.startTime)||Date.parse(a.endTime)-Date.parse(b.endTime));
+    const keep=its.filter((a,i)=>!its.some((b,j)=>j!==i&&Date.parse(b.startTime)>=Date.parse(a.startTime)&&Date.parse(b.endTime)<=Date.parse(a.endTime)&&(Date.parse(b.startTime)>Date.parse(a.startTime)||Date.parse(b.endTime)<Date.parse(a.endTime)||j<i)));
+    res.itineraries=keep; res.previousPageCursor='p'+lo; res.nextPageCursor='n'+(keep.length?Date.parse(keep[keep.length-1].startTime)+60000:hi);
+    return res;
+  }
+  /* ---------- départs (onglet Départs) ---------- */
+  async function search(srcId,q,near){ const m=await load(srcId); if(!m) return []; const groups=new Map();
+    for(let i=0;i<m.nS;i++){ const k=m.nname[i]; let g=groups.get(k); if(!g){g={name:m.S.name[i],ids:[],lat:0,lon:0,n:0,key:k};groups.set(k,g)} g.ids.push(i); g.lat+=m.S.lat[i]; g.lon+=m.S.lon[i]; g.n++ }
+    let r=[...groups.values()]; r.forEach(g=>{g.lat/=g.n;g.lon/=g.n});
+    if(q){ const n=norm(q); r=r.filter(g=>g.key.includes(n)).sort((a,b)=>(b.key.startsWith(n)-a.key.startsWith(n))||a.key.length-b.key.length); if(near) r=r.slice(0,200).map(g=>Object.assign({},g,{dist:hav(near.lat,near.lon,g.lat,g.lon)})).sort((a,b)=>a.dist-b.dist) }
+    else if(near) r=r.map(g=>Object.assign({},g,{dist:hav(near.lat,near.lon,g.lat,g.lon)})).filter(g=>g.dist<=1500).sort((a,b)=>a.dist-b.dist); else r=[];
+    return r.slice(0,40) }
+  async function departures(srcId,group,now,rt,opt){ const m=await load(srcId); if(!m) return []; opt=opt||{};
+    const q={stopId:srcId+'_'+m.S.id[group.ids[0]],n:opt.limit||40,time:new Date(now).toISOString()};
+    const set=new Set(group.ids), t0=midnight(now), C=dayConns(m,t0), out=[], hi=now+(opt.horizonMin||180)*60000;
+    for(let ci=lowerBound(C.D,Math.round((now-t0)/1000)-3600*3);ci<C.n;ci++){ const dep=t0+C.D[ci]*1000; if(dep>hi+3*3600000) break; const r=C.R[ci], fs=m.rStop[r]; if(!set.has(fs)) continue;
+      const ti=C.T[ci]; m._dayAbs=t0+(C.D[ci]-m.rDep[r])*1000; const rr=tripRT(m,rt,ti), li=r-m.tStart[ti], dl=rr&&rr.d[li]!=null?rr.d[li]:null, cx=!!(rr&&(rr.cancelled||rr.x[li])), act=dep+(dl||0)*1000;
+      if(cx?dep<now-60000:act<now-30000) continue; if(act>hi) continue; const route=m.routes[m.tRoute[ti]];
+      out.push({sch:dep,act,delay:dl,cancelled:cx,live:dl!=null,head:m.tHead[ti],route:route[0],color:route[1],tcolor:route[2],type:route[3],platform:m.S.plat[fs],stop:m.S.name[fs]}) }
+    out.sort((a,b)=>a.act-b.act); return out.slice(0,opt.limit||40) }
+  return {importZip,load,search,departures,meta,remove,KV,hav,norm,relayUrl,getBytes,getRT,decodeRT,handle,nativeHttp};
+})();
+
+/* installation du « shim » fetch : remplace Transitous quand l'option est active */
+(function(){
+  const API_RE=/^https:\/\/api\.transitous\.org\/api(\/.*)$/; const orig=window.fetch.bind(window);
+  const on=()=>localStorage.getItem('bd_gtfs_on')==='1';
+  const sources=()=>{try{return JSON.parse(localStorage.getItem('bd_gtfs_src')||'[]')}catch(e){return[]}};
+  const ctx={sources,relay:()=>localStorage.getItem('bd_gtfs_relay')||''};
+  window.fetch=async function(input,init){
+    const url=typeof input==='string'?input:(input&&input.url)||'';
+    const m=API_RE.exec(url); if(!m||!on()) return orig(input,init);
+    try{ const u=new URL(url), q=Object.fromEntries(u.searchParams.entries());
+      const data=await GT.handle(u.pathname.replace(/^\/api/,''),q,ctx);
+      return new Response(JSON.stringify(data),{status:200,headers:{'content-type':'application/json'}});
+    }catch(e){ const st=typeof e==='number'?e:503; if(typeof e!=='number') console.warn('GTFS',e); return new Response(JSON.stringify({error:String(e&&e.message||e)}),{status:st,headers:{'content-type':'application/json'}}) }
+  };
+})();
+
+</script>
 <script>
  
 const API = 'https://api.transitous.org/api';
@@ -1039,71 +1414,6 @@ async function colorsBeforeRender(list){
   if(!ps.length) return;
   await Promise.race([Promise.all(ps.filter(Boolean)), new Promise(r=>setTimeout(r,800))]);
 }
-/* ===== Données hors ligne par pays : horaires (GTFS) et trafic en direct (GTFS-RT), gardés sur l'appareil (IndexedDB) ===== */
-const PK={LS:'bd_packs_v1',RLS:'bd_packs_relay',busy:{},err:{},timers:{},db:null};
-const PK_DEFAULTS=[
-  {id:'ch',name:'Suisse',flag:'🇨🇭',page:'https://data.opentransportdata.swiss/dataset/timetable-2026-gtfs2020',note:'Usage commercial autorisé, source « opentransportdata.swiss » à citer. Direct : clé gratuite sur api-manager.opentransportdata.swiss.',staticUrl:'',rtUrl:'',key:'',live:false,meta:{}},
-  {id:'fr',name:'France',flag:'🇫🇷',page:'https://transport.data.gouv.fr/datasets',note:'Un jeu de données par réseau : vérifie la licence de chacun avant un usage commercial.',staticUrl:'',rtUrl:'',key:'',live:false,meta:{}}];
-function pkLoad(){ try{ const a=JSON.parse(localStorage.getItem(PK.LS)||'null'); if(Array.isArray(a)) return a }catch{} return JSON.parse(JSON.stringify(PK_DEFAULTS)) }
-let PKS=pkLoad();
-function pkSave(){ try{ localStorage.setItem(PK.LS,JSON.stringify(PKS)) }catch{} }
-const pkFind=id=>PKS.find(p=>p.id===id);
-const pkEsc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function pkDB(){ return PK.db||(PK.db=new Promise((res,rej)=>{ const r=indexedDB.open('bd_packs',1); r.onupgradeneeded=()=>r.result.createObjectStore('files'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error) })) }
-async function pkPut(k,v){ const d=await pkDB(); return new Promise((res,rej)=>{ const t=d.transaction('files','readwrite'); t.objectStore('files').put(v,k); t.oncomplete=()=>res(); t.onerror=()=>rej(t.error) }) }
-async function pkDelKey(k){ const d=await pkDB(); return new Promise((res,rej)=>{ const t=d.transaction('files','readwrite'); t.objectStore('files').delete(k); t.oncomplete=()=>res(); t.onerror=()=>rej(t.error) }) }
-const pkRelay=()=>{ try{ return localStorage.getItem(PK.RLS)||'' }catch{ return '' } };
-function packRelaySet(v){ try{ localStorage.setItem(PK.RLS,(v||'').trim()) }catch{} }
-const pkUrl=u=>{ const r=pkRelay(); return r?r+(r.includes('?')?'&':'?')+'url='+encodeURIComponent(u):u };
-const pkHeaders=p=>p.key?{Authorization:'Bearer '+p.key}:{};
-const pkSize=n=>!n?'0':n<1048576?Math.round(n/1024)+' Ko':n<1073741824?(n/1048576).toFixed(1)+' Mo':(n/1073741824).toFixed(2)+' Go';
-const pkAgo=t=>{ if(!t) return ''; const s=Math.round((Date.now()-t)/1000); return s<60?s+' s':s<3600?Math.round(s/60)+' min':s<86400?Math.round(s/3600)+' h':Math.round(s/86400)+' j' };
-function packSet(id,k,v){ const p=pkFind(id); if(!p) return; p[k]=(v||'').trim(); pkSave(); if(k==='rtUrl'||k==='key') packLiveSync(id) }
-function packAdd(){ const n=(prompt('Nom du pays ?')||'').trim(); if(!n) return; const flag=(prompt('Drapeau ou emoji (facultatif) ?')||'🌍').trim();
-  let id=n.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'pays'; while(pkFind(id)) id+='-2';
-  PKS.push({id,name:n,flag,page:'',note:'Vérifie la licence du jeu de données avant un usage commercial.',staticUrl:'',rtUrl:'',key:'',live:false,meta:{},custom:true}); pkSave(); renderPacks() }
-async function packRemove(id){ const p=pkFind(id); if(!p||!confirm('Retirer « '+p.name+' » et ses fichiers téléchargés ?')) return;
-  packLiveStop(id); try{ await pkDelKey(id+':static'); await pkDelKey(id+':rt') }catch{} PKS=PKS.filter(x=>x.id!==id); pkSave(); renderPacks() }
-async function packDelete(id){ const p=pkFind(id); if(!p) return; try{ await pkDelKey(id+':static') }catch{} p.meta={...p.meta,size:0,t:0}; pkSave(); renderPacks(); toast('Fichiers supprimés') }
-function pkProgress(id){ const b=PK.busy[id], el=document.getElementById('pk-prog-'+id); if(!b||!el) return;
-  el.firstElementChild.style.width=Math.round((b.pct||0)*100)+'%'; const t=document.getElementById('pk-ptxt-'+id); if(t) t.textContent=pkSize(b.got)+(b.total?' / '+pkSize(b.total):'') }
-async function packDownload(id){ const p=pkFind(id); if(!p||PK.busy[id]) return;
-  if(!p.staticUrl){ toast('Ajoute d’abord l’adresse du fichier'); const d=document.getElementById('pk-det-'+id); if(d) d.open=true; return }
-  PK.busy[id]={pct:0,got:0,total:0}; delete PK.err[id]; renderPacks();
-  try{ try{ navigator.storage?.persist?.() }catch{}
-    const resp=await fetch(pkUrl(p.staticUrl),{cache:'no-store',headers:pkHeaders(p)}); if(!resp.ok) throw new Error('Le serveur répond '+resp.status);
-    const total=+resp.headers.get('content-length')||0; PK.busy[id].total=total; const rd=resp.body&&resp.body.getReader(); const chunks=[]; let got=0;
-    if(rd){ for(;;){ const {done,value}=await rd.read(); if(done) break; chunks.push(value); got+=value.length; PK.busy[id].got=got; PK.busy[id].pct=total?got/total:0; pkProgress(id) } }
-    else{ const b=await resp.blob(); chunks.push(b); got=b.size }
-    const blob=new Blob(chunks,{type:'application/zip'}); if(!blob.size) throw new Error('Fichier vide');
-    await pkPut(id+':static',{blob,t:Date.now(),url:p.staticUrl}); p.meta={...p.meta,size:blob.size,t:Date.now()}; pkSave(); toast(p.name+' : horaires téléchargés')
-  }catch(e){ PK.err[id]=(e&&e.name==='TypeError')?'Téléchargement bloqué : ce serveur refuse les requêtes depuis une app web (CORS) ou tu es hors ligne. Utilise un serveur relais (ci-dessous).':(e&&e.message)||'Échec du téléchargement' }
-  finally{ delete PK.busy[id]; renderPacks() } }
-async function packLiveOnce(id){ const p=pkFind(id); if(!p||!p.rtUrl) return;
-  try{ const resp=await fetch(pkUrl(p.rtUrl),{cache:'no-store',headers:pkHeaders(p)}); if(!resp.ok) throw new Error('HTTP '+resp.status);
-    const buf=await resp.arrayBuffer(); await pkPut(id+':rt',{buf,t:Date.now()}); p.meta={...p.meta,rtT:Date.now(),rtSize:buf.byteLength,rtErr:''} }
-  catch(e){ p.meta={...p.meta,rtErr:(e&&e.name==='TypeError')?'bloqué (CORS) ou hors ligne':(e&&e.message)||'erreur'} }
-  pkSave(); const el=document.getElementById('pk-live-'+id); if(el) el.innerHTML=pkLiveTxt(p) }
-function packLiveStop(id){ clearInterval(PK.timers[id]); delete PK.timers[id] }
-function packLiveSync(id){ const p=pkFind(id); packLiveStop(id); if(p&&p.live&&p.rtUrl){ packLiveOnce(id); PK.timers[id]=setInterval(()=>{ if(!document.hidden) packLiveOnce(id) },30000) } }
-function packLive(id,on){ const p=pkFind(id); if(!p) return; if(on&&!p.rtUrl){ toast('Ajoute d’abord l’adresse du flux en direct'); renderPacks(); const d=document.getElementById('pk-det-'+id); if(d) d.open=true; return }
-  p.live=!!on; pkSave(); packLiveSync(id) }
-function pkLiveTxt(p){ const m=p.meta||{}; if(!p.live) return 'Trafic en direct désactivé'; if(m.rtErr) return '⚠️ Direct : '+pkEsc(m.rtErr); return m.rtT?'Direct mis à jour il y a '+pkAgo(m.rtT)+' · '+pkSize(m.rtSize):'Direct : en attente…' }
-function renderPacks(){ const box=document.getElementById('packsList'); if(!box) return; const rel=document.getElementById('packRelay'); if(rel&&document.activeElement!==rel) rel.value=pkRelay();
-  box.innerHTML=PKS.map(p=>{ const m=p.meta||{}, b=PK.busy[p.id], er=PK.err[p.id], has=m.size>0;
-    const st=b?'<div class="pk-bar" id="pk-prog-'+p.id+'" style="height:6px;border-radius:3px;background:rgba(127,127,127,.25);margin:6px 0 2px;overflow:hidden"><div style="height:100%;width:'+Math.round((b.pct||0)*100)+'%;background:var(--accent)"></div></div><div class="sstat" id="pk-ptxt-'+p.id+'">'+pkSize(b.got)+(b.total?' / '+pkSize(b.total):'')+'</div>'
-      :'<div class="sstat">'+(has?'✅ Horaires : '+pkSize(m.size)+' · il y a '+pkAgo(m.t):'Horaires non téléchargés')+'</div>';
-    return '<div class="set" style="display:block"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>'+pkEsc(p.flag)+' '+pkEsc(p.name)+'</b><div style="display:flex;gap:6px"><button class="btn sm" type="button" onclick="packDownload(\''+p.id+'\')"'+(b?' disabled':'')+'>'+(has?'Mettre à jour':'Télécharger')+'</button>'+(has?'<button class="btn ghost sm" type="button" onclick="packDelete(\''+p.id+'\')">Supprimer</button>':'')+'</div></div>'+st
-      +(er?'<div class="sstat" style="color:#ff6b5e">⚠️ '+pkEsc(er)+'</div>':'')
-      +'<div class="set" style="border-bottom:0;padding:8px 0 2px"><div><span style="font-size:14px">📡 Trafic en direct</span><div class="sstat" id="pk-live-'+p.id+'">'+pkLiveTxt(p)+'</div></div><label class="switch"><input type="checkbox" '+(p.live?'checked':'')+' onchange="packLive(\''+p.id+'\',this.checked)"><span></span></label></div>'
-      +'<details id="pk-det-'+p.id+'"><summary class="muted" style="font-size:12px;cursor:pointer">Sources et clé d’API</summary>'
-      +'<div class="muted" style="font-size:12px;margin:6px 0">'+pkEsc(p.note)+(p.page?' <a href="'+pkEsc(p.page)+'" target="_blank" rel="noopener">Page des données ↗</a>':'')+'</div>'
-      +'<input type="url" placeholder="Adresse du fichier GTFS (.zip)" value="'+pkEsc(p.staticUrl)+'" onchange="packSet(\''+p.id+'\',\'staticUrl\',this.value)" style="width:100%;box-sizing:border-box;margin-bottom:6px">'
-      +'<input type="url" placeholder="Adresse du flux en direct GTFS-RT (.pb)" value="'+pkEsc(p.rtUrl)+'" onchange="packSet(\''+p.id+'\',\'rtUrl\',this.value)" style="width:100%;box-sizing:border-box;margin-bottom:6px">'
-      +'<input type="password" placeholder="Clé d’API (facultatif)" value="'+pkEsc(p.key)+'" onchange="packSet(\''+p.id+'\',\'key\',this.value)" style="width:100%;box-sizing:border-box;margin-bottom:6px">'
-      +(p.custom?'<button class="btn ghost sm" type="button" onclick="packRemove(\''+p.id+'\')">Retirer ce pays</button>':'')+'</details></div>' }).join('');
-  const se=document.getElementById('packsStorage'); if(se&&navigator.storage?.estimate) navigator.storage.estimate().then(e=>{ se.textContent='Stockage : '+pkSize(e.usage||0)+(e.quota?' / '+pkSize(e.quota):'') }).catch(()=>{}) }
-document.addEventListener('DOMContentLoaded',()=>{ renderPacks(); PKS.forEach(p=>{ if(p.live) packLiveSync(p.id) }) });
 /* Cache des données : tout ce qui est gardé pendant une durée (couleurs des lignes, trajets à pied, quais, trottoirs, positions de quais…).
    Les destinations, parcours suivis et réglages ne sont jamais touchés. */
 const CACHE_KEY_RE=/^bd_(osmc|osm_stops_v\d+|stop_tracks_v\d+|walk_v\d+|planv|cantonCache)$/;
@@ -3550,4 +3860,124 @@ new MutationObserver(()=>requestAnimationFrame(syncIOSWallpaperTint)).observe(do
 }catch(e){} })();
 
 requestAnimationFrame(function(){requestAnimationFrame(function(){window.__bootShow&&window.__bootShow()})});
-</script></body></html>
+</script><script>
+/* ===== UI Départs / sources GTFS ===== */
+const GS={
+  src:()=>{try{return JSON.parse(localStorage.getItem('bd_gtfs_src')||'[]')}catch(e){return[]}},
+  setSrc:a=>localStorage.setItem('bd_gtfs_src',JSON.stringify(a)),
+  relay:()=>localStorage.getItem('bd_gtfs_relay')||'',
+  cur:null, group:null, timer:null, rt:null, rtErr:null, busy:false
+};
+function gsFmtDate(t){return new Date(t).toLocaleString('fr-CH',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}
+async function gsRenderSettings(){
+  const box=$('#gsList'); if(!box) return; const L=GS.src();
+  $('#gsRelay').value=GS.relay();
+  if(!L.length){ box.innerHTML='<div class="muted" style="font-size:13px;padding:8px 2px">Aucune source. Ajoute un flux GTFS ci-dessous.</div>'; return }
+  const rows=[]; for(const s of L){ const m=await GT.meta(s.id);
+    rows.push(`<div class="set"><div style="min-width:0"><b>${esc(s.name)}</b><div class="muted" style="font-size:12px">${m?`${m.total.toLocaleString('fr-CH')} arrêts (${m.nStops.toLocaleString('fr-CH')} conservés) · ${(m.nRows/1000|0).toLocaleString('fr-CH')} k horaires · ${gsFmtDate(m.at)}`:'Non téléchargé'}${s.rtUrl?' · temps réel':''}</div></div><div class="row" style="flex:none">${s.url?`<button class="btn ghost sm" onclick="gsDownload('${s.id}')">${m?'MàJ':'Charger'}</button>`:''}<button class="btn ghost sm" onclick="gsDelete('${s.id}')" aria-label="Supprimer">🗑</button></div></div>`) }
+  box.innerHTML=rows.join('');
+}
+function gsStatus(t,err){ const e=$('#gsStat'); if(e){e.textContent=t||'';e.style.color=err?'#ff3b30':''} }
+async function gsGetCenter(radius){
+  if(!radius) return null; if(pos) return pos;
+  return new Promise(r=>{ if(!navigator.geolocation) return r(null); navigator.geolocation.getCurrentPosition(p=>r({lat:p.coords.latitude,lon:p.coords.longitude}),()=>r(null),{timeout:8000}) });
+}
+async function gsRun(s,blob){
+  if(GS.busy) return; GS.busy=true;
+  try{
+    const radius=+s.radius||0, center=await gsGetCenter(radius);
+    if(radius&&!center) gsStatus('Position indisponible : import de toute la zone…');
+    await GT.importZip(s.id,blob,{center,radiusKm:center?radius:0},t=>gsStatus(t));
+    gsStatus('Terminé ✓'); toast('Source importée'); GS.cur=null; await gsRenderSettings(); gsRefreshDeparts();
+  }catch(e){ console.error(e); gsStatus('Erreur : '+(e.message||e),true) }
+  GS.busy=false;
+}
+async function gsDownload(id){
+  const s=GS.src().find(x=>x.id===id); if(!s||!s.url) return;
+  try{
+    gsStatus('Téléchargement…');
+    const r=await GT.getBytes(s.url,{key:s.key,relay:GS.relay(),onProg:(g,t)=>gsStatus('Téléchargement '+(g/1048576).toFixed(0)+(t?' / '+(t/1048576).toFixed(0):'')+' Mo')});
+    await gsRun(s,r instanceof Blob?r:new Blob([r]));
+  }catch(e){ gsStatus((/Failed to fetch|NetworkError|Load failed/i.test(e.message)?'Téléchargement bloqué par CORS. Renseigne un relais (voir ci-dessous) ou importe le ZIP.':'Erreur : '+e.message),true) }
+}
+async function gsAdd(){
+  const g=i=>$('#'+i).value.trim(); const name=g('gsName'); if(!name){toast('Donne un nom à la source');return}
+  const s={id:'g'+Date.now().toString(36),name,url:g('gsUrl'),rtUrl:g('gsRt'),key:g('gsKey'),rtKey:g('gsKey'),radius:+g('gsRad')||0};
+  const a=GS.src(); a.push(s); GS.setSrc(a); ['gsName','gsUrl','gsRt'].forEach(i=>$('#'+i).value='');
+  await gsRenderSettings(); if(s.url) gsDownload(s.id); else{ GS._pendingFile=s.id; toast('Source ajoutée : importe maintenant le fichier ZIP'); $('#gsFile').click() }
+}
+function gsPickFile(){ const a=GS.src(); const id=a.length?a[a.length-1].id:null; if(!id){toast("Ajoute d'abord une source");return} GS._pendingFile=id; $('#gsFile').click() }
+async function gsFileChosen(inp){ const f=inp.files[0]; inp.value=''; if(!f) return; const s=GS.src().find(x=>x.id===GS._pendingFile); if(s) gsRun(s,f) }
+async function gsDelete(id){ if(!confirm('Supprimer cette source et ses données ?')) return; await GT.remove(id); GS.setSrc(GS.src().filter(s=>s.id!==id)); if(GS.cur===id)GS.cur=null; gsRenderSettings(); gsRefreshDeparts() }
+
+/* --- onglet Départs --- */
+async function gsRefreshDeparts(){
+  const L=GS.src(), v=$('#gsBody'); if(!v) return;
+  if(!L.length){ $('#gsTop').style.display='none'; v.innerHTML='<div class="card glass" style="text-align:center"><b>Aucune source de données</b><div class="muted" style="font-size:13px;margin:6px 0 12px">Ajoute un flux GTFS (et GTFS-RT pour le temps réel) dans les paramètres pour voir les prochains départs et retards.</div><button class="btn" onclick="document.querySelector(\'#tabs button[data-v=parametres]\').click()">Ouvrir les paramètres</button></div>'; return }
+  $('#gsTop').style.display='';
+  if(!GS.cur||!L.find(s=>s.id===GS.cur)) GS.cur=L[0].id;
+  const sel=$('#gsSrcSel'); sel.innerHTML=L.map(s=>`<option value="${s.id}"${s.id===GS.cur?' selected':''}>${esc(s.name)}</option>`).join(''); sel.style.display=L.length>1?'':'none';
+  if(GS.group){ gsBoard(); return }
+  const m=await GT.meta(GS.cur);
+  if(!m){ v.innerHTML='<div class="muted" style="padding:14px">Cette source n\'est pas encore chargée (Paramètres → Sources GTFS).</div>'; return }
+  gsSearch();
+}
+async function gsSearch(near){
+  const q=$('#gsQ').value.trim(); const v=$('#gsBody');
+  const r=await GT.search(GS.cur,q,near||(q?pos:null));
+  window._gsRes=r;
+  if(!r.length){ v.innerHTML='<div class="muted" style="padding:14px">'+(q?'Aucun arrêt trouvé.':'Cherche un arrêt ou touche 📍 pour les arrêts proches.')+'</div>'; return }
+  v.innerHTML='<div class="results glass" style="display:block">'+r.map((g,i)=>`<div class="res" onclick="gsOpen(${i})"><div class="ic">🚏</div><div style="flex:1;min-width:0"><div class="n">${esc(g.name)}</div><div class="a">${g.dist!=null?Math.round(g.dist)+' m · ':''}${g.ids.length} quai${g.ids.length>1?'s':''}</div></div></div>`).join('')+'</div>';
+}
+async function gsNearby(){
+  if(!pos){ try{ await new Promise((ok,ko)=>navigator.geolocation.getCurrentPosition(p=>{pos={lat:p.coords.latitude,lon:p.coords.longitude};ok()},ko,{timeout:8000})) }catch(e){ toast('Position indisponible'); return } }
+  $('#gsQ').value=''; gsSearch(pos);
+}
+function gsOpen(i){ GS.group=window._gsRes[i]; GS.rt=null; GS.rtErr=null; gsBoard(); gsTimer(true) }
+function gsBack(){ GS.group=null; gsTimer(false); gsRefreshDeparts() }
+function gsTimer(on){ clearInterval(GS.timer); GS.timer=null; if(on) GS.timer=setInterval(()=>{ if($('#v-departs').classList.contains('active')&&GS.group) gsBoard(true); else gsTimer(false) },30000) }
+async function gsBoard(quiet){
+  const v=$('#gsBody'), g=GS.group, s=GS.src().find(x=>x.id===GS.cur); if(!g||!s) return;
+  if(!quiet) v.innerHTML=`<div class="list-top"><button class="back-btn" onclick="gsBack()" aria-label="Retour">‹</button><h2 class="list-title" style="font-size:19px">${esc(g.name)}</h2></div><div class="spin"></div>`;
+  if(s.rtUrl){ GS.rt=await GT.getRT(s,GS.relay(),10000); GS.rtErr=GS.rt?null:'indisponible (CORS ? clé ? configure un relais)' }
+  const dep=await GT.departures(s.id,g,Date.now(),GS.rt,{limit:40});
+  const now=Date.now();
+  const rtTxt=!s.rtUrl?'Horaires théoriques (pas de source temps réel)':GS.rtErr?`Temps réel indisponible : ${esc(GS.rtErr)}`:`<span class="live">Temps réel</span> · ${GS.rt.n} courses suivies`;
+  v.innerHTML=`<div class="list-top"><button class="back-btn" onclick="gsBack()" aria-label="Retour">‹</button><h2 class="list-title" style="font-size:19px">${esc(g.name)}</h2></div><div class="muted" style="font-size:12.5px;margin:0 4px 8px">${rtTxt}</div>`+
+  (dep.length?dep.map(d=>{
+    const bg=d.color?'#'+d.color:'#6b7280', fg=d.tcolor?'#'+d.tcolor:'#fff', m=Math.round((d.act-now)/60000);
+    const dl=d.cancelled?'<span style="color:#ff3b30;font-weight:800">Supprimé</span>':d.delay==null?'':Math.abs(d.delay)<60?'<span style="color:#18a957;font-weight:700">à l\'heure</span>':d.delay>0?`<span style="color:#ff3b30;font-weight:800">+${Math.round(d.delay/60)} min</span>`:`<span style="color:#0a84ff;font-weight:800">${Math.round(d.delay/60)} min</span>`;
+    return `<div class="jr glass"><div class="jr-top"><span class="lb main" style="background:${bg};color:${fg}">${esc(d.route||'?')}</span><div class="jr-mid"><div class="jr-dir"${d.cancelled?' style="text-decoration:line-through"':''}>${esc(d.head||'')}</div><div class="jr-stop">${d.platform?'<span class="quai">Quai '+esc(d.platform)+'</span> · ':''}prévu ${hm(d.sch)} ${dl}</div></div><div class="dep">${d.cancelled?'—':m<=0?'0':m}<em>${d.cancelled?'':'min'}</em><small>${hm(d.act)}</small></div></div></div>`}).join(''):'<div class="muted" style="padding:14px">Aucun départ dans les 3 prochaines heures.</div>')+
+  (GS.rt?'':'');
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  gsRenderSettings(); gsRefreshDeparts();
+  document.querySelector('#tabs button[data-v="departs"]')?.addEventListener('click',()=>{ gsRefreshDeparts(); if(GS.group) gsTimer(true) });
+  $('#gsQ')?.addEventListener('input',()=>{ clearTimeout(GS._qt); GS._qt=setTimeout(()=>{GS.group=null;gsSearch()},200) });
+  $('#gsSrcSel')?.addEventListener('change',e=>{ GS.cur=e.target.value; GS.group=null; gsRefreshDeparts() });
+  $('#gsRelay')?.addEventListener('change',e=>localStorage.setItem('bd_gtfs_relay',e.target.value.trim()));
+});
+
+/* --- remplacement de Transitous --- */
+const gsOn=()=>localStorage.getItem('bd_gtfs_on')==='1';
+async function gsToggle(on){
+  if(on){ let ok=false; for(const s of GS.src()){ if(await GT.meta(s.id)){ok=true;break} } if(!ok){ $('#gsOn').checked=false; toast("Charge d'abord au moins une source GTFS"); return } }
+  localStorage.setItem('bd_gtfs_on',on?'1':'0'); try{ localStorage.removeItem('bd_planv') }catch(e){}
+  if(on) await gsRemap(true); toast(on?'Transitous désactivé : sources GTFS utilisées':'Transitous réactivé'); setTimeout(()=>location.reload(),700);
+}
+/* Les arrêts enregistrés (destinations) portent des identifiants Transitous : on les remplace par ceux de la source locale */
+async function gsRemap(force){
+  if(!gsOn()&&!force) return; let ch=false;
+  for(const d of (S.dests||[])){
+    const bad=x=>x&&!/^g[0-9a-z]+_/.test(x);
+    if(d.nearStop&&bad(d.nearStop.id)){ delete d.nearStop; ch=true }
+    if(d.type==='STOP'&&bad(d.id)&&Number.isFinite(+d.lat)){
+      const r=await GT.handle('/v1/reverse-geocode',{place:d.lat+','+d.lon,type:'STOP'},{sources:GS.src,relay:GS.relay}).catch(()=>[]);
+      const nm=GT.norm(d.name), f=r.find(x=>GT.norm(x.name)===nm)||r[0];
+      if(f){ d.id=f.id; d.lat=f.lat; d.lon=f.lon; ch=true } else { d.type='ADDR'; delete d.id; ch=true } } }
+  if(ch) save();
+}
+document.addEventListener('DOMContentLoaded',()=>{ const e=$('#gsOn'); if(e) e.checked=gsOn(); gsRemap(); });
+
+</script>
+</body></html>
