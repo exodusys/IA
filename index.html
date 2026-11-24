@@ -67,6 +67,7 @@
 
   /* Layout */
   --rail-w: 264px;
+  --queue-w: 320px;
   --player-h: 96px;
   --shadow-1: 0 2px 10px rgba(0, 0, 0, 0.28);
   --shadow-2: 0 18px 46px -18px rgba(0, 0, 0, 0.75);
@@ -1957,7 +1958,8 @@ body[data-playing='true'] .player-progress span { transition: width 0.25s linear
 
 /* 9. Drawer, popover, toasts -------------------------------------------- */
 
-.drawer {
+.drawer,
+.queue-rail {
   position: fixed;
   top: 0;
   right: 0;
@@ -1972,7 +1974,8 @@ body[data-playing='true'] .player-progress span { transition: width 0.25s linear
   transform: translateX(102%);
   transition: transform 0.34s var(--ease-out);
 }
-.drawer.is-open { transform: none; }
+.drawer.is-open,
+.queue-rail.is-open { transform: none; }
 
 .drawer-head {
   display: flex;
@@ -2258,7 +2261,7 @@ body[data-playing='true'] .player-progress span { transition: width 0.25s linear
   .src-btn .src-ico { width: 34px; height: 34px; }
   .src-btn span.lbl { font-size: var(--text-sm); }
 
-  .drawer { bottom: 0; width: 100%; z-index: 105; }
+  .drawer, .queue-rail { bottom: 0; width: 100%; z-index: 105; }
   .popover { min-width: 190px; }
 }
 
@@ -2280,64 +2283,44 @@ body[data-playing='true'] .player-progress span { transition: width 0.25s linear
   .topbar { padding-inline: var(--space-12); }
 }
 
-/* Ad-free control + clickable rows ---------------------------------------- */
-
-.rail-switch {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding: 0 var(--space-2) var(--space-4);
-}
-
-.rs-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.rs-title { font-size: var(--text-sm); font-weight: 600; color: var(--text-2); }
-.rs-text small { font-size: 0.625rem; line-height: 1.35; color: var(--text-3); }
-
-.switch {
-  position: relative;
-  flex: none;
-  width: 38px;
-  height: 22px;
-  border-radius: 999px;
-  border: 1px solid var(--line-strong);
-  background: var(--surface-3);
-  transition: background 0.18s var(--ease), border-color 0.18s var(--ease);
-}
-.switch .knob {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--text-3);
-  transition: transform 0.18s var(--ease), background 0.18s var(--ease);
-}
-.switch[aria-checked="true"] {
-  background: color-mix(in oklch, var(--accent) 30%, transparent);
-  border-color: color-mix(in oklch, var(--accent) 55%, transparent);
-}
-.switch[aria-checked="true"] .knob { transform: translateX(16px); background: var(--accent); }
-.switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
-.ad-pill {
-  flex: none;
-  padding: 1px 5px;
-  border-radius: 4px;
-  border: 1px solid rgba(232, 176, 106, 0.32);
-  background: rgba(232, 176, 106, 0.14);
-  color: var(--accent);
-  font-size: 0.5625rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
+/* Clickable rows ------------------------------------------------------- */
 
 .track-main { cursor: pointer; }
 .track-main:hover .track-title { color: var(--accent); }
 .result-main { cursor: pointer; }
 .result-row:hover .result-title { color: var(--accent); }
+
+
+/* File d'attente dockée --------------------------------------------------- */
+
+.queue-sub {
+  margin-top: 2px;
+  font-size: var(--text-xs);
+  color: var(--text-3);
+}
+
+.q-row.is-current { background: var(--accent-soft); }
+.q-row.is-current .track-title { color: var(--accent); }
+
+@media (min-width: 1180px) {
+  .app.queue-open { grid-template-columns: var(--rail-w) minmax(0, 1fr) var(--queue-w); }
+
+  .queue-rail {
+    position: static;
+    transform: none;
+    width: auto;
+    height: 100dvh;
+    background: rgba(15, 15, 17, 0.55);
+    border-left: 1px solid var(--line);
+    border-radius: 0;
+  }
+  .queue-rail:not(.is-open) { display: none; }
+  .queue-rail .drawer-head { padding: var(--space-5) var(--space-4) var(--space-4); }
+  .queue-rail .drawer-body { padding: var(--space-3) var(--space-3) var(--space-6); }
+
+  body.queue-open .player { right: var(--queue-w); }
+  body.queue-open .toasts { right: calc(var(--queue-w) + var(--space-6)); }
+}
 
 </style>
 </head>
@@ -2426,18 +2409,9 @@ body[data-playing='true'] .player-progress span { transition: width 0.25s linear
     </div>
 
     <div class="rail-foot">
-      <div class="rail-switch">
-        <span class="rs-text">
-          <span class="rs-title">Sans pub</span>
-          <small>Coupe le son des pubs, essaie de les passer</small>
-        </span>
-        <button class="switch" id="toggle-adblock" type="button" role="switch" aria-checked="true" aria-label="Mode sans publicité">
-          <span class="knob" aria-hidden="true"></span>
-        </button>
-      </div>
       <p class="rail-note">
         <svg class="ic" aria-hidden="true"><use href="#i-info"/></svg>
-        Lecture via YouTube. Les imports restent dans cette session.
+        Audio sans pub quand le flux est disponible, sinon lecteur YouTube. Les imports restent dans cette session.
       </p>
       <div class="source-badges" aria-label="Sources prises en charge">
         <span class="src-badge"><svg class="ic" aria-hidden="true"><use href="#i-yt"/></svg>YouTube</span>
@@ -2473,6 +2447,22 @@ body[data-playing='true'] .player-progress span { transition: width 0.25s linear
 
     <main id="main" class="view" tabindex="-1"></main>
   </div>
+
+  <aside class="queue-rail" id="queue-drawer" aria-hidden="true" aria-labelledby="queue-title">
+    <header class="drawer-head">
+      <div>
+        <h2 id="queue-title">File d'attente</h2>
+        <p class="queue-sub" id="queue-count">0 titre</p>
+      </div>
+      <div class="drawer-actions">
+        <button class="text-btn" id="queue-clear" type="button">Vider</button>
+        <button class="icon-btn sm" id="queue-close" type="button" aria-label="Fermer la file">
+          <svg class="ic" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </div>
+    </header>
+    <div class="drawer-body" id="queue-list"></div>
+  </aside>
 </div>
 
 <nav class="tabbar" aria-label="Navigation">
@@ -2492,7 +2482,6 @@ body[data-playing='true'] .player-progress span { transition: width 0.25s linear
       <div class="np-meta">
         <div class="np-line">
           <span class="np-title" id="bar-title">Aucune lecture</span>
-          <span class="ad-pill" id="ad-pill" hidden>Pub</span>
           <span class="eq" id="bar-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
         </div>
         <span class="np-artist" id="bar-artist">Choisis un titre pour commencer</span>
@@ -2649,18 +2638,6 @@ body[data-playing='true'] .player-progress span { transition: width 0.25s linear
   </div>
 </section>
 
-<aside class="drawer" id="queue-drawer" aria-hidden="true" aria-labelledby="queue-title">
-  <header class="drawer-head">
-    <h2 id="queue-title">File d'attente</h2>
-    <div class="drawer-actions">
-      <button class="text-btn" id="queue-clear" type="button">Vider</button>
-      <button class="icon-btn sm" id="queue-close" type="button" aria-label="Fermer la file">
-        <svg class="ic" aria-hidden="true"><use href="#i-close"/></svg>
-      </button>
-    </div>
-  </header>
-  <div class="drawer-body" id="queue-list"></div>
-</aside>
 
 <div class="popover" id="popover" hidden></div>
 
@@ -2759,28 +2736,39 @@ window.ONDE_SEED = {
 
 </script>
 <script>
-/* Onde — lecteur YouTube.
-   On pilote directement l'iframe d'embed via l'API postMessage de YouTube :
-   pas de script tiers, pas de wrapper fragile, et les commandes restent
-   disponibles après chaque changement de morceau. */
+/* Onde — lecteur.
+   Lecture principale : le flux audio du titre (récupéré via Piped) dans un
+   <audio> natif. Aucune pub n'y est servie, donc rien à bloquer.
+   Repli : si aucun flux n'est trouvé, on pilote l'iframe d'embed YouTube par
+   postMessage. Là, YouTube peut insérer de la pub et aucune page tierce ne
+   peut l'en empêcher. */
 
 (function () {
   'use strict';
 
   const listeners = {};
   const api = {
-    ready: false,
+    ready: true,
     videoId: null,
     duration: 0,
     currentTime: 0,
     state: -1,
     volume: 80,
-    muted: false,
-    adblock: true,
-    adPlaying: false
+    muted: false
   };
 
+  const audio = new Audio();
+  audio.preload = 'auto';
+  audio.setAttribute('playsinline', '');
+
+  let mode = 'audio';       // 'audio' | 'frame'
+  let audioActive = false;  // un flux est chargé et ses événements comptent
+  let wantPlay = false;
+  let loadToken = 0;
+  let noticed = false;
+
   let frame = null;
+  let frameReady = false;
   let ticker = null;
   let autoplayNext = false;
   let handshake = null;
@@ -2792,13 +2780,40 @@ window.ONDE_SEED = {
     });
   }
 
+  function setState(code) {
+    if (code === api.state) return;
+    api.state = code;
+    emit('state', code);
+  }
+
   api.on = function (type, fn) {
     (listeners[type] = listeners[type] || []).push(fn);
     return api;
   };
 
+  /* ------------------------------------------------------------ audio */
+
+  function stopAudio() {
+    audioActive = false;
+    try { audio.pause(); } catch (e) { /* ignore */ }
+    audio.removeAttribute('src');
+    try { audio.load(); } catch (e) { /* ignore */ }
+  }
+
+  audio.addEventListener('playing', () => { if (audioActive) setState(1); });
+  audio.addEventListener('pause', () => { if (audioActive && !audio.ended) setState(2); });
+  audio.addEventListener('waiting', () => { if (audioActive) setState(3); });
+  audio.addEventListener('ended', () => { if (audioActive) setState(0); });
+  audio.addEventListener('durationchange', () => {
+    if (audioActive && isFinite(audio.duration) && audio.duration > 0) api.duration = audio.duration;
+  });
+  audio.addEventListener('error', () => {
+    if (audioActive && api.videoId) useFrame(api.videoId);
+  });
+
+  /* ----------------------------------------------------------- iframe */
+
   function embedUrl(videoId) {
-    const host = api.adblock ? 'https://www.youtube-nocookie.com/embed/' : 'https://www.youtube.com/embed/';
     const params = new URLSearchParams({
       enablejsapi: '1',
       autoplay: autoplayNext ? '1' : '0',
@@ -2814,7 +2829,7 @@ window.ONDE_SEED = {
     if (location.protocol === 'http:' || location.protocol === 'https:') {
       params.set('origin', location.origin);
     }
-    return host + encodeURIComponent(videoId || '') + '?' + params.toString();
+    return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(videoId || '') + '?' + params.toString();
   }
 
   function post(payload) {
@@ -2847,24 +2862,23 @@ window.ONDE_SEED = {
 
     if (data.event === 'onReady' || data.event === 'initialDelivery') {
       clearTimeout(watchdog);
-      if (!api.ready) {
-        api.ready = true;
+      if (!frameReady) {
+        frameReady = true;
         startListening();
         command('setVolume', [api.volume]);
         if (api.muted) command('mute');
-        startTicker();
-        emit('ready');
         if (autoplayNext) { command('playVideo'); autoplayNext = false; }
       }
       if (data.event === 'onReady') return;
     }
 
+    // Le lecteur YouTube reste en place après un repli : on ignore ses
+    // événements tant que la lecture est assurée par le flux audio.
+    if (mode !== 'frame') return;
+
     if (data.event === 'onStateChange') {
       const code = typeof data.info === 'number' ? data.info : (data.info && data.info.playerState);
-      if (typeof code === 'number' && code !== api.state) {
-        api.state = code;
-        emit('state', code);
-      }
+      if (typeof code === 'number') setState(code);
       return;
     }
 
@@ -2873,44 +2887,14 @@ window.ONDE_SEED = {
       if (typeof info.currentTime === 'number') api.currentTime = info.currentTime;
       if (typeof info.duration === 'number' && info.duration > 0) api.duration = info.duration;
       if (typeof info.volume === 'number') api.volume = info.volume;
-      if (typeof info.playerState === 'number' && info.playerState !== api.state) {
-        api.state = info.playerState;
-        emit('state', info.playerState);
-      }
-
-      // An ad is a different video than the one we asked for. There is no
-      // official ad API inside the embed, so we match on the reported id:
-      // mute the ad and try to jump past it, then restore the sound.
-      const shownId = info.videoData && info.videoData.video_id;
-      if (api.adblock && shownId && api.videoId) {
-        const isAd = shownId !== api.videoId;
-        if (isAd && !api.adPlaying) {
-          api.adPlaying = true;
-          command('mute');
-          emit('ad', true);
-          const skipTo = typeof info.duration === 'number' && info.duration > 0 ? info.duration - 0.25 : 0;
-          if (skipTo) command('seekTo', [skipTo, true]);
-        } else if (!isAd && api.adPlaying) {
-          api.adPlaying = false;
-          if (!api.muted) command('unMute');
-          emit('ad', false);
-        }
-      }
+      if (typeof info.playerState === 'number') setState(info.playerState);
     }
-  }
-
-  function startTicker() {
-    if (ticker) return;
-    ticker = setInterval(() => {
-      if (api.state !== 1) return;
-      emit('progress', { time: api.currentTime, duration: api.duration });
-    }, 250);
   }
 
   function armWatchdog() {
     clearTimeout(watchdog);
     watchdog = setTimeout(() => {
-      if (api.ready) return;
+      if (frameReady) return;
       emit('error', {
         code: 'stall',
         message: "YouTube ne démarre pas. Vérifie ta connexion ou ouvre la vidéo sur YouTube."
@@ -2939,12 +2923,45 @@ window.ONDE_SEED = {
     return frame;
   }
 
-  api.init = function (startId) {
-    if (frame) return;
-    api.videoId = startId || null;
-    api.ready = false;
-    autoplayNext = false;
-    buildFrame(startId || '');
+  function useFrame(videoId) {
+    stopAudio();
+    mode = 'frame';
+    if (!noticed) {
+      noticed = true;
+      emit('notice', "Flux sans pub introuvable : lecture via YouTube, des pubs peuvent apparaître.");
+    }
+    // Swap the video inside the live player instead of reloading the iframe:
+    // a fresh document would lose the user activation that allows sound.
+    if (frame && frameReady) {
+      command('loadVideoById', [{ videoId: videoId, startSeconds: 0 }]);
+      command(wantPlay ? 'playVideo' : 'pauseVideo');
+      return;
+    }
+    frameReady = false;
+    autoplayNext = wantPlay;
+    buildFrame(videoId);
+  }
+
+  /* ----------------------------------------------------------- ticker */
+
+  function startTicker() {
+    if (ticker) return;
+    ticker = setInterval(() => {
+      if (mode === 'audio') {
+        if (!audioActive || audio.paused) return;
+        api.currentTime = audio.currentTime;
+        emit('progress', { time: audio.currentTime, duration: api.duration });
+      } else if (api.state === 1) {
+        emit('progress', { time: api.currentTime, duration: api.duration });
+      }
+    }, 250);
+  }
+
+  /* -------------------------------------------------------------- API */
+
+  api.init = function () {
+    startTicker();
+    emit('ready');
   };
 
   api.load = function (videoId, autoplay) {
@@ -2952,61 +2969,72 @@ window.ONDE_SEED = {
     api.duration = 0;
     api.currentTime = 0;
     api.state = -1;
+    wantPlay = !!autoplay;
 
-    // Swap the video inside the live player instead of reloading the iframe:
-    // a fresh document would lose the user activation that allows sound.
-    if (frame && api.ready) {
-      command('loadVideoById', [{ videoId: videoId, startSeconds: 0 }]);
-      if (autoplay) command('playVideo');
-      return;
-    }
+    const token = ++loadToken;
+    stopAudio();
+    if (frame && frameReady) command('pauseVideo');
+    mode = 'audio';
+    if (wantPlay) setState(3);
 
-    api.ready = false;
-    autoplayNext = !!autoplay;
-    buildFrame(videoId);
+    window.OndeImport.audioStream(videoId).then((url) => {
+      if (token !== loadToken) return;
+      audioActive = true;
+      audio.volume = api.volume / 100;
+      audio.muted = api.muted;
+      audio.src = url;
+      if (!wantPlay) return;
+      const p = audio.play();
+      if (p && p.catch) {
+        p.catch((err) => {
+          if (token !== loadToken) return;
+          if (err && err.name === 'AbortError') return;
+          if (err && err.name === 'NotAllowedError') { setState(2); return; }
+          useFrame(videoId);
+        });
+      }
+    }).catch(() => {
+      if (token === loadToken) useFrame(videoId);
+    });
   };
 
   api.play = function () {
-    command('playVideo');
+    wantPlay = true;
+    if (mode === 'audio') {
+      if (!audioActive) return; // le flux démarrera dès qu'il sera prêt
+      const p = audio.play();
+      if (p && p.catch) p.catch(() => {});
+    } else {
+      command('playVideo');
+    }
   };
 
   api.pause = function () {
-    command('pauseVideo');
+    wantPlay = false;
+    if (mode === 'audio') audio.pause();
+    else command('pauseVideo');
   };
 
   api.seek = function (seconds) {
     const value = Math.max(0, seconds || 0);
     api.currentTime = value;
-    command('seekTo', [value, true]);
+    if (mode === 'audio') {
+      if (audioActive) audio.currentTime = value;
+    } else {
+      command('seekTo', [value, true]);
+    }
   };
 
   api.setVolume = function (value) {
     api.volume = Math.max(0, Math.min(100, Number(value) || 0));
-    command('setVolume', [api.volume]);
+    audio.volume = api.volume / 100;
+    if (frameReady) command('setVolume', [api.volume]);
   };
 
   api.mute = function (muted) {
     api.muted = !!muted;
-    command(muted ? 'mute' : 'unMute');
-  };
-
-  api.setAdblock = function (on) {
-    const next = !!on;
-    if (next === api.adblock) return;
-    api.adblock = next;
-    api.adPlaying = false;
-    if (!api.videoId) return;
-    const resume = api.state === 1;
-    // The host name is baked into the iframe URL: swapping it means building a
-    // new frame, so we tear the old one down first.
-    if (frame) {
-      window.removeEventListener('message', onMessage);
-      frame.remove();
-      frame = null;
-      api.ready = false;
-      api.state = -1;
-    }
-    api.load(api.videoId, resume);
+    audio.muted = api.muted;
+    if (frameReady) command(muted ? 'mute' : 'unMute');
   };
 
   api.time = function () {
@@ -3187,6 +3215,24 @@ window.ONDE_SEED = {
       duration: toSeconds(d.duration),
       thumb: youtubeThumb(id)
     };
+  }
+
+  const streamCache = new Map();
+
+  /* URL d'un flux audio lisible par <audio>, sans passer par l'embed YouTube. */
+  async function audioStream(id) {
+    const hit = streamCache.get(id);
+    if (hit && hit.until > Date.now()) return hit.url;
+    const d = await piped('/streams/' + id, 7000);
+    if (d.livestream) throw new Error('Direct non pris en charge');
+    const probe = document.createElement('audio');
+    const playable = (d.audioStreams || []).filter((st) =>
+      st.url && !st.videoOnly && st.mimeType && probe.canPlayType(String(st.mimeType).split(';')[0]));
+    const byRate = (a, b) => (b.bitrate || 0) - (a.bitrate || 0);
+    const pick = playable.filter((st) => /mp4/.test(st.mimeType)).sort(byRate)[0] || playable.sort(byRate)[0];
+    if (!pick) throw new Error('Aucun flux audio');
+    streamCache.set(id, { url: pick.url, until: Date.now() + 30 * 60 * 1000 });
+    return pick.url;
   }
 
   async function youtubePlaylist(id, hooks) {
@@ -3511,6 +3557,7 @@ window.ONDE_SEED = {
   const api = {
     searchYouTube,
     videoInfo,
+    audioStream,
     youtubeThumb,
     guessVideoId,
     tracksFromFile,
@@ -3631,7 +3678,6 @@ window.ONDE_SEED = {
     searchRemote: null,
     searchBusy: false,
     searchToken: 0,
-    adblock: true,
     import: { source: 'youtube', proposal: null, busy: false }
   };
 
@@ -4080,6 +4126,11 @@ window.ONDE_SEED = {
   function renderQueue() {
     const wrap = $('#queue-list');
     if (!wrap) return;
+    const count = $('#queue-count');
+    if (count) {
+      const n = state.queue.length;
+      count.textContent = n === 0 ? 'Aucun titre' : n + (n > 1 ? ' titres' : ' titre');
+    }
     if (!state.queue.length) {
       wrap.innerHTML = '<div class="empty" style="padding:var(--space-10) var(--space-4)"><p>Aucun titre en attente. Lance une playlist pour remplir la file.</p></div>';
       return;
@@ -5002,12 +5053,18 @@ window.ONDE_SEED = {
     $('#queue-drawer').classList.add('is-open');
     $('#queue-drawer').setAttribute('aria-hidden', 'false');
     $('#btn-queue').setAttribute('aria-expanded', 'true');
+    document.body.classList.add('queue-open');
+    const app = document.querySelector('.app');
+    if (app) app.classList.add('queue-open');
     renderQueue();
   }
   function closeDrawer() {
     $('#queue-drawer').classList.remove('is-open');
     $('#queue-drawer').setAttribute('aria-hidden', 'true');
     $('#btn-queue').setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('queue-open');
+    const app = document.querySelector('.app');
+    if (app) app.classList.remove('queue-open');
   }
 
   /* --------------------------------------------------------------- events */
@@ -5242,7 +5299,7 @@ window.ONDE_SEED = {
     $('#open-np').addEventListener('click', () => { if (state.currentId) openNp(); else toast('Choisis d’abord un titre'); });
     $('#btn-expand').addEventListener('click', () => { if (state.currentId) openNp(); else toast('Choisis d’abord un titre'); });
     $('#np-close').addEventListener('click', closeNp);
-    $('#np-queue').addEventListener('click', () => { openDrawer(); });
+    $('#np-queue').addEventListener('click', () => { closeNp(); openDrawer(); });
     $('#np-more').addEventListener('click', () => { if (state.currentId) trackMenu(state.currentId, $('#np-more')); });
 
     $('#btn-queue').addEventListener('click', () => {
@@ -5255,6 +5312,14 @@ window.ONDE_SEED = {
       state.queueIndex = 0;
       renderQueue();
       toast('File vidée');
+    });
+    $('#queue-list').addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const row = e.target.closest('.q-row');
+      if (!row) return;
+      e.preventDefault();
+      e.stopPropagation();
+      row.click();
     });
     $('#queue-list').addEventListener('click', (e) => {
       const row = e.target.closest('.q-row');
@@ -5363,16 +5428,6 @@ window.ONDE_SEED = {
       else if (e.key.toLowerCase() === 'p') { prev(); }
     });
 
-    const adToggle = $('#toggle-adblock');
-    if (adToggle) {
-      adToggle.addEventListener('click', () => {
-        state.adblock = !state.adblock;
-        adToggle.setAttribute('aria-checked', String(state.adblock));
-        OndePlayer.setAdblock(state.adblock);
-        toast(state.adblock ? 'Mode sans pub activé' : 'Mode sans pub désactivé');
-      });
-    }
-
     window.addEventListener('hashchange', () => { render(); renderRail(); });
 
     OndePlayer.on('ready', () => {
@@ -5393,11 +5448,7 @@ window.ONDE_SEED = {
 
     OndePlayer.on('progress', ({ time, duration }) => paintProgress(time, duration));
 
-    OndePlayer.on('ad', (on) => {
-      const pill = $('#ad-pill');
-      if (pill) pill.hidden = !on;
-      document.body.dataset.ad = on ? 'true' : 'false';
-    });
+    OndePlayer.on('notice', (msg) => toast(msg, 'error'));
 
     OndePlayer.on('error', (err) => {
       setPlaying(false);
@@ -5482,6 +5533,9 @@ window.ONDE_SEED = {
     document.body.dataset.muted = 'false';
     OndePlayer.init(state.tracks.values().next().value ? state.tracks.values().next().value.id : '');
     buildWave('onde');
+
+    // Sur grand écran, la file est un panneau à part entière : on l'ouvre.
+    if (window.innerWidth >= 1180) openDrawer();
 
     if (!location.hash) { try { history.replaceState(null, '', '#/'); } catch (e) { /* opaque origin */ } }
 
