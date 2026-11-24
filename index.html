@@ -102,7 +102,7 @@ dialog.gt-dlg{width:min(560px,calc(100vw - 28px));max-height:86vh;overflow:auto;
 function gtfsParserModule(){
   const td=new TextDecoder('utf-8');
   /* ---------- ZIP (lecture aléatoire sur un Blob, décompression en flux) ---------- */
-  async function readZipDir(blob){
+  async function readZipDir(blob,prefix,all){
     const size=blob.size, tailLen=Math.min(size,66000);
     const tail=new Uint8Array(await blob.slice(size-tailLen,size).arrayBuffer());
     let e=-1; for(let i=tail.length-22;i>=0;i--){ if(tail[i]===0x50&&tail[i+1]===0x4b&&tail[i+2]===5&&tail[i+3]===6){e=i;break} }
@@ -116,7 +116,9 @@ function gtfsParserModule(){
       const method=cdv.getUint16(p+10,true), csize=cdv.getUint32(p+20,true), usize=cdv.getUint32(p+24,true),
         nl=cdv.getUint16(p+28,true), el=cdv.getUint16(p+30,true), cl=cdv.getUint16(p+32,true), lho=cdv.getUint32(p+42,true);
       const name=td.decode(cd.subarray(p+46,p+46+nl));
-      if(!name.endsWith('/')) entries[name.replace(/^.*\//,'').toLowerCase()]={name,method,csize,usize,lho};
+      if(!name.endsWith('/')){ const en={name,method,csize,usize,lho};
+        if(all){ entries[name]=en } else if(prefix!=null){ if(name.startsWith(prefix)&&name.indexOf('/',prefix.length)<0) entries[name.slice(prefix.length).toLowerCase()]=en }
+        else entries[name.replace(/^.*\//,'').toLowerCase()]=en }
       p+=46+nl+el+cl;
     }
     return entries;
@@ -175,7 +177,10 @@ function gtfsParserModule(){
 
   async function parse(blob,opts,progress){
     opts=opts||{}; const P=(stage,f,extra)=>progress&&progress(Object.assign({stage,f},extra||{}));
-    const entries=await readZipDir(blob);
+    if(opts.region&&opts.region.zip){ // archive imbriquée : on la décompresse d'abord (une région = un petit GTFS)
+      const all=await readZipDir(blob,null,true), en=all[opts.region.zip]; if(!en) throw new Error('Région introuvable dans l\'archive : '+opts.region.zip);
+      blob=await new Response(await openEntry(blob,en)).blob(); }
+    const entries=await readZipDir(blob,opts.region&&opts.region.dir!=null?opts.region.dir:null);
     if(!entries['stops.txt']||!entries['stop_times.txt']||!entries['trips.txt']) throw new Error('Archive GTFS incomplète (stops, trips ou stop_times manquant)');
     const z=opts.zone&&Number.isFinite(+opts.zone.lat)&&Number.isFinite(+opts.zone.lon)&&+opts.zone.km>0?opts.zone:null;
     let zb=null; if(z){ const dl=z.km/111.2, dn=z.km/(111.2*Math.max(.2,Math.cos(z.lat*Math.PI/180))); zb=[z.lat-dl,z.lat+dl,z.lon-dn,z.lon+dn] }
@@ -298,7 +303,14 @@ function gtfsParserModule(){
     P('done',1);
     return out;
   }
-  return {parse,_forceZlib:v=>{ opts_forceZlib=!!v }};
+  async function listRegions(blob){
+    const all=await readZipDir(blob,null,true), names=Object.keys(all), out=[], seen=new Set();
+    const base=n=>n.replace(/^.*\//,'').toLowerCase();
+    for(const n of names){ if(base(n)==='stop_times.txt'){ const d=n.includes('/')?n.slice(0,n.lastIndexOf('/')+1):''; if(seen.has(d)) continue; seen.add(d);
+      const has=f=>!!all[d+f]; if(has('stops.txt')&&has('trips.txt')) out.push({kind:'dir',dir:d,label:d?d.replace(/\/$/,'').replace(/^.*\//,''):'',bytes:all[n].usize}) } }
+    for(const n of names){ if(/\.zip$/i.test(n)&&!/^__macosx\//i.test(n)&&base(n)[0]!=='.') out.push({kind:'zip',zip:n,label:n.replace(/^.*\//,'').replace(/\.zip$/i,''),bytes:all[n].csize}) }
+    out.sort((a,b)=>a.label.localeCompare(b.label)); return out }
+  return {parse,listRegions,_forceZlib:v=>{ opts_forceZlib=!!v }};
 }
 
 /* ===== Moteur GTFS : réseau en mémoire + routage horaire (RAPTOR) ===== */
@@ -641,8 +653,9 @@ async function netFetch(url,src,o){
   try{ return await fetch(u,{headers,cache:'no-store',signal:ctl?ctl.signal:undefined,credentials:'omit'}) }
   catch(e){ if(e&&e.name==='AbortError') throw new Error('Délai dépassé'); throw new Error('Connexion impossible (réseau ou CORS : voir l\'aide)') }
   finally{ if(to) clearTimeout(to) } }
+function ghRaw(u){ try{ const x=new URL(u); if(x.hostname==='github.com'){ const m=/^\/([^/]+)\/([^/]+)\/(?:blob|raw)\/(.+)$/.exec(x.pathname); if(m) return 'https://raw.githubusercontent.com/'+m[1]+'/'+m[2]+'/'+m[3] } }catch{} return u }
 async function download(src,onP){
-  const r=await netFetch(src.url,src,{timeout:900000}); if(!r.ok) throw new Error('Serveur : HTTP '+r.status);
+  const r=await netFetch(ghRaw(src.url),src,{timeout:900000}); if(!r.ok) throw new Error('Serveur : HTTP '+r.status);
   const len=+r.headers.get('content-length')||0;
   if(!r.body||!r.body.getReader) return await r.blob();
   const rd=r.body.getReader(), chunks=[]; let got=0;
@@ -679,7 +692,7 @@ async function syncBlob(id,blob){
   const src=sources().find(s=>s.id===id); if(!src) throw new Error('Source inconnue');
   const st=status.feeds[id]={state:'loading',stage:'parse',f:0}; emit();
   try{
-    const feed=await parseInWorker(blob,{id,name:src.name,zone:src.zone&&src.zone.km>0?src.zone:null},m=>{ Object.assign(st,m); emit() });
+    const feed=await parseInWorker(blob,{id,name:src.name,region:src.region||null,zone:src.zone&&src.zone.km>0?src.zone:null},m=>{ Object.assign(st,m); emit() });
     if(!feed.stats.trips) throw new Error('Aucune course trouvée'+(feed.zone?' dans la zone choisie : agrandis le rayon':''));
     st.stage='save'; st.f=1; emit();
     await core.dbPut('feed:'+id,feed);
@@ -852,7 +865,9 @@ function hasRT(){ return rtObj.per.size>0 }
 /* ---------- état pour l'interface ---------- */
 async function storageInfo(){ try{ if(navigator.storage&&navigator.storage.estimate){ const e=await navigator.storage.estimate(); return {usage:e.usage||0,quota:e.quota||0} } }catch{} return null }
 function getStatus(){ return {feeds:status.feeds,rt:status.rt,net:status.net,building:status.building,ready:status.ready,netErr:status.netErr,rtStats:rtObj.stats()} }
-const api={init,on,getStatus,uid,syncStatic,syncBlob,removeStatic,wipe,refreshRT,restartRT,startRT,freshRT,geocode,geocodeLocal,stationsNear,stationInfo,plan,walkItinerary,trip,stopTimes,vehiclesIn,vehicleOf,hasRT,storageInfo,rebuild,rebuildSoon,autoUpdate,
+async function listRegions(blob){ return gtfsParserModule().listRegions(blob) }
+async function fetchPack(url,onP){ return download({url:url,viaProxy:true},onP||(()=>{})) }
+const api={init,on,listRegions,fetchPack,getStatus,uid,syncStatic,syncBlob,removeStatic,wipe,refreshRT,restartRT,startRT,freshRT,geocode,geocodeLocal,stationsNear,stationInfo,plan,walkItinerary,trip,stopTimes,vehiclesIn,vehicleOf,hasRT,storageInfo,rebuild,rebuildSoon,autoUpdate,
   get netVersion(){ return core.NET?core.NET.v:0 }, get ready(){ return !!core.NET }, get hasData(){ return !!core.NET&&core.NET.nStations>0 }, _core:core, _rt:rtObj, _loaded:loaded};
 return api;
 })(GTFSCore,GTFSRT);
@@ -4100,7 +4115,7 @@ function renderGtfsSources(){
   const net=stt.net; const sum=net?`<div class="gt-sum ok"><b>${gtNum(net.stops)}</b> arrêts en mémoire · ${gtNum(net.trips)} courses · ${stt.rtStats&&Object.keys(stt.rtStats).length?'temps réel actif':'horaires théoriques'}</div>`
     :stt.building?'<div class="gt-sum">Préparation du réseau…</div>':`<div class="gt-sum warn">Aucune donnée horaire : ajoute une source GTFS pour calculer les trajets.</div>`;
   box.innerHTML=sum+
-    `<div class="gt-sec">Horaires (GTFS)</div>${sts.map(gtStaticHTML).join('')||'<div class="gt-empty">Aucune source d\'horaires.</div>'}<div class="gt-btns"><button class="btn sm" onclick="gtEdit(null,'static')">＋ Horaires GTFS</button><button class="btn ghost sm" onclick="gtImportFile()">Importer un ZIP</button></div>`+
+    `<div class="gt-sec">Horaires (GTFS)</div>${sts.map(gtStaticHTML).join('')||'<div class="gt-empty">Aucune source d\'horaires.</div>'}<div class="gt-btns"><button class="btn sm" onclick="gtEdit(null,'static')">＋ Horaires GTFS</button><button class="btn ghost sm" onclick="gtImportFile()">Importer un ZIP</button><button class="btn ghost sm" onclick="gtRegions()">Régions (GitHub)</button></div>`+
     `<div class="gt-sec">Temps réel (GTFS-RT)</div>${rts.map(gtRTHTML).join('')||'<div class="gt-empty">Aucun flux temps réel : les horaires affichés sont théoriques.</div>'}<div class="gt-btns"><button class="btn sm" onclick="gtEdit(null,'rt')" ${sts.length?'':'disabled'}>＋ Flux GTFS-RT</button></div>`+
     `<div class="gt-sec">Options</div>
     <div class="set"><div><b>Temps réel</b><div class="muted gt-small">Lecture toutes les…</div></div><div class="seg" id="gtInt">${[10,20,30,60].map(v=>`<button data-v="${v}" class="${(g.rtInterval||20)===v?'on':''}">${v} s</button>`).join('')}</div></div>
@@ -4145,6 +4160,32 @@ function gtImportFile(forId){
     if(z) o.zone=z; else delete o.zone; save(); d.close(); renderGtfsSources();
     try{ await GTFS.syncBlob(id,f); toast('Horaires importés') }catch(e){ toast('Échec : '+(e.message||e)) } };
   d.showModal?d.showModal():d.setAttribute('open','') }
+function gtRegions(){
+  let d=$('#gtDialog'); if(!d){ d=document.createElement('dialog'); d.id='gtDialog'; d.className='glass gt-dlg'; document.body.appendChild(d); d.addEventListener('click',e=>{ if(e.target===d) d.close() }) }
+  let blob=null, regs=[], url='';
+  const draw=(msg)=>{
+    d.innerHTML=`<div class="row between" style="margin-bottom:8px"><h2 style="margin:0;font-size:20px">Régions depuis un ZIP</h2><button class="btn ghost sm" type="button" id="gtX">Fermer</button></div>
+    <div class="gt-fld"><label>Adresse du ZIP (GitHub ou autre)</label><input id="gtU" class="gt-in" value="${esc(url)}" placeholder="https://github.com/utilisateur/depot/blob/main/regions.zip" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false"><div class="muted gt-small">Un lien github.com/…/blob/… est converti automatiquement en lien direct (raw.githubusercontent.com, compatible CORS). Le ZIP peut contenir un dossier GTFS par région, ou un .zip GTFS par région.</div></div>
+    <div class="gt-btns"><button class="btn ghost sm" type="button" id="gtAn">${blob?'Réanalyser':'Analyser'}</button></div>
+    <div id="gtMsg" class="muted gt-small" style="margin:8px 0">${msg||''}</div>
+    ${regs.length?`<div class="gt-sec">Régions trouvées</div><div id="gtRg">${regs.map((r,i)=>`<label class="set" style="cursor:pointer"><div><b>${esc(r.label||'(racine)')}</b><div class="muted gt-small">${r.kind==='zip'?'archive '+gtSize(r.bytes):'dossier · stop_times '+gtSize(r.bytes)}</div></div><span class="switch"><input type="checkbox" data-i="${i}"><span></span></span></label>`).join('')}</div>
+    ${gtZoneHTML(null)}
+    <div class="gt-btns" style="margin-top:12px"><button class="btn" type="button" id="gtOk">Importer la sélection</button></div>`:''}`;
+    d.querySelector('#gtX').onclick=()=>d.close(); if(regs.length) gtZoneWire(d);
+    d.querySelector('#gtAn').onclick=async()=>{
+      url=(d.querySelector('#gtU').value||'').trim(); if(!/^https?:\/\//i.test(url)){ toast('Adresse http(s) invalide'); return }
+      const m=d.querySelector('#gtMsg'); m.textContent='Téléchargement…'; d.querySelector('#gtAn').disabled=true;
+      try{ blob=await GTFS.fetchPack(url,(f,b)=>{ m.textContent='Téléchargement… '+Math.round(f*100)+' % · '+gtSize(b) }); regs=await GTFS.listRegions(blob); draw(regs.length?regs.length+' région(s) trouvée(s) · '+gtSize(blob.size):'Aucune région GTFS trouvée dans cette archive.') }
+      catch(e){ blob=null; regs=[]; draw('⚠️ '+(e.message||e)) } };
+    const ok=d.querySelector('#gtOk'); if(ok) ok.onclick=async()=>{
+      const sel=[...d.querySelectorAll('#gtRg input:checked')].map(x=>regs[+x.dataset.i]); if(!sel.length){ toast('Coche au moins une région'); return }
+      const z=gtZoneRead(d,toast); if(z===false) return; const g=S.settings.gtfs; const ids=[];
+      sel.forEach(r=>{ const o={id:GTFS.uid(),type:'static',name:r.label||'Région',url,region:r.kind==='zip'?{zip:r.zip}:{dir:r.dir},enabled:true,autoUpdate:false,updateHours:168}; if(z) o.zone=z; g.sources.push(o); ids.push(o.id) });
+      save(); d.close(); renderGtfsSources();
+      let okn=0; for(const id of ids){ try{ await GTFS.syncBlob(id,blob); okn++ }catch(e){ toast('Échec : '+(e.message||e)) } }
+      if(okn) toast(okn+' région(s) importée(s)') };
+  };
+  draw(); d.showModal?d.showModal():d.setAttribute('open','') }
 function gtEdit(id,type){
   const s=id?gtSrc(id):null, t=s?s.type:type, g=S.settings.gtfs; const oldKey=s?JSON.stringify([s.url,s.zone||null]):null; const z=s&&s.zone||{km:40}; const statics=g.sources.filter(x=>x.type==='static');
   let d=$('#gtDialog'); if(!d){ d=document.createElement('dialog'); d.id='gtDialog'; d.className='glass gt-dlg'; document.body.appendChild(d); d.addEventListener('click',e=>{ if(e.target===d) d.close() }) }
