@@ -4125,11 +4125,26 @@ function gtRTNow(id){ GTFS.refreshRT(true).then(()=>{ const st=GTFS.getStatus().
 async function gtRemove(id){ const s=gtSrc(id); if(!s) return; if(!confirm(`Supprimer « ${s.name||'cette source'} » ?`+(s.type==='static'?' Les horaires gardés sur l\'appareil seront effacés.':''))) return;
   S.settings.gtfs.sources=S.settings.gtfs.sources.filter(x=>x.id!==id); if(s.type==='static'){ S.settings.gtfs.sources.filter(x=>x.feed===id).forEach(x=>delete x.feed); await GTFS.removeStatic(id) } else GTFS._rt.drop(id); save(); renderGtfsSources() }
 async function gtWipe(){ if(!confirm('Effacer toutes les données horaires gardées sur cet appareil ? Les sources restent configurées et pourront être retéléchargées.')) return; await GTFS.wipe(); renderGtfsSources(); toast('Données effacées') }
+function gtZoneHTML(s){ const z=s&&s.zone||{km:40}; return `<div class="set"><div><b>Limiter à une zone</b><div class="muted gt-small">Recommandé pour les gros réseaux : garde seulement les arrêts du rayon choisi</div></div><label class="switch"><input type="checkbox" id="gtZ" ${s&&s.zone&&s.zone.km>0?'checked':''}><span></span></label></div><div id="gtZB" style="display:${s&&s.zone&&s.zone.km>0?'block':'none'}"><div class="gt-row"><div class="gt-fld"><label>Latitude</label><input id="gtLa" class="gt-in" inputmode="decimal" value="${z.lat!=null?z.lat:(pos?pos.lat.toFixed(4):'')}"></div><div class="gt-fld"><label>Longitude</label><input id="gtLo" class="gt-in" inputmode="decimal" value="${z.lon!=null?z.lon:(pos?pos.lon.toFixed(4):'')}"></div><div class="gt-fld" style="max-width:90px"><label>Rayon (km)</label><input id="gtKm" class="gt-in" inputmode="numeric" value="${z.km||40}"></div></div><button class="btn ghost sm" type="button" id="gtMe">Utiliser ma position</button></div>` }
+function gtZoneRead(d,toast_){ if(!d.querySelector('#gtZ').checked) return null; const v=k=>(d.querySelector(k)||{}).value; const la=parseFloat(v('#gtLa')), lo=parseFloat(v('#gtLo')), km=parseFloat(v('#gtKm')); if(!(la>=-90&&la<=90&&lo>=-180&&lo<=180&&km>0)){ toast('Zone invalide : latitude, longitude et rayon requis'); return false } return {lat:la,lon:lo,km} }
+function gtZoneWire(d){ const zc=d.querySelector('#gtZ'); if(zc) zc.onchange=()=>{ d.querySelector('#gtZB').style.display=zc.checked?'block':'none' };
+  const me=d.querySelector('#gtMe'); if(me) me.onclick=()=>{ const set=q=>{ d.querySelector('#gtLa').value=q.lat.toFixed(4); d.querySelector('#gtLo').value=q.lon.toFixed(4) }; if(pos) return set(pos); navigator.geolocation?.getCurrentPosition(r=>set({lat:r.coords.latitude,lon:r.coords.longitude}),()=>toast('Position indisponible')) } }
 function gtImportFile(forId){
-  const inp=document.createElement('input'); inp.type='file'; inp.accept='.zip,application/zip'; inp.onchange=async()=>{ const f=inp.files[0]; if(!f) return;
-    let id=forId; if(!id){ id=GTFS.uid(); S.settings.gtfs.sources.push({id,type:'static',name:f.name.replace(/\.zip$/i,''),url:'',enabled:true,autoUpdate:false}); save() } renderGtfsSources();
+  const s=forId?gtSrc(forId):null;
+  let d=$('#gtDialog'); if(!d){ d=document.createElement('dialog'); d.id='gtDialog'; d.className='glass gt-dlg'; document.body.appendChild(d); d.addEventListener('click',e=>{ if(e.target===d) d.close() }) }
+  d.innerHTML=`<div class="row between" style="margin-bottom:8px"><h2 style="margin:0;font-size:20px">Importer un ZIP GTFS</h2><button class="btn ghost sm" type="button" id="gtX">Fermer</button></div>
+    ${s?'':`<div class="gt-fld"><label>Nom</label><input id="gtN" class="gt-in" placeholder="Ex. Réseau urbain"></div>`}
+    <div class="gt-fld"><label>Fichier .zip</label><input id="gtFile" class="gt-in" type="file" accept=".zip,application/zip"></div>
+    ${gtZoneHTML(s)}
+    <div class="gt-btns" style="margin-top:12px"><button class="btn" type="button" id="gtOk">Importer</button></div>`;
+  d.querySelector('#gtX').onclick=()=>d.close(); gtZoneWire(d);
+  d.querySelector('#gtOk').onclick=async()=>{
+    const f=d.querySelector('#gtFile').files[0]; if(!f){ toast('Choisis un fichier ZIP'); return }
+    const z=gtZoneRead(d,toast); if(z===false) return;
+    let id=forId, o=s; if(!o){ id=GTFS.uid(); o={id,type:'static',name:((d.querySelector('#gtN').value||'').trim())||f.name.replace(/\.zip$/i,''),url:'',enabled:true,autoUpdate:false}; S.settings.gtfs.sources.push(o) }
+    if(z) o.zone=z; else delete o.zone; save(); d.close(); renderGtfsSources();
     try{ await GTFS.syncBlob(id,f); toast('Horaires importés') }catch(e){ toast('Échec : '+(e.message||e)) } };
-  inp.click() }
+  d.showModal?d.showModal():d.setAttribute('open','') }
 function gtEdit(id,type){
   const s=id?gtSrc(id):null, t=s?s.type:type, g=S.settings.gtfs; const oldKey=s?JSON.stringify([s.url,s.zone||null]):null; const z=s&&s.zone||{km:40}; const statics=g.sources.filter(x=>x.type==='static');
   let d=$('#gtDialog'); if(!d){ d=document.createElement('dialog'); d.id='gtDialog'; d.className='glass gt-dlg'; document.body.appendChild(d); d.addEventListener('click',e=>{ if(e.target===d) d.close() }) }
