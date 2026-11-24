@@ -9,7 +9,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg1:#0b1a3a;--bg2:#1d3f7a;--card:rgba(255,255,255,.08);--line:rgba(255,255,255,.12);--txt:#fff;--mut:rgba(255,255,255,.62);--acc:#5ec8ff;--onacc:#002;--track:rgba(255,255,255,.12);--track2:rgba(255,255,255,.2);--seg:rgba(0,0,0,.22);--segon:rgba(255,255,255,.18);--city1:rgba(255,255,255,.14);--city2:rgba(255,255,255,.04);--nav:rgba(10,18,40,.72);--toastbg:#fff;--toastfg:#002;--grid:rgba(255,255,255,.08);color-scheme:dark}
+:root{--bg1:#0b1a3a;--bg2:#1d3f7a;--card:rgba(255,255,255,.17);--line:rgba(255,255,255,.28);--txt:#fff;--mut:rgba(255,255,255,.72);--acc:#5ec8ff;--onacc:#002;--track:rgba(255,255,255,.18);--track2:rgba(255,255,255,.26);--seg:rgba(0,0,0,.26);--segon:rgba(255,255,255,.24);--city1:rgba(255,255,255,.22);--city2:rgba(255,255,255,.1);--nav:rgba(10,18,40,.72);--toastbg:#fff;--toastfg:#002;--grid:rgba(255,255,255,.08);color-scheme:dark}
 html[data-theme=light]{--bg1:#8ec5f7;--bg2:#e4f1ff;--card:rgba(255,255,255,.55);--line:rgba(11,26,58,.1);--txt:#0b1a3a;--mut:rgba(11,26,58,.62);--acc:#0a74c9;--onacc:#fff;--track:rgba(11,26,58,.12);--track2:rgba(11,26,58,.18);--seg:rgba(11,26,58,.08);--segon:rgba(255,255,255,.9);--city1:rgba(255,255,255,.85);--city2:rgba(255,255,255,.45);--nav:rgba(255,255,255,.78);--toastbg:#0b1a3a;--toastfg:#fff;--grid:rgba(11,26,58,.08);color-scheme:light}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:Inter,system-ui,sans-serif;color:var(--txt);min-height:100vh;background:linear-gradient(170deg,var(--bg1),var(--bg2));transition:background 1s;overflow-x:hidden;background-attachment:fixed}
@@ -37,7 +37,8 @@ html[data-theme=light] body.snow{--bg1:#aab9d0;--bg2:#eef3fa}
 .hero .t{font-size:96px;font-weight:200;letter-spacing:-4px;line-height:1}
 .hero .c{font-size:18px;font-weight:500;margin-top:4px}
 .hero .hl{color:var(--mut);font-size:14px;margin-top:4px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px;backdrop-filter:blur(22px) saturate(1.3);-webkit-backdrop-filter:blur(22px) saturate(1.3);box-shadow:0 6px 24px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.12)}
+html[data-theme=light] .card{box-shadow:0 4px 18px rgba(11,26,58,.08),inset 0 1px 0 rgba(255,255,255,.6)}
 .ct{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .alert{background:linear-gradient(90deg,rgba(255,170,0,.25),rgba(255,90,0,.15));border-color:rgba(255,170,0,.4)}
 .alert b{display:block;margin-bottom:4px}
@@ -57,6 +58,7 @@ html[data-theme=light] body.snow{--bg1:#aab9d0;--bg2:#eef3fa}
 .day:last-child{border:0}.day .i{font-size:22px;text-align:center}.day .lo{color:var(--mut);text-align:right}
 .day .pp{font-size:11px;color:var(--acc)}
 .rng{height:5px;border-radius:3px;background:var(--track);position:relative}.rng i{position:absolute;height:100%;border-radius:3px;background:linear-gradient(90deg,#5ec8ff,#ffd60a,#ff9f0a)}
+.detail .hours{margin-top:10px}.detail .hr{min-width:62px;color:var(--txt)}.detail .hr .w{font-size:10px;color:var(--mut);margin-top:3px;white-space:nowrap}.detail .hr .i{margin:6px 0}.day.open{background:var(--track);border-radius:12px;margin:0 -8px;padding-left:8px;padding-right:8px}
 .detail{display:none;grid-column:1/-1;font-size:12px;color:var(--mut);padding-top:8px;line-height:1.6}.day.open .detail{display:block}
 canvas{width:100%;display:block}
 #fx{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;display:none}
@@ -308,13 +310,13 @@ function current(E){const now=Date.now();let idx=0;for(let i=0;i<E.length;i++){i
 
 function build(E,sun,C){
  const L=current(E),c0=L[0];
- const hours=L.filter(e=>e.ts-c0.ts<48*36e5).map(e=>{const k=cond(sym(e),e);return{ts:e.ts,H:parts(e.ts,C.tz).H,t:e.t,c:k.c,n:k.n,pp:e.pp1??e.pp6??null,mm:e.p1??0,w:Math.round(e.w)}});
+ const hours=L.filter(e=>e.ts-c0.ts<48*36e5).map(e=>{const k=cond(sym(e),e),pp_=parts(e.ts,C.tz);return{ts:e.ts,H:pp_.H,wd:wd(pp_),dd:pp_.d,t:e.t,c:k.c,n:k.n,pp:e.pp1??e.pp6??null,mm:e.p1??0,w:Math.round(e.w)}});
  // regroupement par jour (fuseau de la ville)
  const map=new Map();
  L.forEach((e,i)=>{
   const p=parts(e.ts,C.tz);let d=map.get(p.key);if(!d){d={p,es:[],mm:0};map.set(p.key,d)}
   const nx=L[i+1],step=nx?(nx.ts-e.ts)/36e5:1;
-  d.mm+=step<=1.5?(e.p1??0):(e.p6??0);d.es.push({e,H:p.H});
+  d.mm+=step<=1.5?(e.p1??0):(e.p6??0);d.es.push({e,H:p.H,step});
  });
  const days=[...map.values()].slice(0,10).map(d=>{
   const es=d.es,E2=es.map(x=>x.e);
@@ -324,7 +326,8 @@ function build(E,sun,C){
   const storm=E2.some(e=>/thunder/.test(sym(e)||"")),snowy=E2.some(e=>/snow|sleet/.test(sym(e)||""));
   const gust=Math.round(Math.max(...E2.map(e=>e.gust))),mm=+d.mm.toFixed(1);
   const alert=storm?"storm":gust>=70?"wind":snowy&&mm>=5?"snow":mm>=30?"rain":null;
-  return{p:d.p,c:k.c,hi:Math.round(Math.max(...E2.map(e=>e.tx??e.t))),lo:Math.round(Math.min(...E2.map(e=>e.tn??e.t))),
+  const slots=es.map(x=>{const e=x.e,kk=cond(sym(e),e);return{H:x.H,t:e.t,c:kk.c,n:kk.n,pp:x.step<=1.5?(e.pp1??e.pp6??null):(e.pp6??null),mm:x.step<=1.5?(e.p1??0):(e.p6??0),w:Math.round(e.w),six:x.step>1.5}});
+  return{slots,p:d.p,c:k.c,hi:Math.round(Math.max(...E2.map(e=>e.tx??e.t))),lo:Math.round(Math.min(...E2.map(e=>e.tn??e.t))),
    pp:pps.length?Math.round(Math.max(...pps)):null,mm,wind:Math.round(Math.max(...E2.map(e=>e.w))),gust,
    uv:uvs.length?Math.max(...uvs):0,hum:Math.round(E2.reduce((a,e)=>a+e.hum,0)/E2.length),alert};
  });
@@ -615,7 +618,8 @@ function render(){
  $("moonI").textContent=MN[mi][0];$("moonN").textContent=MN[mi][1];$("moonS").textContent="Illumination "+Math.round((1-Math.cos(ph*2*Math.PI))/2*100)+"% · prochaine pleine lune dans "+Math.round(((.5-ph+1)%1)*29.5)+" j";
  // 10 jours
  const mn=Math.min(...days.map(d=>d.lo)),mx=Math.max(...days.map(d=>d.hi)),sp=Math.max(1,mx-mn);
- $("days").innerHTML=days.map((d,i)=>`<div class="day" onclick="this.classList.toggle('open')"><div>${i?DAYS[wd(d.p)]+" "+d.p.d:"Auj."}</div><div class="i">${ico(d.c)}</div><div class="lo">${T(d.lo)}°</div><div class="rng"><i style="left:${(d.lo-mn)/sp*100}%;right:${100-(d.hi-mn)/sp*100}%"></i></div><div>${T(d.hi)}°</div><div class="detail">${COND[d.c][0]} · 💧 ${d.pp!=null?d.pp+"% ":""}(${d.mm.toFixed(1)} mm) · 💨 ${W(d.wind)} · ☀️ UV ${d.uv} · Humidité ${d.hum}%</div></div>`).join("");
+ const slotH=x=>`<div class="hr"><div>${HR(x.H)}</div><div class="i">${ico(x.c,x.n)}</div><div style="font-weight:600">${T(x.t)}°</div><div class="p">${x.pp!=null&&x.pp>=20?x.pp+"%":""}</div><div class="w">${W(x.w)}</div><div class="w">💧 ${x.mm>=.1?x.mm.toFixed(1)+" mm":"–"}</div></div>`;
+ $("days").innerHTML=days.map((d,i)=>`<div class="day" onclick="openDay(this)"><div>${i?DAYS[wd(d.p)]+" "+d.p.d:"Auj."}</div><div class="i">${ico(d.c)}</div><div class="lo">${T(d.lo)}°</div><div class="rng"><i style="left:${(d.lo-mn)/sp*100}%;right:${100-(d.hi-mn)/sp*100}%"></i></div><div>${T(d.hi)}°</div><div class="detail" onclick="event.stopPropagation()">${COND[d.c][0]} · 💧 ${d.pp!=null?d.pp+"% ":""}(${d.mm.toFixed(1)} mm) · 💨 ${W(d.wind)} · ☀️ UV ${d.uv} · Humidité ${d.hum}%<div class="hours">${d.slots.map(slotH).join("")}</div>${d.slots.some(x=>x.six)?'<div style="margin-top:6px">Créneaux de 6 h : le détail horaire n\'est pas disponible à cette échéance.</div>':""}</div></div>`).join("");
  let sunF=null,moon=null;
  if(sun.rise&&sun.set){if(now>=sun.rise&&now<=sun.set)sunF=(now-sun.rise)/(sun.set-sun.rise);else{const ns=now>sun.set?sun.set:sun.set-864e5,nr=now>sun.set?sun.rise+864e5:sun.rise;moon=Math.max(0,Math.min(1,(now-ns)/(nr-ns)))}}
  else{sunF=cur.n?null:.5;moon=cur.n?.5:null}
@@ -623,6 +627,7 @@ function render(){
  drawChart();drawCities();
 }
 
+function openDay(el){const was=el.classList.contains("open");document.querySelectorAll("#days .day.open").forEach(x=>x.classList.remove("open"));if(!was){el.classList.add("open");setTimeout(()=>el.scrollIntoView({block:"nearest",behavior:"smooth"}),50)}}
 function drawChart(){
  if(!D)return;
  const cv=$("chart"),dpr=devicePixelRatio||1,w=cv.clientWidth||460,h=200;cv.width=w*dpr;cv.height=h*dpr;const g=cv.getContext("2d");g.scale(dpr,dpr);g.clearRect(0,0,w,h);
@@ -632,7 +637,19 @@ function drawChart(){
  const X=i=>pad+i*(w-pad-8)/Math.max(1,n-1),Y=v=>h-22-(v-mn)/(mx-mn)*(h-40),lab=v=>k=="rain"?v.toFixed(1):Math.round(v);
  const cs=getComputedStyle(document.documentElement);g.strokeStyle=cs.getPropertyValue("--grid");g.fillStyle=cs.getPropertyValue("--mut");g.font="10px Inter";
  for(let i=0;i<=4;i++){const v=mn+(mx-mn)*i/4;g.beginPath();g.moveTo(pad,Y(v));g.lineTo(w,Y(v));g.stroke();g.fillText(lab(v),2,Y(v)+3)}
- g.fillText(k=="temp"?"°"+S.uT:k=="rain"?"mm/h":"km/h",pad+2,10);
+ g.fillText(k=="temp"?"°"+S.uT:k=="rain"?"mm/h":"km/h",2,10);
+ // jours : bandes alternées, séparateurs à minuit et libellés
+ const segs_=[];H.forEach((x,i)=>{const l=segs_[segs_.length-1];if(l&&l.dd==x.dd)l.e=i;else segs_.push({dd:x.dd,wd:x.wd,s:i,e:i})});
+ const grid=cs.getPropertyValue("--grid");
+ segs_.forEach((sg,j)=>{
+  const x0=j?X(sg.s)-(X(1)-X(0))/2:pad,x1=sg.e>=n-1?w-8:X(sg.e)+(X(1)-X(0))/2;
+  if(j%2==1){g.fillStyle=grid;g.fillRect(x0,18,x1-x0,h-40)}
+  if(j){g.strokeStyle=cs.getPropertyValue("--mut");g.setLineDash([3,4]);g.beginPath();g.moveTo(x0,16);g.lineTo(x0,h-22);g.stroke();g.setLineDash([])}
+  const lb=DAYS[sg.wd]+" "+sg.dd;g.font="600 10px Inter";g.fillStyle=cs.getPropertyValue("--txt");
+  const tw=g.measureText(lb).width;if(x1-x0>tw+6)g.fillText(lb,(x0+x1)/2-tw/2,11);
+  g.font="10px Inter";g.fillStyle=cs.getPropertyValue("--mut");
+ });
+ g.strokeStyle=grid;
  H.forEach((x,i)=>{if(i%6==0)g.fillText(HR(x.H),X(i)-8,h-6)});
  const col=k=="temp"?["#ffb340","#ff6b6b"]:k=="rain"?["#5ec8ff","#2a7fff"]:["#a0f0c0","#3ddc84"];
  if(k=="rain"){const bw=Math.max(2,(w-pad-8)/n*.7);vals.forEach((v,i)=>{const gr=g.createLinearGradient(0,Y(v),0,h-22);gr.addColorStop(0,col[0]);gr.addColorStop(1,"rgba(42,127,255,.1)");g.fillStyle=gr;g.fillRect(X(i)-bw/2,Y(v),bw,h-22-Y(v))});return}
