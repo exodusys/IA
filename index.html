@@ -69,15 +69,10 @@ canvas{width:100%;display:block}
 .ct svg.ci{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 #fx{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;display:none}
 .fxon .hero{padding:34px 0 64px}.fxon .hero .ico{display:none}.fxon .hero .t,.fxon .hero .c,.fxon .hero .hl{text-shadow:0 1px 14px rgba(0,0,0,.22)}
+html.daytxt{--txt:#0b1220;--mut:rgba(11,18,32,.7);--acc:#0a5fb0;--onacc:#fff}
+html.daytxt nav{--txt:#fff;--mut:rgba(255,255,255,.62);--acc:#5ec8ff}
+html.daytxt .fxon .hero .t,html.daytxt .fxon .hero .c,html.daytxt .fxon .hero .hl{text-shadow:0 1px 12px rgba(255,255,255,.4)}
 .card,.icbtn{transition:background .9s,color .9s,box-shadow .9s,border-color .9s}
-html.dayt .card,html.dayt .city,html.dayt .search{--card:#fff;--line:rgba(10,30,70,.1);--txt:#0b1220;--mut:rgba(11,18,32,.64);--acc:#0a6fc2;--onacc:#fff;--track:rgba(10,30,70,.12);--track2:rgba(10,30,70,.22);--seg:rgba(10,30,70,.09);--segon:#fff;--grid:rgba(10,30,70,.1);color:var(--txt);background:#fff}
-html.dayt .card{backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 6px 22px rgba(10,35,80,.22)}
-html.dayt .city{box-shadow:0 4px 16px rgba(10,35,80,.18)}
-html.dayt .card.alert{background:linear-gradient(90deg,#ffe6b8,#ffd3a6);border-color:rgba(255,140,0,.5)}
-html.skylight .app{--txt:#0b1220;--mut:rgba(11,18,32,.68);--seg:rgba(10,30,70,.12);--segon:#fff;--acc:#0a6fc2;--track:rgba(10,30,70,.14);color:var(--txt)}
-html.skylight .hero .t,html.skylight .hero .c,html.skylight .hero .hl{text-shadow:0 1px 12px rgba(255,255,255,.4)}
-html.dayt .icbtn{background:#fff;border-color:rgba(10,30,70,.1);color:#0b1220}
-html.dayt nav{--nav:rgba(255,255,255,.94);--txt:#0b1220;--mut:rgba(11,18,32,.55);--line:rgba(10,30,70,.1);--acc:#0a6fc2}
 .reg{position:absolute;left:10px;top:10px;z-index:500;background:rgba(10,18,40,.72);color:#fff;font:600 12px Inter,sans-serif;padding:6px 10px;border-radius:10px;backdrop-filter:blur(8px);pointer-events:none}
 .chip.sel i{position:absolute;inset:-7px;border-radius:18px;border:2px solid #5ec8ff;animation:pulse 1.9s ease-out infinite;pointer-events:none}
 @keyframes pulse{0%{transform:scale(.85);opacity:.9}100%{transform:scale(1.35);opacity:0}}
@@ -453,17 +448,18 @@ const FX=(()=>{
   if(st.sunF==null)return;
   const f=st.sunF,el=Math.sin(f*Math.PI),x=W*(.14+.72*f),y=H*(.30-.19*el);
   let v=1-st.cl/100*.9;if(PRECIP.includes(st.c)||st.c=="fog")v*=.12;if(v<.03)return;
-  const warm=1-Math.pow(el,.5),cr=255,cg=Math.round(244-72*warm),cb=Math.round(214-124*warm),col=`${cr},${cg},${cb}`;
+  const sc=1+.07*Math.sin(t*2.3)+.05*Math.sin(t*3.9+1.3)+.03*Math.sin(t*7.1+.4),warm=1-Math.pow(el,.5),cr=255,cg=Math.round(244-72*warm),cb=Math.round(214-124*warm),col=`${cr},${cg},${cb}`;
   const R1=Math.max(W,H)*.62,g=ctx.createRadialGradient(x,y,0,x,y,R1);
-  g.addColorStop(0,`rgba(${col},${.6*v})`);g.addColorStop(.22,`rgba(${col},${.22*v})`);g.addColorStop(1,`rgba(${col},0)`);ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  g.addColorStop(0,`rgba(${col},${.6*v*sc})`);g.addColorStop(.22,`rgba(${col},${.22*v*(1+(sc-1)*1.5)})`);g.addColorStop(1,`rgba(${col},0)`);ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
   if(v>.3){
    ctx.save();ctx.translate(x,y);ctx.globalCompositeOperation="lighter";const L=Math.max(W,H)*1.3;
-   for(let k=0;k<11;k++){const a=k*.571+t*.014+Math.sin(k*3.1)*.2,wd=.045+.035*Math.sin(k*1.7+t*.25),gr=ctx.createLinearGradient(0,0,Math.cos(a)*L,Math.sin(a)*L);
-    gr.addColorStop(0,`rgba(${col},${.07*v})`);gr.addColorStop(1,`rgba(${col},0)`);ctx.fillStyle=gr;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(a-wd)*L,Math.sin(a-wd)*L);ctx.lineTo(Math.cos(a+wd)*L,Math.sin(a+wd)*L);ctx.fill()}
+   for(let k=0;k<11;k++){const a=k*.571+t*.014+Math.sin(k*3.1)*.2,wd=(.045+.035*Math.sin(k*1.7+t*.25))*(1+.12*Math.sin(t*1.9+k*2.3)),gr=ctx.createLinearGradient(0,0,Math.cos(a)*L,Math.sin(a)*L);
+    gr.addColorStop(0,`rgba(${col},${.07*v*(1+.45*Math.sin(t*1.6+k*1.9)*Math.sin(t*2.7+k))})`);gr.addColorStop(1,`rgba(${col},0)`);ctx.fillStyle=gr;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(a-wd)*L,Math.sin(a-wd)*L);ctx.lineTo(Math.cos(a+wd)*L,Math.sin(a+wd)*L);ctx.fill()}
    ctx.restore();
   }
-  const c2=ctx.createRadialGradient(x,y,0,x,y,90);c2.addColorStop(0,`rgba(255,253,240,${.95*v})`);c2.addColorStop(.3,`rgba(${col},${.55*v})`);c2.addColorStop(1,`rgba(${col},0)`);ctx.fillStyle=c2;ctx.fillRect(x-90,y-90,180,180);
-  ctx.fillStyle=`rgba(255,254,244,${v})`;ctx.beginPath();ctx.arc(x,y,Math.min(30,W*.075),0,PI2);ctx.fill();
+  const c2=ctx.createRadialGradient(x,y,0,x,y,90);c2.addColorStop(0,`rgba(255,253,240,${.95*v})`);c2.addColorStop(.3,`rgba(${col},${Math.min(.8,.55*v*sc)})`);c2.addColorStop(1,`rgba(${col},0)`);ctx.fillStyle=c2;ctx.fillRect(x-90,y-90,180,180);
+  ctx.fillStyle=`rgba(255,254,244,${v})`;ctx.beginPath();ctx.arc(x,y,Math.min(30,W*.075)*(1+.012*Math.sin(t*4.1)),0,PI2);ctx.fill();
+  if(v>.4){ctx.save();ctx.globalCompositeOperation="lighter";ctx.translate(x,y);const gl=Math.max(0,Math.sin(t*1.7)*Math.sin(t*2.9+1))*v,L2=Math.min(70,W*.17)*(.8+gl);ctx.rotate(t*.05);for(let q=0;q<4;q++){ctx.rotate(Math.PI/4);const gg=ctx.createLinearGradient(-L2,0,L2,0);gg.addColorStop(0,"rgba(255,250,225,0)");gg.addColorStop(.5,`rgba(255,250,225,${.16*gl+.03*v})`);gg.addColorStop(1,"rgba(255,250,225,0)");ctx.fillStyle=gg;ctx.fillRect(-L2,-1.2,L2*2,2.4)}ctx.restore()}
   if(v>.55&&st.cl<35){ctx.save();ctx.globalCompositeOperation="lighter";const cx=W*.5,cy=H*.55;[[.38,16,.05],[.62,28,.04],[.88,12,.06],[1.25,40,.035]].forEach(([k,r,a])=>{const px=x+(cx-x)*k,py=y+(cy-y)*k,gr=ctx.createRadialGradient(px,py,0,px,py,r);gr.addColorStop(0,`rgba(255,235,200,${a*v})`);gr.addColorStop(1,"rgba(255,235,200,0)");ctx.fillStyle=gr;ctx.fillRect(px-r,py-r,r*2,r*2)});ctx.restore()}
  }
  function drawMoon(){
@@ -654,7 +650,7 @@ const CI={
 const ci=k=>`<svg class="ci" viewBox="0 0 24 24" aria-hidden="true">${CI[k]}</svg>`;
 document.querySelectorAll("[data-ci]").forEach(e=>e.outerHTML=ci(e.dataset.ci));
 /* ================= CIEL SELON LE SOLEIL ================= */
-const SKY={dark:{day:[[58,138,226],[150,200,246]],dusk:[[43,47,107],[217,113,79]],night:[[5,7,15],[27,34,69]],rain:[[62,78,98],[120,140,160]],snow:[[88,104,130],[170,188,214]],fog:[[92,104,118],[170,180,192]],storm:[[44,52,66],[92,106,124]],cloudy:[[84,108,140],[160,180,202]]},
+const SKY={dark:{day:[[21,101,192],[79,163,224]],dusk:[[43,47,107],[217,113,79]],night:[[5,7,15],[27,34,69]],rain:[[62,78,98],[120,140,160]],snow:[[88,104,130],[170,188,214]],fog:[[92,104,118],[170,180,192]],storm:[[44,52,66],[92,106,124]],cloudy:[[84,108,140],[160,180,202]]},
  light:{day:[[95,176,244],[215,236,255]],dusk:[[183,159,214],[255,220,192]],night:[[125,140,188],[208,216,238]],rain:[[135,152,171],[211,221,231]],snow:[[170,185,208],[238,243,250]],fog:[[163,175,188],[227,232,237]],storm:[[110,124,142],[196,207,218]],cloudy:[[130,160,196],[205,222,238]]}};
 const lerpC=(a,b,t)=>a.map((x,i)=>x+(b[i]-x)*t);
 const ss_=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t)};
@@ -678,13 +674,11 @@ function skyColors(dk,c,cl,th){
 let SKYS=null;
 const rgbs=c=>"rgb("+c.map(Math.round).join(",")+")";
 function updateSky(){
- if(!SKYS)return;const b=document.body,t=document.documentElement,day=SKYS.dk<.45,was=t.classList.contains("dayt");
- t.classList.toggle("dayt",day);if(was!==day)setTimeout(()=>{try{drawChart()}catch(e){}},50);
- if(!S.dyn){b.style.removeProperty("--bg1");b.style.removeProperty("--bg2");t.classList.remove("skylight");return}
+ if(!SKYS)return;const b=document.body,h_=document.documentElement,day=SKYS.dk<.45,was=h_.classList.contains("daytxt");
+ h_.classList.toggle("daytxt",day);if(was!==day)setTimeout(()=>{try{drawChart()}catch(e){}},50);
+ if(!S.dyn){b.style.removeProperty("--bg1");b.style.removeProperty("--bg2");return}
  const th=document.documentElement.dataset.theme||"dark",[a,c]=skyColors(SKYS.dk,SKYS.c,SKYS.cl,th);
  b.style.setProperty("--bg1",rgbs(a));b.style.setProperty("--bg2",rgbs(c));
- const lum=(.299*(a[0]+c[0])+.587*(a[1]+c[1])+.114*(a[2]+c[2]))/2;
- t.classList.toggle("skylight",day&&lum>135);
 }
 /* ================= AFFICHAGE ================= */
 function status(msg,retry){
