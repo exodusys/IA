@@ -11,7 +11,7 @@
 <style>
 @property --bg1{syntax:"<color>";inherits:true;initial-value:#0b1a3a}
 @property --bg2{syntax:"<color>";inherits:true;initial-value:#1d3f7a}
-:root{--bg1:#0b1a3a;--bg2:#1d3f7a;--card:rgba(255,255,255,.17);--line:rgba(255,255,255,.28);--txt:#fff;--mut:rgba(255,255,255,.72);--acc:#5ec8ff;--onacc:#002;--track:rgba(255,255,255,.18);--track2:rgba(255,255,255,.26);--seg:rgba(0,0,0,.26);--segon:rgba(255,255,255,.24);--city1:rgba(255,255,255,.22);--city2:rgba(255,255,255,.1);--nav:rgba(10,18,40,.72);--toastbg:#fff;--toastfg:#002;--grid:rgba(255,255,255,.08);color-scheme:dark}
+:root{--bg1:#0b1a3a;--bg2:#1d3f7a;--card:rgba(255,255,255,.17);--line:rgba(255,255,255,.28);--txt:#fff;--mut:rgba(255,255,255,.72);--acc:#5ec8ff;--onacc:#002;--track:rgba(255,255,255,.18);--track2:rgba(255,255,255,.26);--seg:rgba(0,0,0,.26);--segon:rgba(255,255,255,.24);--city1:rgba(255,255,255,.22);--city2:rgba(255,255,255,.1);--nav:rgb(10,18,40);--toastbg:#fff;--toastfg:#002;--grid:rgba(255,255,255,.08);color-scheme:dark}
 html[data-theme=light]{--bg1:#8ec5f7;--bg2:#e4f1ff;--card:rgba(255,255,255,.55);--line:rgba(11,26,58,.1);--txt:#0b1a3a;--mut:rgba(11,26,58,.62);--acc:#0a74c9;--onacc:#fff;--track:rgba(11,26,58,.12);--track2:rgba(11,26,58,.18);--seg:rgba(11,26,58,.08);--segon:rgba(255,255,255,.9);--city1:rgba(255,255,255,.85);--city2:rgba(255,255,255,.45);--nav:rgba(255,255,255,.78);--toastbg:#0b1a3a;--toastfg:#fff;--grid:rgba(11,26,58,.08);color-scheme:light}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:Inter,system-ui,sans-serif;color:var(--txt);min-height:100vh;background:linear-gradient(170deg,var(--bg1),var(--bg2));transition:--bg1 25s linear,--bg2 25s linear;overflow-x:hidden;background-attachment:fixed}
@@ -71,6 +71,7 @@ canvas{width:100%;display:block}
 .fxon .hero{padding:34px 0 64px}.fxon .hero .ico{display:none}.fxon .hero .t,.fxon .hero .c,.fxon .hero .hl{text-shadow:0 1px 14px rgba(0,0,0,.22)}
 html.daytxt{--txt:#0b1220;--mut:rgba(11,18,32,.7);--acc:#0a5fb0;--onacc:#fff}
 html.daytxt nav{--txt:#fff;--mut:rgba(255,255,255,.62);--acc:#5ec8ff}
+html[data-theme=dark] nav{--line:rgba(255,255,255,.14)}
 html.daytxt .fxon .hero .t,html.daytxt .fxon .hero .c,html.daytxt .fxon .hero .hl{text-shadow:0 1px 12px rgba(255,255,255,.4)}
 .card,.icbtn{transition:background .9s,color .9s,box-shadow .9s,border-color .9s}
 .reg{position:absolute;left:10px;top:10px;z-index:500;background:rgba(10,18,40,.72);color:#fff;font:600 12px Inter,sans-serif;padding:6px 10px;border-radius:10px;backdrop-filter:blur(8px);pointer-events:none}
